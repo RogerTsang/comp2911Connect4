@@ -14,9 +14,10 @@ We can do it in Terminal:
 	1. Go to the project repository 
 	2. "git pull"
 	3. Make changes (coding)
-	4. "git commit"
-	5. Change the commit text
-	6. "git push"
+	4. "git add <filename>" (if the file is not on track)
+	5. "git commit"
+	6. Change the commit text
+	7. "git push"
 
 If push is NOT permitted (CONFLICT occurs):
 * Deal with conflicts carefully:
