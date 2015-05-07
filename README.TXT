@@ -9,19 +9,24 @@ A better way to integrate eclipse and github:
 	
 	*When import, there is an error said .project already exists.
 	Skipped it, click cancel.
+	
+	When everything is done. 
+	You should right click your project in Eclipse and there should be team submenu.
+	Use it to pull/add/commit/push as Github client.
 
 EVERYDAY/WEEK ROUTINE:
 We can do it in GUI client:
 	1. Sync (pull)
 	2. Make changes (coding)
-	3. Make a commit
-	4. Make Sync (push)
+	3. Add files to index if new files are created.
+	4. Make a commit
+	5. Make Sync (push)
 
 We can do it in Terminal:
 	1. Go to the project repository 
 	2. "git pull"
 	3. Make changes (coding)
-	4. "git add <filename>" (if the file is not on track)
+	4. "git add <filename>" (if new a file is created)
 	5. "git commit"
 	6. Change the commit text
 	7. "git push"
