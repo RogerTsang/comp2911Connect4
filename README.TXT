@@ -1,7 +1,14 @@
 README.TXT
 
-INITIATION:
-	Eclipse->File->Import->General->Existing Project into Workspace->Choose your comp2911Connect4
+A better way to integrate eclipse and github:
+	https://www.youtube.com/watch?v=ptK9-CNms98
+	
+	You may need:
+	http://download.eclipse.org/egit/updates
+	https://github.com/RogerTsang/comp2911Connect4.git
+	
+	*When import, there is an error said .project already exists.
+	Skipped it, click cancel.
 
 EVERYDAY/WEEK ROUTINE:
 We can do it in GUI client:
