@@ -93,9 +93,12 @@ public class Board {
 				if (this.state[c][r] != Player.NOONE &&
 					this.state[c][r] == this.state[c+1][r]) {
 					rowCounter++;
-					if (rowCounter == 3) {
-						return this.state[c][r];
-					}
+				} else {
+					rowCounter = 0;
+				}
+				
+				if (rowCounter >= 3) {
+					return this.state[c][r];
 				}
 			}
 		}
@@ -110,9 +113,12 @@ public class Board {
 				if (this.state[c][r] != Player.NOONE &&
 					this.state[c][r] == this.state[c][r+1]) {
 					columnCounter++;
-					if (columnCounter == 3) {
-						return this.state[c][r];
-					}
+				} else {
+					columnCounter = 0;
+				}
+				
+				if (columnCounter >= 3) {
+					return this.state[c][r];
 				}
 			}
 		}
@@ -134,7 +140,7 @@ public class Board {
 	}
 	
 	private Player checkFourInDiagonalBottomRight() {
-		for (int r = 0; r <= 3; r++) {
+		for (int r = 0; r <= 2; r++) {
 			for (int c = 0; c <= 3; c++) {
 				if (this.state[c][r] != Player.NOONE &&
 					this.state[c][r] == this.state[c+1][r+1] &&
@@ -158,7 +164,7 @@ public class Board {
 	private int countEmptySlot(int column) {
 		//check if the column are full
 		int depth = 0;
-		for (int r = 6; r > 0; r++) {
+		for (int r = 0; r < 6; r++) {
 			if (this.state[column][r] == Player.NOONE) {
 				depth++;
 			}
@@ -166,4 +172,23 @@ public class Board {
 		return depth;
 	}
 	
+	/**
+	 * This method is for debug use
+	 */
+	public void debug_printBoard() {
+		System.out.println("=====================");
+		System.out.println("P1 = O         P2 = X");
+		System.out.println(" 0  1  2  3  4  5  6");
+		for (int r = 0; r < 6; r++) {
+			for (int c = 0; c < 7; c++) {
+				switch (this.state[c][r]) {
+					case NOONE: System.out.printf("[ ]"); break;
+					case P1: System.out.printf("[O]"); break;
+					case P2: System.out.printf("[X]"); break;
+					case DRAW: System.err.printf("!Unexpected Player"); break;
+				}
+			}
+			System.out.printf("\n");
+		}
+	}
 }

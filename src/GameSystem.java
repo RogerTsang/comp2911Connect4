@@ -2,6 +2,7 @@ import java.util.Stack;
 
 
 public class GameSystem {
+	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
 	private Board board;
@@ -9,6 +10,7 @@ public class GameSystem {
 	private Stack<Integer> RedoStack;
 	
 	public GameSystem() {
+		this.state = GameState.WAIT_FOR_JOIN;
 		this.currentPlayer = Player.NOONE;
 		this.winner = Player.NOONE;
 		this.board = new Board();
@@ -17,13 +19,32 @@ public class GameSystem {
 	}
 	
 	/**
+	 * A controller must ask for join game in order to identify itself.
+	 * @return Player account
+	 */
+	public Player JoinGame() {
+		if (this.state == GameState.WAIT_FOR_JOIN && this.currentPlayer == Player.NOONE) {
+			this.currentPlayer = Player.P1;
+			return this.currentPlayer;
+		} else if (this.state == GameState.WAIT_FOR_JOIN && this.currentPlayer == Player.P1) {
+			this.currentPlayer = Player.P2;
+			this.state = GameState.WAIT_FOR_START;
+			return this.currentPlayer;
+		} else {
+			System.err.println("!The Game Already Started");
+			return null;
+		}
+	}
+	
+	/**
 	 * This is called by controller to ask for first move
 	 * @param p First Player
 	 * @return False if the first player has already been set
 	 */
 	public Boolean setStarter(Player p) {
-		if (this.currentPlayer == Player.NOONE) {
+		if (this.state == GameState.WAIT_FOR_START) {
 			this.currentPlayer = p;
+			this.state = GameState.PLAYABLE;
 			return true;
 		} else {
 			return false;
@@ -44,11 +65,23 @@ public class GameSystem {
 	 * @return True if the move can be done
 	 */
 	public boolean doMove(int column) {
+		if (this.state != GameState.PLAYABLE) {
+			System.err.println("!The game has end");
+			return false;
+		}
+		
 		if (this.board.insert(currentPlayer, column)) {
 			this.UndoStack.add(column);
 			switchPlayer();
 			this.RedoStack.clear();
 			this.winner = this.board.whosWin();
+			this.board.debug_printBoard();
+			if (this.winner == Player.P1 ||
+				this.winner == Player.P2 ||
+				this.winner == Player.DRAW) {
+				this.state = GameState.FINISH;
+				System.out.println("The winner is " + this.winner);
+			}
 			return true;
 		} else {
 			return false;
@@ -60,6 +93,10 @@ public class GameSystem {
 	 * @return True if the undo can be done
 	 */
 	public boolean undo() {
+		if (this.state != GameState.PLAYABLE) {
+			return false;
+		}
+		
 		if (this.currentPlayer != Player.NOONE) {
 			if (!this.UndoStack.isEmpty()) {
 				int lastMove = this.UndoStack.pop();
@@ -77,6 +114,10 @@ public class GameSystem {
 	 * @return True if the redo can be done
 	 */
 	public boolean redo() {
+		if (this.state != GameState.PLAYABLE) {
+			return false;
+		}
+		
 		if (this.currentPlayer != Player.NOONE) {
 			if (!this.RedoStack.isEmpty()) {
 				int reMove = this.RedoStack.pop();
@@ -102,7 +143,7 @@ public class GameSystem {
 	 * @return
 	 */
 	public boolean isFinish() {
-		return (this.winner != Player.NOONE);
+		return (this.state == GameState.FINISH);
 	}
 	
 	private void switchPlayer() {
@@ -115,10 +156,4 @@ public class GameSystem {
 			System.err.println(" the first player before the game start");
 		}
 	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
