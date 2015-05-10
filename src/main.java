@@ -23,7 +23,20 @@ public class main {
 		if(player1.isMyTurn()) player1.move(6);
 		if(player2.isMyTurn()) player2.move(5);
 		if(player1.isMyTurn()) player1.move(4);
-		if(player2.isMyTurn()) player2.move(3);
+		if(player2.isMyTurn()) player2.undo();
+		if(player1.isMyTurn()) player1.undo();
+		if(player2.isMyTurn()) player2.undo();
+		if(player1.isMyTurn()) player1.undo();
+		if(player2.isMyTurn()) player2.undo();
+		if(player1.isMyTurn()) player1.undo();
+		if(player2.isMyTurn()) player2.undo();
+		if(player1.isMyTurn()) player1.move(6);
+		if(player2.isMyTurn()) player2.move(6);
+		if(player1.isMyTurn()) player1.undo();
+		if(player2.isMyTurn()) player2.undo();
+		if(player1.isMyTurn()) player1.redo();
+		if(player2.isMyTurn()) player2.redo();
+		if(player1.isMyTurn()) player1.redo();//This should do nothing
 	}
 
 }

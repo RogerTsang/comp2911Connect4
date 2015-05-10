@@ -176,7 +176,6 @@ public class Board {
 	 * This method is for debug use
 	 */
 	public void debug_printBoard() {
-		System.out.println("=====================");
 		System.out.println("P1 = O         P2 = X");
 		System.out.println(" 0  1  2  3  4  5  6");
 		for (int r = 0; r < 6; r++) {
@@ -190,5 +189,6 @@ public class Board {
 			}
 			System.out.printf("\n");
 		}
+		System.out.println("<===================>");
 	}
 }

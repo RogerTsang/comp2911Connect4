@@ -72,10 +72,10 @@ public class GameSystem {
 		
 		if (this.board.insert(currentPlayer, column)) {
 			this.UndoStack.add(column);
-			switchPlayer();
 			this.RedoStack.clear();
 			this.winner = this.board.whosWin();
 			this.board.debug_printBoard();
+			switchPlayer();
 			if (this.winner == Player.P1 ||
 				this.winner == Player.P2 ||
 				this.winner == Player.DRAW) {
@@ -102,6 +102,7 @@ public class GameSystem {
 				int lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
+				this.board.debug_printBoard();
 				switchPlayer();
 				return true;
 			}
@@ -123,6 +124,7 @@ public class GameSystem {
 				int reMove = this.RedoStack.pop();
 				this.UndoStack.add(reMove);
 				this.board.insert(this.currentPlayer, reMove);
+				this.board.debug_printBoard();
 				switchPlayer();
 				return true;
 			}
@@ -149,8 +151,10 @@ public class GameSystem {
 	private void switchPlayer() {
 		if (this.currentPlayer == Player.P1) {
 			this.currentPlayer = Player.P2;
+			System.out.println("Current = Player 2");
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
+			System.out.println("Current = Player 1");
 		} else {
 			System.err.print("!Use setStarter(Player) to set");
 			System.err.println(" the first player before the game start");
