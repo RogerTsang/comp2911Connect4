@@ -1,39 +1,25 @@
 import java.util.Stack;
 
 
-public class GameSystem {
+public class GameSystem implements Controller{
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
 	private Board board;
+	private int P1Score;
+	private int P2Score;
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
 	
 	public GameSystem() {
-		this.state = GameState.WAIT_FOR_JOIN;
-		this.currentPlayer = Player.NOONE;
+		this.state = GameState.WAIT_FOR_START;
+		this.currentPlayer = Player.P1;
 		this.winner = Player.NOONE;
 		this.board = new Board();
+		this.P1Score = 0;
+		this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
 		this.RedoStack = new Stack<Integer>();
-	}
-	
-	/**
-	 * A controller must ask for join game in order to identify itself.
-	 * @return Player account
-	 */
-	public Player JoinGame() {
-		if (this.state == GameState.WAIT_FOR_JOIN && this.currentPlayer == Player.NOONE) {
-			this.currentPlayer = Player.P1;
-			return this.currentPlayer;
-		} else if (this.state == GameState.WAIT_FOR_JOIN && this.currentPlayer == Player.P1) {
-			this.currentPlayer = Player.P2;
-			this.state = GameState.WAIT_FOR_START;
-			return this.currentPlayer;
-		} else {
-			System.err.println("!The Game Already Started");
-			return null;
-		}
 	}
 	
 	/**
@@ -43,7 +29,7 @@ public class GameSystem {
 	public Boolean newGame() {
 		if (this.state == GameState.PLAYABLE || this.state == GameState.FINISH) {
 			this.state = GameState.WAIT_FOR_START;
-			this.currentPlayer = Player.NOONE;
+			this.currentPlayer = Player.P1;
 			this.winner = Player.NOONE;
 			this.board = new Board();
 			this.UndoStack.clear();
@@ -56,13 +42,10 @@ public class GameSystem {
 	}
 	
 	/**
-	 * This is called by controller to ask for first move
-	 * @param p First Player
-	 * @return False if the first player has already been set
+	 * Start a new game
 	 */
-	public Boolean setStarter(Player p) {
-		if (this.state == GameState.WAIT_FOR_START) {
-			this.currentPlayer = p;
+	public Boolean startGame() {
+		if (this.state == GameState.WAIT_FOR_START ) {
 			this.state = GameState.PLAYABLE;
 			return true;
 		} else {
@@ -83,9 +66,9 @@ public class GameSystem {
 	 * @param column
 	 * @return True if the move can be done
 	 */
-	public boolean doMove(int column) {
+	public boolean move(int column) {
 		if (this.state != GameState.PLAYABLE) {
-			System.err.println("!The game has end");
+			System.out.println("> The game has end");
 			return false;
 		}
 		
@@ -95,11 +78,11 @@ public class GameSystem {
 			this.winner = this.board.whosWin();
 			this.board.debug_printBoard();
 			switchPlayer();
-			if (this.winner == Player.P1 ||
-				this.winner == Player.P2 ||
-				this.winner == Player.DRAW) {
-				this.state = GameState.FINISH;
-				System.out.println("The winner is " + this.winner);
+			switch(this.winner){
+				case P1: this.P1Score++; this.state = GameState.FINISH; break;
+				case P2: this.P2Score++; this.state = GameState.FINISH; break;
+				case DRAW: this.state = GameState.FINISH; break;
+				default: break;
 			}
 			return true;
 		} else {
@@ -157,6 +140,18 @@ public class GameSystem {
 	 */
 	public Player getWinner() {
 		return this.winner;
+	}
+	
+	/**
+	 * Get P1 Score
+	 */
+	public int getPlayerScore(Player p) {
+		switch(p) {
+			case P1: return this.P1Score;
+			case P2: return this.P2Score;
+			default: return -1;
+		}
+				
 	}
 	
 	/**

@@ -2,19 +2,32 @@
 public class main {
 
 	public static void main(String[] args) {
-		GameSystem gs = new GameSystem();
-		IController player1 = new UserController();
-		IController player2 = new UserController();
-		player1.hookToGame(gs);
-		player2.hookToGame(gs);
-		player1.requestFirstMove();
+		Controller control = new GameSystem();
+		control.newGame();
+		control.startGame();
+		control.move(1);
+		control.move(2);
+		control.move(1);
+		control.move(2);
+		control.move(1);
+		control.move(2);
+		control.move(1);
+		control.move(2);
+		System.out.println(control.getPlayerScore(Player.P1));
+		System.out.println(control.getPlayerScore(Player.P2));
 		
-		player1.redo();//This should do nothing
-		player1.move(1);
-		player2.move(2);
-		player1.requestNewGame();
-		player2.requestFirstMove();
-		player2.move(0);
+		control.newGame();
+		control.startGame();
+		control.move(1);
+		control.move(2);
+		control.move(1);
+		control.move(2);
+		control.move(1);
+		control.move(2);
+		control.move(1);
+		control.move(2);
+		System.out.println(control.getPlayerScore(Player.P1));
+		System.out.println(control.getPlayerScore(Player.P2));
 	}
 
 }
