@@ -37,6 +37,25 @@ public class GameSystem {
 	}
 	
 	/**
+	 * Method to generate a new game without disconnecting the controller.
+	 * @return New game can only generate when PLAYABLE or FINISH
+	 */
+	public Boolean newGame() {
+		if (this.state == GameState.PLAYABLE || this.state == GameState.FINISH) {
+			this.state = GameState.WAIT_FOR_START;
+			this.currentPlayer = Player.NOONE;
+			this.winner = Player.NOONE;
+			this.board = new Board();
+			this.UndoStack.clear();
+			this.RedoStack.clear();
+			System.out.println("> A new game has been started");
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * This is called by controller to ask for first move
 	 * @param p First Player
 	 * @return False if the first player has already been set

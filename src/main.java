@@ -9,34 +9,12 @@ public class main {
 		player2.hookToGame(gs);
 		player1.requestFirstMove();
 		
-		if(player1.isMyTurn()) player1.move(0);
-		if(player2.isMyTurn()) player2.move(0);
-		if(player1.isMyTurn()) player1.move(0);
-		if(player2.isMyTurn()) player2.move(0);
-		if(player1.isMyTurn()) player1.move(2);
-		if(player2.isMyTurn()) player2.move(2);
-		if(player1.isMyTurn()) player1.move(2);
-		if(player2.isMyTurn()) player2.move(1);
-		if(player1.isMyTurn()) player1.move(1);
-		if(player1.isMyTurn()) player1.move(1);//Prevented Invalid Move
-		if(player2.isMyTurn()) player2.move(1);
-		if(player1.isMyTurn()) player1.move(6);
-		if(player2.isMyTurn()) player2.move(5);
-		if(player1.isMyTurn()) player1.move(4);
-		if(player2.isMyTurn()) player2.undo();
-		if(player1.isMyTurn()) player1.undo();
-		if(player2.isMyTurn()) player2.undo();
-		if(player1.isMyTurn()) player1.undo();
-		if(player2.isMyTurn()) player2.undo();
-		if(player1.isMyTurn()) player1.undo();
-		if(player2.isMyTurn()) player2.undo();
-		if(player1.isMyTurn()) player1.move(6);
-		if(player2.isMyTurn()) player2.move(6);
-		if(player1.isMyTurn()) player1.undo();
-		if(player2.isMyTurn()) player2.undo();
-		if(player1.isMyTurn()) player1.redo();
-		if(player2.isMyTurn()) player2.redo();
-		if(player1.isMyTurn()) player1.redo();//This should do nothing
+		player1.redo();//This should do nothing
+		player1.move(1);
+		player2.move(2);
+		player1.requestNewGame();
+		player2.requestFirstMove();
+		player2.move(0);
 	}
 
 }

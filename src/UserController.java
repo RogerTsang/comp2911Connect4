@@ -4,15 +4,27 @@ public class UserController implements IController {
 	private Player account;
 	
 	public boolean move(int column) {
-		return gs.doMove(column);
+		if (this.gs.getCurrentPlayer() == this.account) {
+			return gs.doMove(column);			
+		} else {
+			return false;
+		}
 	}
 
 	public boolean undo() {
-		return gs.undo();
+		if (this.gs.getCurrentPlayer() == this.account) {
+			return gs.undo();			
+		} else {
+			return false;
+		}
 	}
 
 	public boolean redo() {
-		return gs.redo();
+		if (this.gs.getCurrentPlayer() == this.account) {
+			return gs.redo();			
+		} else {
+			return false;
+		}
 	}
 
 	public boolean isEnd() {
@@ -36,8 +48,8 @@ public class UserController implements IController {
 		this.gs.setStarter(this.account);
 	}
 
-	@Override
-	public boolean isMyTurn() {
-		return (this.gs.getCurrentPlayer() == this.account);
+	public void requestNewGame() {
+		this.gs.newGame();
 	}
+	
 }
