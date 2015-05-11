@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 
-public class GameSystem implements Controller{
+public class GameSystem implements IController{
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -10,6 +10,7 @@ public class GameSystem implements Controller{
 	private int P2Score;
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
+	private Iai ai;
 	
 	public GameSystem() {
 		this.state = GameState.WAIT_FOR_START;
@@ -20,13 +21,14 @@ public class GameSystem implements Controller{
 		this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
 		this.RedoStack = new Stack<Integer>();
+		this.ai = null;
 	}
 	
 	/**
-	 * Method to generate a new game without disconnecting the controller.
+	 * Method to generate a new game without disconnecting the Player(AI)s.
 	 * @return New game can only generate when PLAYABLE or FINISH
 	 */
-	public Boolean newGame() {
+	public boolean newGame() {
 		if (this.state == GameState.PLAYABLE || this.state == GameState.FINISH) {
 			this.state = GameState.WAIT_FOR_START;
 			this.currentPlayer = Player.P1;
@@ -44,9 +46,10 @@ public class GameSystem implements Controller{
 	/**
 	 * Start a new game
 	 */
-	public Boolean startGame() {
+	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
 			this.state = GameState.PLAYABLE;
+			System.out.println("> Use 0~6 to insert, enjoy");
 			return true;
 		} else {
 			return false;
@@ -77,12 +80,19 @@ public class GameSystem implements Controller{
 			this.RedoStack.clear();
 			this.winner = this.board.whosWin();
 			this.board.debug_printBoard();
-			switchPlayer();
 			switch(this.winner){
-				case P1: this.P1Score++; this.state = GameState.FINISH; break;
-				case P2: this.P2Score++; this.state = GameState.FINISH; break;
-				case DRAW: this.state = GameState.FINISH; break;
-				default: break;
+				case P1: this.P1Score++; 
+						 this.state = GameState.FINISH; 
+						 System.out.println("> Player 1 has won");
+						 break;
+				case P2: this.P2Score++; 
+						 this.state = GameState.FINISH; 
+						 System.out.println("> Player 2 has won");
+						 break;
+				case DRAW: this.state = GameState.FINISH; 
+						 System.out.println("> Game draw");
+						 break;
+				default: switchPlayer(); break;
 			}
 			return true;
 		} else {
@@ -99,7 +109,7 @@ public class GameSystem implements Controller{
 			return false;
 		}
 		
-		if (this.currentPlayer != Player.NOONE) {
+		if (this.currentPlayer != Player.NOONE && this.ai == null) {
 			if (!this.UndoStack.isEmpty()) {
 				int lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
@@ -108,7 +118,19 @@ public class GameSystem implements Controller{
 				switchPlayer();
 				return true;
 			}
+		} else if (this.currentPlayer != Player.NOONE && this.ai != null) {
+			if (!this.UndoStack.isEmpty()) {
+				int lastMove = this.UndoStack.pop();
+				this.RedoStack.add(lastMove);
+				this.board.remove(lastMove);
+				lastMove = this.UndoStack.pop();
+				this.RedoStack.add(lastMove);
+				this.board.remove(lastMove);
+				this.board.debug_printBoard();
+				return true;
+			}
 		}
+		System.out.println("> Cannot Undo");
 		return false;
 	}
 	
@@ -121,7 +143,7 @@ public class GameSystem implements Controller{
 			return false;
 		}
 		
-		if (this.currentPlayer != Player.NOONE) {
+		if (this.currentPlayer != Player.NOONE && this.ai == null) {
 			if (!this.RedoStack.isEmpty()) {
 				int reMove = this.RedoStack.pop();
 				this.UndoStack.add(reMove);
@@ -130,7 +152,21 @@ public class GameSystem implements Controller{
 				switchPlayer();
 				return true;
 			}
+		} else if (this.currentPlayer != Player.NOONE && this.ai != null) {
+			if (!this.RedoStack.isEmpty()) {
+				int reMove = this.RedoStack.pop();
+				this.UndoStack.add(reMove);
+				this.board.insert(this.currentPlayer, reMove);
+				reMove = this.RedoStack.pop();
+				this.UndoStack.add(reMove);
+				this.currentPlayer = Player.P2;
+				this.board.insert(this.currentPlayer, reMove);
+				this.currentPlayer = Player.P1;
+				this.board.debug_printBoard();
+				return true;
+			}
 		}
+		System.out.println("> Cannot Redo");
 		return false;
 	}
 	
@@ -162,16 +198,47 @@ public class GameSystem implements Controller{
 		return (this.state == GameState.FINISH);
 	}
 	
+	/**
+	 * This method will switch player between human P1 or P2(AI).
+	 */
 	private void switchPlayer() {
-		if (this.currentPlayer == Player.P1) {
+		if (this.currentPlayer == Player.P1 && this.ai == null) {
 			this.currentPlayer = Player.P2;
 			System.out.println("Current = Player 2");
+		} else if (this.currentPlayer == Player.P1 && this.ai != null) {
+			this.currentPlayer = Player.P2;
+			System.out.println("Current = AI");
+			this.ai.makeMove();
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
 			System.out.println("Current = Player 1");
-		} else {
-			System.err.print("!Use setStarter(Player) to set");
-			System.err.println(" the first player before the game start");
 		}
+	}
+
+	public boolean attachAI(Iai bot) {
+		if (this.state == GameState.WAIT_FOR_START) {
+			this.ai = bot;
+			bot.getController(this);
+			System.out.println("> AI has been attached");
+			return true;
+		} else {
+			return false;			
+		}
+	}
+
+	public boolean detachAI() {
+		if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
+			this.ai.removeController();
+			this.ai = null;
+			System.out.println("> AI has been detached");
+			return true;
+		} else {
+			return false;			
+		}
+	}
+
+	@Override
+	public Player[][] getBoard() {
+		return this.board.getState();
 	}
 }
