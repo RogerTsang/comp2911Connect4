@@ -139,6 +139,7 @@ public class GameSystem implements IController{
 				return true;
 			}
 		}
+		this.info = "> Cannot Undo";
 		System.out.println("> Cannot Undo");
 		return false;
 	}
@@ -221,6 +222,7 @@ public class GameSystem implements IController{
 	private void switchPlayer() {
 		if (this.currentPlayer == Player.P1 && this.ai == null) {
 			this.currentPlayer = Player.P2;
+			this.info="Player 2";
 			System.out.println("Current = Player 2");
 		} else if (this.currentPlayer == Player.P1 && this.ai != null) {
 			this.currentPlayer = Player.P2;
@@ -228,6 +230,7 @@ public class GameSystem implements IController{
 			this.ai.makeMove();
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
+			this.info = "Player 1";
 			System.out.println("Current = Player 1");
 		}
 	}
