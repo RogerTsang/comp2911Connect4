@@ -1,0 +1,29 @@
+EPICS:
+------
+1. H-H bad graphics
+2. Good graphics + basic AI can be done simultaneously
+3. Different levels of AI
+4. "Not normal" feautures e.g. can choose board size
+
+STORIES:
+--------
+1. H-H bad graphics
+___________________
+UI (Game screen) :
+- Create JFrame (window)
+- Divide window into 42 panels, each representing a piece holder
+- Add toggle for each panel, to be able to show either nothing, a red piece, or a yellow piece
+- Add mouse click event logic so that clicking on a column sends information to the game back-end for processing
+- Write updateBoard(Board b) method so that the game back-end can send the UI a new board for displaying
+
+UI (Menu) :
+- Add two buttons two JFrame, one for exit, one for new game
+
+Back-end (Engine) :
+- Write methods for taking information sent by UI (e.g. mouse click on column) and processing that into commands to change the board
+- In the method that processed mouse clicks (turns) send the new board to the UI method updateBoard(Board b) for displaying
+- Write private method to check if game has been won or is a stalemate (AFTER the board has already been updated)
+
+Back-end (Board) :
+- Add 2D array of pieces to represent board
+- Add methods for changing board (addPiece(int columnNumber), clearBoard() etc.)
