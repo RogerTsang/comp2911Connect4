@@ -7,7 +7,6 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-
 @SuppressWarnings("serial")
 public class GameSquare extends JPanel {
 	

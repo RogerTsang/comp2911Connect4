@@ -16,7 +16,7 @@ public class GameWindow extends JFrame {
 	
 	//Game g;
 	private GameBoardPanel boardPanel;
-	
+
 	//Pass controller to GUI
 	private IController gameController;
 	

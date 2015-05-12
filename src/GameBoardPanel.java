@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GameBoardPanel extends JPanel {
-	
+
 	public GameBoardPanel() {
 		//Create the board squares
 		for (int col = 0; col < 7; col++) {
