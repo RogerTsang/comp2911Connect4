@@ -66,6 +66,14 @@ public class Board {
 		return this.state;
 	}
 	
+	public void clear() {
+		for (int col = 0; col < 7; col++) {
+			for (int row = 0; row < 6; row++) {
+				this.state[col][row] = Player.NOONE;
+			}
+		}
+	}
+	
 	/**
 	 * This method should be called after every move is done
 	 * @return Player who win the game.
