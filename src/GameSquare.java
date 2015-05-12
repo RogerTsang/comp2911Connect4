@@ -13,8 +13,10 @@ public class GameSquare extends JPanel {
 	
 	private final int CIRCLE_DIAMETER = 50;
 	private Ellipse2D.Double circle;
+	private Color currentColor;
 	
-	public GameSquare() {
+	public GameSquare(Color c) {
+		currentColor = c;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
@@ -29,7 +31,7 @@ public class GameSquare extends JPanel {
                 RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		circle = new Ellipse2D.Double(x,y,CIRCLE_DIAMETER,CIRCLE_DIAMETER);
-		g2d.setColor(Color.WHITE);
+		g2d.setColor(currentColor);
 		g2d.fill(circle);
 	}
 	

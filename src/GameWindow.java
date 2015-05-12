@@ -68,16 +68,16 @@ public class GameWindow extends JFrame {
 		else {
 			int nextMove = (int) Math.floor(x/(boardWidth/7));
 			this.gameController.move(nextMove);
+			updateUI();
 		}
 		
 	}
 	
-	/*
-	public updateUI(Board b) {
-		TO DO ONCE WE INTEGRATE BACK-END
+	public void updateUI() {
+		boardPanel.update(gameController.getBoard());
+		boardPanel.updateUI();;
 	}
 	
-	*/
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			IController game = new GameSystem();
