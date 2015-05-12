@@ -72,6 +72,7 @@ public class Board {
 				this.state[col][row] = Player.NOONE;
 			}
 		}
+		this.numDisc = 0;
 	}
 	
 	/**
