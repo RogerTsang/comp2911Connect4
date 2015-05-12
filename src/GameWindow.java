@@ -17,7 +17,11 @@ public class GameWindow extends JFrame {
 	//Game g;
 	private GameBoardPanel boardPanel;
 	
-	public GameWindow() {
+	//Pass controller to GUI
+	private IController gameController;
+	
+	public GameWindow(IController g) {
+		gameController = g;
 		initUI();
 	}
 	
@@ -61,7 +65,10 @@ public class GameWindow extends JFrame {
 	private void translateClick(int x, int boardWidth) {
 		int buffer = 3;
 		if (x%(boardWidth/7) < buffer || (x+buffer)%(boardWidth/7) < buffer) return;
-		else System.out.println((int) Math.floor(x/(boardWidth/7)));
+		else {
+			int nextMove = (int) Math.floor(x/(boardWidth/7));
+			this.gameController.move(nextMove);
+		}
 		
 	}
 	
@@ -73,10 +80,13 @@ public class GameWindow extends JFrame {
 	*/
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-			
+			IController game = new GameSystem();
 			@Override
 			public void run() {
-				GameWindow window = new GameWindow();
+				GameWindow window = new GameWindow(game);
+				//The following two lines should be handle by GUI
+				game.newGame();
+				game.startGame();
 				window.setVisible(true);
 			}
 		});
