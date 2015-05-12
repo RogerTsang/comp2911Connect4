@@ -43,7 +43,6 @@ class DrawBoard extends JPanel {
         this.setSize(30, 5*50+30);
         super.paintComponent(g);
         doDrawing(g);
-        Test_Mouse2 mouseL = new Test_Mouse2(this);
         
     }
     
@@ -78,8 +77,11 @@ public class BasicBoard extends JFrame {
     	}
     	*/
     	DrawBoard dpnl = new DrawBoard();
+    	 Test_Mouse2 mouseL = new Test_Mouse2(dpnl);
+       
 		panel.add(dpnl);
         add(panel);
+       
         
         setSize(210, 300);
         setTitle("Board");
