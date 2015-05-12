@@ -40,7 +40,7 @@ public class GameWindow extends JFrame {
 		//Create panel where game options will go
         //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(2,1,0,0));
+		optionsPanel.setLayout(new GridLayout(3,1,0,0));
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ActionListener() {
             @Override
@@ -56,13 +56,28 @@ public class GameWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				gameController.newGame();
-				boardPanel.update(gameController.getBoard());
 				gameController.startGame();
+
+				boardPanel.update(gameController.getBoard());
+				boardPanel.updateUI();
+			}
+			
+		});
+		//undo button
+		JButton undoButton = new JButton("Undo");
+		undoButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameController.undo();
+				boardPanel.update(gameController.getBoard());
+				boardPanel.updateUI();
 			}
 			
 		});
 		optionsPanel.add(quitButton);
 		optionsPanel.add(restartButton);
+		optionsPanel.add(undoButton);
 		
         
 		//Add both panels
