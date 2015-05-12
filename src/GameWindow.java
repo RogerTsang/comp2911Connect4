@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -37,7 +38,9 @@ public class GameWindow extends JFrame {
 		});
 		
 		//Create panel where game options will go
-        JPanel optionsPanel = new JPanel();
+        //quit button
+		JPanel optionsPanel = new JPanel();
+		optionsPanel.setLayout(new GridLayout(2,1,0,0));
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ActionListener() {
             @Override
@@ -45,7 +48,22 @@ public class GameWindow extends JFrame {
                 System.exit(0);
             }
         });
+		//restart button
+		JButton restartButton = new JButton("Restart");
+		restartButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				gameController.newGame();
+				boardPanel.update(gameController.getBoard());
+				gameController.startGame();
+			}
+			
+		});
 		optionsPanel.add(quitButton);
+		optionsPanel.add(restartButton);
+		
         
 		//Add both panels
 		Container pane = getContentPane();
@@ -75,7 +93,7 @@ public class GameWindow extends JFrame {
 	
 	public void updateUI() {
 		boardPanel.update(gameController.getBoard());
-		boardPanel.updateUI();;
+		boardPanel.updateUI();
 	}
 	
 	public static void main(String[] args) {
