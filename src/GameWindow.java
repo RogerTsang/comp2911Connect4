@@ -3,25 +3,31 @@ import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class GameWindow extends JFrame {
+public class GameWindow extends JFrame implements ActionListener,MouseListener{
 	
 	//Game g;
 	private GameBoardPanel boardPanel;
 
 	//Pass controller to GUI
-	private IController gameController;
+	private GameSystem gameController;
 	
-	public GameWindow(IController g) {
+	//label for print information
+	private JLabel label;
+	
+	public GameWindow(GameSystem g) {
 		gameController = g;
 		initUI();
 	}
@@ -30,54 +36,28 @@ public class GameWindow extends JFrame {
 		
 		//Create panel where board will go
 		boardPanel = new GameBoardPanel();
-		boardPanel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) translateClick(e.getX(), boardPanel.getWidth());
-			}
-		});
-		
+		boardPanel.addMouseListener(this); 		
 		//Create panel where game options will go
         //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(3,1,0,0));
+		optionsPanel.setLayout(new GridLayout(4,1,0,0));
 		JButton quitButton = new JButton("Quit");
-		quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                System.exit(0);
-            }
-        });
+		quitButton.addActionListener(this);
 		//restart button
 		JButton restartButton = new JButton("Restart");
-		restartButton.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				gameController.newGame();
-				gameController.startGame();
-
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-			}
-			
-		});
+		restartButton.addActionListener(this);
 		//undo button
 		JButton undoButton = new JButton("Undo");
-		undoButton.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				gameController.undo();
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-			}
-			
-		});
+		undoButton.addActionListener(this);
 		optionsPanel.add(quitButton);
 		optionsPanel.add(restartButton);
 		optionsPanel.add(undoButton);
+		
+		//JLable for show info
+		label = new JLabel("info");
+		optionsPanel.add(label);
+		
+		
 		
         
 		//Add both panels
@@ -113,7 +93,7 @@ public class GameWindow extends JFrame {
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-			IController game = new GameSystem();
+			GameSystem game = new GameSystem();
 			@Override
 			public void run() {
 				GameWindow window = new GameWindow(game);
@@ -124,4 +104,62 @@ public class GameWindow extends JFrame {
 			}
 		});
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand()){
+		case "Quit":System.exit(0);
+					break;
+		case "Restart":gameController.newGame();
+					  gameController.startGame();
+					  boardPanel.update(gameController.getBoard());
+					  boardPanel.updateUI();
+					  break;
+		case "Undo":gameController.undo();
+					boardPanel.update(gameController.getBoard());
+					boardPanel.updateUI();
+					break;
+		default:break;
+		}
+		this.label.removeAll();
+		this.label.setText(gameController.getInfo());
+		label.updateUI();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1) translateClick(e.getX(), boardPanel.getWidth());
+		this.label.removeAll();
+		this.label.setText(gameController.getInfo());
+		label.updateUI();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+		
+		
 }
+

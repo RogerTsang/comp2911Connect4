@@ -11,6 +11,7 @@ public class GameSystem implements IController{
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
 	private Iai ai;
+	private String info;
 	
 	public GameSystem() {
 		this.state = GameState.WAIT_FOR_START;
@@ -22,6 +23,8 @@ public class GameSystem implements IController{
 		this.UndoStack = new Stack<Integer>();
 		this.RedoStack = new Stack<Integer>();
 		this.ai = null;
+		this.info = null;
+		
 	}
 	
 	/**
@@ -36,6 +39,7 @@ public class GameSystem implements IController{
 			this.board.clear();
 			this.UndoStack.clear();
 			this.RedoStack.clear();
+			this.info = "> A new game has been started";
 			System.out.println("> A new game has been started");
 			return true;
 		} else {
@@ -49,6 +53,7 @@ public class GameSystem implements IController{
 	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
 			this.state = GameState.PLAYABLE;
+			this.info = "> Use mouse to insert dice,enjoy";
 			System.out.println("> Use 0~6 to insert, enjoy");
 			return true;
 		} else {
@@ -71,6 +76,7 @@ public class GameSystem implements IController{
 	 */
 	public boolean move(int column) {
 		if (this.state != GameState.PLAYABLE) {
+			this.info = "> The game has end";
 			System.out.println("> The game has end");
 			return false;
 		}
@@ -83,13 +89,16 @@ public class GameSystem implements IController{
 			switch(this.winner){
 				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH; 
+						 this.info = "> Player 1 has won";
 						 System.out.println("> Player 1 has won");
 						 break;
 				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH; 
+						 this.info = "> Player 2 has won";
 						 System.out.println("> Player 2 has won");
 						 break;
 				case DRAW: this.state = GameState.FINISH; 
+						 this.info = "> Game draw";
 						 System.out.println("> Game draw");
 						 break;
 				default: switchPlayer(); break;
@@ -171,6 +180,14 @@ public class GameSystem implements IController{
 	}
 	
 	/**
+	 * Get info
+	 * @return the info
+	 */
+	public String getInfo(){
+		return this.info;
+	}
+	
+	/**
 	 * Get who the winner is
 	 * @return
 	 */
@@ -236,6 +253,8 @@ public class GameSystem implements IController{
 			return false;			
 		}
 	}
+	
+	
 
 	@Override
 	public Player[][] getBoard() {
