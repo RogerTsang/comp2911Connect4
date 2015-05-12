@@ -33,7 +33,7 @@ public class GameSystem implements IController{
 			this.state = GameState.WAIT_FOR_START;
 			this.currentPlayer = Player.P1;
 			this.winner = Player.NOONE;
-			this.board = new Board();
+			this.board.clear();
 			this.UndoStack.clear();
 			this.RedoStack.clear();
 			System.out.println("> A new game has been started");

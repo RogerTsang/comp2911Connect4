@@ -8,12 +8,14 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GameBoardPanel extends JPanel {
-	
+
 	public GameBoardPanel() {
 		//Create the board squares
-		for (int i = 0; i < 6*7; i++) {
-			GameSquare square = new GameSquare();
-			add(square);
+		for (int col = 0; col < 7; col++) {
+			for (int row = 0; row < 6; row++) {
+				GameSquare square = new GameSquare(Color.WHITE);
+				add(square);
+			}
 		}
 		
 		//Set up look of board
@@ -21,11 +23,26 @@ public class GameBoardPanel extends JPanel {
 		setLayout(new GridLayout(6,7,0,0));
 	}
 	
-	/*
-	public void repaint(Board b) {
-		TO DO ONCE WE INTEGRATE BACK-END
+	public void update(Player[][] board) {
+		this.removeAll();
+		for (int row = 0; row < 6; row++) {
+			for (int col = 0; col < 7; col++) {
+				GameSquare square;
+				switch(board[col][row]) {
+				case P1: square = new GameSquare(Color.RED); break;
+				case P2: square = new GameSquare(Color.GREEN); break;
+				case NOONE: square = new GameSquare(Color.WHITE); break;
+				default: square = new GameSquare(Color.BLACK); break;
+				}
+				add(square);
+				square.repaint();
+			}
+		}
+		
+		//Set up look of board
+		setBackground(Color.BLACK);
+		setLayout(new GridLayout(6,7,0,0));
 	}
-	*/
 	
 	@Override
     public Dimension getPreferredSize() {
