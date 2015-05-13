@@ -233,7 +233,7 @@ public class GameSystem implements IController{
 			this.info = "Player 1";
 			System.out.println("Current = Player 1");
 		}
-	}
+	}	
 
 	public boolean attachAI(Iai bot) {
 		if (this.state == GameState.WAIT_FOR_START) {

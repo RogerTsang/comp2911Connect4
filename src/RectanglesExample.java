@@ -40,7 +40,7 @@ public class RectanglesExample extends JFrame {
         add(panel);
         
         setSize(360, 300);
-        setTitle("Rectangles");
+        setTitle("SampleBoard");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

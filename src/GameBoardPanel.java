@@ -22,7 +22,7 @@ public class GameBoardPanel extends JPanel {
 		setBackground(Color.BLACK);
 		setLayout(new GridLayout(6,7,0,0));
 	}
-	
+	  
 	public void update(Player[][] board) {
 		this.removeAll();
 		for (int row = 0; row < 6; row++) {

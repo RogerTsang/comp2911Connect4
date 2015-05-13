@@ -38,7 +38,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		boardPanel = new GameBoardPanel();
 		boardPanel.addMouseListener(this); 		
 		//Create panel where game options will go
-        //quit button
+        //quit buttonc
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new GridLayout(4,1,0,0));
 		JButton quitButton = new JButton("Quit");
