@@ -12,4 +12,5 @@ public interface IController {
 	public Player getWinner();
 	public Player[][] getBoard();
 	public int getPlayerScore(Player p);
+	public String getInfo();
 }

@@ -257,7 +257,6 @@ public class GameSystem implements IController{
 		}
 	}
 	
-	
 
 	@Override
 	public Player[][] getBoard() {

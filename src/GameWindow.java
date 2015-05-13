@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
@@ -22,12 +23,12 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 	private GameBoardPanel boardPanel;
 
 	//Pass controller to GUI
-	private GameSystem gameController;
+	private IController gameController;
 	
 	//label for print information
 	private JLabel label;
 	
-	public GameWindow(GameSystem g) {
+	public GameWindow(IController g) {
 		gameController = g;
 		initUI();
 	}
@@ -38,7 +39,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		boardPanel = new GameBoardPanel();
 		boardPanel.addMouseListener(this); 		
 		//Create panel where game options will go
-        //quit buttonc
+        //quit button
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new GridLayout(4,1,0,0));
 		JButton quitButton = new JButton("Quit");
@@ -54,17 +55,20 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		optionsPanel.add(undoButton);
 		
 		//JLable for show info
+		JPanel labelPanel = new JPanel();
 		label = new JLabel("info");
-		optionsPanel.add(label);
+		labelPanel.add(label);
 		
 		
 		
         
-		//Add both panels
+		//Add  panels
 		Container pane = getContentPane();
-		pane.setLayout(new GridBagLayout());
-        add(boardPanel);
-        add(optionsPanel);
+		pane.setLayout(new BorderLayout());
+        add(boardPanel,BorderLayout.CENTER);
+        add(labelPanel,BorderLayout.SOUTH);
+        add(optionsPanel,BorderLayout.EAST);
+        
         
         //Set up window
 		setTitle("First window");
@@ -93,7 +97,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-			GameSystem game = new GameSystem();
+			IController game = new GameSystem();
 			@Override
 			public void run() {
 				GameWindow window = new GameWindow(game);
