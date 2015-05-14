@@ -94,6 +94,7 @@ public class Board {
 	 * This method should be called after every move is done
 	 * @return Player who win the game.
 	 */
+	/*
 	public Player whosWin() {
 		Player currentWin = Player.NOONE;
 		if ((currentWin = checkFourInRow()) != Player.NOONE) {
@@ -109,7 +110,7 @@ public class Board {
 		} else {
 			return Player.NOONE;
 		}
-	}
+	}*/
 	/**
 	 * A Different method for checking who has won the game, based on the last move only instead of scanning the whole board.
 	 * @return winner of the game or nobody if noone has won yet
@@ -167,7 +168,7 @@ public class Board {
 			return false;	
 		}	
 	}
-	
+	/*
 	private Player checkFourInRow() {
 		int rowCounter;
 		for (int r = 0; r < 6; r++) {
@@ -235,7 +236,7 @@ public class Board {
 		}
 		return Player.NOONE;
 	}
-	
+	*/
 	private Player checkDraw() {
 		if (this.numDisc == 42) {
 			return Player.DRAW;
