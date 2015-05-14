@@ -22,7 +22,7 @@ public class SmartAI implements Iai {
 		for(int move:possibleMoves){
 			testBoard.insert(control.getCurrentPlayer(),move);
 			if(testBoard.checkWin(move) == control.getCurrentPlayer()){
-				System.out.println("We immediately Won");
+//				System.out.println("We immediately Won");
 				control.move(move);
 				return;
 			}
@@ -52,11 +52,11 @@ public class SmartAI implements Iai {
 			}
 		}
 		toRemove.clear();
-		
+		/*
 		for(int m:possibleMoves){
 			System.out.println(m);
 		}
-		
+		*/
 		//Will the other play win with two moves? We need to move to interrupt i.e.(The classic example of two on the bottom with a space either side).
 		for(int move:possibleMoves){
 			testBoard.insert(Player.P1,move);

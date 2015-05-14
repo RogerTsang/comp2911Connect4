@@ -40,7 +40,6 @@ public class GameSystem implements IController{
 			this.UndoStack.clear();
 			this.RedoStack.clear();
 			this.info = "> A new game has been started";
-			System.out.println("> A new game has been started");
 			return true;
 		} else {
 			return false;
@@ -54,7 +53,6 @@ public class GameSystem implements IController{
 		if (this.state == GameState.WAIT_FOR_START ) {
 			this.state = GameState.PLAYABLE;
 			this.info = "> Use mouse to insert dice,enjoy";
-			System.out.println("> Use 0~6 to insert, enjoy");
 			return true;
 		} else {
 			return false;
@@ -77,7 +75,6 @@ public class GameSystem implements IController{
 	public boolean move(int column) {
 		if (this.state != GameState.PLAYABLE) {
 			this.info = "> The game has end";
-			System.out.println("> The game has end");
 			return false;
 		}
 		
@@ -85,21 +82,17 @@ public class GameSystem implements IController{
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
 			this.winner = this.board.checkWin(column);
-			this.board.debug_printBoard();
 			switch(this.winner){
 				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH; 
 						 this.info = "> Player 1 has won";
-						 System.out.println("> Player 1 has won");
 						 break;
 				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH; 
 						 this.info = "> Player 2 has won";
-						 System.out.println("> Player 2 has won");
 						 break;
 				case DRAW: this.state = GameState.FINISH; 
 						 this.info = "> Game draw";
-						 System.out.println("> Game draw");
 						 break;
 				default: switchPlayer(); break;
 			}
@@ -123,7 +116,6 @@ public class GameSystem implements IController{
 				int lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
-				this.board.debug_printBoard();
 				switchPlayer();
 				return true;
 			}
@@ -135,7 +127,6 @@ public class GameSystem implements IController{
 				lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
-				this.board.debug_printBoard();
 				return true;
 			}
 		}
@@ -158,7 +149,6 @@ public class GameSystem implements IController{
 				int reMove = this.RedoStack.pop();
 				this.UndoStack.add(reMove);
 				this.board.insert(this.currentPlayer, reMove);
-				this.board.debug_printBoard();
 				switchPlayer();
 				return true;
 			}
@@ -172,7 +162,6 @@ public class GameSystem implements IController{
 				this.currentPlayer = Player.P2;
 				this.board.insert(this.currentPlayer, reMove);
 				this.currentPlayer = Player.P1;
-				this.board.debug_printBoard();
 				return true;
 			}
 		}
@@ -223,15 +212,12 @@ public class GameSystem implements IController{
 		if (this.currentPlayer == Player.P1 && this.ai == null) {
 			this.currentPlayer = Player.P2;
 			this.info="Player 2";
-			System.out.println("Current = Player 2");
 		} else if (this.currentPlayer == Player.P1 && this.ai != null) {
 			this.currentPlayer = Player.P2;
-			System.out.println("Current = AI");
 			this.ai.makeMove();
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
 			this.info = "Player 1";
-			System.out.println("Current = Player 1");
 		}
 	}	
 
@@ -239,7 +225,6 @@ public class GameSystem implements IController{
 		if (this.state == GameState.WAIT_FOR_START) {
 			this.ai = bot;
 			bot.getController(this);
-			System.out.println("> AI has been attached");
 			return true;
 		} else {
 			return false;			
@@ -250,7 +235,6 @@ public class GameSystem implements IController{
 		if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
 			this.ai.removeController();
 			this.ai = null;
-			System.out.println("> AI has been detached");
 			return true;
 		} else {
 			return false;			
