@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class GameWindow extends JFrame implements ActionListener,MouseListener{
+public class GameWindow extends JFrame implements ActionListener,MouseListener,MouseMotionListener{
 	
 	//Game g;
 	private GameBoardPanel boardPanel;
@@ -28,20 +29,27 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 	//label for print information
 	private JLabel label;
 	
+	//current column mouse point at
+	private int col;
+	
 	public GameWindow(IController g) {
 		gameController = g;
 		initUI();
 	}
 	
+	
 	private void initUI() {
+		
+		this.col = -1;
 		
 		//Create panel where board will go
 		boardPanel = new GameBoardPanel();
-		boardPanel.addMouseListener(this); 		
+		boardPanel.addMouseListener(this);
+		boardPanel.addMouseMotionListener(this);
 		//Create panel where game options will go
         //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(6,1,0,0));
+		optionsPanel.setLayout(new GridLayout(4,1,0,0));
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(this);
 		//restart button
@@ -124,26 +132,16 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		case "Quit":System.exit(0);
 					break;
 		case "Restart":gameController.newGame();
-					  gameController.detachAI();
 					  gameController.startGame();
+					  boardPanel.update(gameController.getBoard());
+					  boardPanel.updateUI();
 					  break;
-		case "Restart/wAI":gameController.newGame();
-		  				   gameController.attachAI(new SmartAI(gameController));
-		  				   gameController.startGame();
-		  				   break;
 		case "Undo":gameController.undo();
-					break;
-		case "Redo":gameController.redo();
-					break;
-		case "Score":gameController.getPlayerScore(Player.P1);
+					boardPanel.update(gameController.getBoard());
+					boardPanel.updateUI();
 					break;
 		default:break;
 		}
-		//We need to update GUI when action is done
-		//So I put the following two lines here
-		boardPanel.update(gameController.getBoard());
-		boardPanel.updateUI();
-		
 		this.label.removeAll();
 		this.label.setText(gameController.getInfo());
 		label.updateUI();
@@ -171,12 +169,36 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
+		
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e){
+		int boardWidth = boardPanel.getWidth();
+		int x = e.getX();
+		int buffer = 3;
+		if (x%(boardWidth/7) < buffer || (x+buffer)%(boardWidth/7) < buffer) return;
+		else {
+			int col = (int) Math.floor(x/(boardWidth/7));
+			if(col == this.col) return;
+			else{
+				boardPanel.highlightCol(gameController.getBoard(), col);
+				boardPanel.updateUI();
+				this.col = col;
+			}
+		}
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
