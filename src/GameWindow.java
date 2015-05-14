@@ -41,7 +41,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		//Create panel where game options will go
         //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(4,1,0,0));
+		optionsPanel.setLayout(new GridLayout(6,1,0,0));
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(this);
 		//restart button
@@ -50,25 +50,30 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		//undo button
 		JButton undoButton = new JButton("Undo");
 		undoButton.addActionListener(this);
+		//redo button
+		JButton redoButton = new JButton("Redo");
+		redoButton.addActionListener(this);
+		//Getscore button
+		JButton scoreButton = new JButton("Score");
+		scoreButton.addActionListener(this);
+		
 		optionsPanel.add(quitButton);
 		optionsPanel.add(restartButton);
 		optionsPanel.add(undoButton);
+		optionsPanel.add(redoButton);
+		optionsPanel.add(scoreButton);
 		
 		//JLable for show info
 		JPanel labelPanel = new JPanel();
 		label = new JLabel("info");
 		labelPanel.add(label);
 		
-		
-		
-        
-		//Add  panels
+		//Add panels
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
         add(boardPanel,BorderLayout.CENTER);
         add(labelPanel,BorderLayout.SOUTH);
         add(optionsPanel,BorderLayout.EAST);
-        
         
         //Set up window
 		setTitle("First window");
@@ -117,15 +122,20 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		case "Restart":gameController.newGame();
 					  //gameController.attachAI(new SmartAI(gameController));
 					  gameController.startGame();
-					  boardPanel.update(gameController.getBoard());
-					  boardPanel.updateUI();
 					  break;
 		case "Undo":gameController.undo();
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
+					break;
+		case "Redo":gameController.redo();
+					break;
+		case "Score":gameController.getPlayerScore(Player.P1);
 					break;
 		default:break;
 		}
+		//We need to update GUI when action is done
+		//So I put the following two lines here
+		boardPanel.update(gameController.getBoard());
+		boardPanel.updateUI();
+		
 		this.label.removeAll();
 		this.label.setText(gameController.getInfo());
 		label.updateUI();

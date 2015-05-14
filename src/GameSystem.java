@@ -204,15 +204,15 @@ public class GameSystem implements IController, Cloneable{
 	}
 	
 	/**
-	 * Get P1 Score
+	 * Get P1/P2 Score and update this.info
 	 */
 	public int getPlayerScore(Player p) {
+		this.info = String.format("Score: %d - %d\n", this.P1Score, this.P2Score);	
 		switch(p) {
 			case P1: return this.P1Score;
 			case P2: return this.P2Score;
 			default: return -1;
 		}
-				
 	}
 	
 	/**
