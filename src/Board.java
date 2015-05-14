@@ -24,6 +24,21 @@ public class Board {
 			}
 		}
 	}
+	/**
+	 * alternate constructor with a current boardstate
+	 * @param board	state of the board in array form
+	 */
+	public Board(Player[][] board){
+		this.state = board;
+		for (int column = 0; column < 7; column++) {
+			for (int row = 0; row < 6; row++) {
+				if(this.state[column][row] != Player.NOONE){
+					this.numDisc++;
+				}
+			}
+		}
+		
+	}
 	
 	/**
 	 * Insert a disc into the board 
@@ -94,6 +109,63 @@ public class Board {
 		} else {
 			return Player.NOONE;
 		}
+	}
+	/**
+	 * A Different method for checking who has won the game, based on the last move only instead of scanning the whole board.
+	 * @return winner of the game or nobody if noone has won yet
+	 */
+	public Player checkWin(int column){
+		int Row = countEmptySlot(column);
+		int r = 0;
+		//check if there is a vertical win
+		for(r = Row-3; r <= Row; r++){
+			if(isInBounds(column,r) && isInBounds(column,r+3)){
+				if(this.state[column][r] == this.state[column][r+1] 
+						&& this.state[column][r+1] == this.state[column][r+2] 
+						&& this.state[column][r+2] == this.state[column][r+3]){
+					return this.state[column][r];
+				}
+			}
+		}
+		//check if there is a horizontal win
+		int c = 0;
+		for(c = column-3; c <= column; c++){
+			if(isInBounds(c,Row) && isInBounds(c+3,Row)){
+				if(this.state[c][Row] == this.state[c+1][Row] 
+						&& this.state[c+1][Row] == this.state[c+2][Row] 
+						&& this.state[c+2][Row] == this.state[c+3][Row]){
+					return this.state[c][Row];
+				}
+			}
+		}
+		//check if there is a diagonal win
+		for(c = column-3; c <= column; c++){
+			r= c-column+Row;
+			if(isInBounds(c,r) && isInBounds(c+3,r+3)){
+				if(this.state[c][r] == this.state[c+1][r+1] 
+						&& this.state[c+1][r+1] == this.state[c+2][r+2] 
+						&& this.state[c+2][r+2] == this.state[c+3][r+3]){
+					return this.state[c][r];
+				}
+			}
+			r= Row - (c-column);
+			if(isInBounds(c,r) && isInBounds(c+3,r-3)){
+				if(this.state[c][r] == this.state[c+1][r-1] 
+						&& this.state[c+1][r-1] == this.state[c+2][r-2] 
+						&& this.state[c+2][r-2] == this.state[c+3][r-3]){
+					return this.state[c][r];
+				}
+			}
+		}
+		return checkDraw();
+	}
+	
+	private boolean isInBounds(int column, int row){
+		if(row >= 0 && row <= 5 && column >= 0 && column <= 6){
+			return true;
+		} else {
+			return false;	
+		}	
 	}
 	
 	private Player checkFourInRow() {

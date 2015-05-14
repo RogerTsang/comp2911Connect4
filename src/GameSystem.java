@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 
-public class GameSystem implements IController{
+public class GameSystem implements IController, Cloneable{
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -68,6 +68,13 @@ public class GameSystem implements IController{
 	public Player getCurrentPlayer() {
 		return this.currentPlayer;
 	}
+	/**
+	 * used for duplicating a board for the AI
+	 * @param p the player you want to set it to
+	 */
+	public void setCurrentPlayer(Player p){
+		this.currentPlayer = p;
+	}
 	
 	/**
 	 * Choose a column to insert a disc
@@ -84,7 +91,7 @@ public class GameSystem implements IController{
 		if (this.board.insert(currentPlayer, column)) {
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
-			this.winner = this.board.whosWin();
+			this.winner = this.board.checkWin(column);
 			this.board.debug_printBoard();
 			switch(this.winner){
 				case P1: this.P1Score++; 
@@ -257,9 +264,13 @@ public class GameSystem implements IController{
 		}
 	}
 	
-
 	@Override
 	public Player[][] getBoard() {
 		return this.board.getState();
+	}
+	
+	public void setBoard(Player[][] b){
+		Board newBoard = new Board(b);
+		this.board = newBoard;
 	}
 }

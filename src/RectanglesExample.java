@@ -35,7 +35,7 @@ public class RectanglesExample extends JFrame {
     	
     	JPanel panel = new JPanel();
         DrawPanel dpnl = new DrawPanel();
-        Test_Mouse2 lisentner = new Test_Mouse2(dpnl);
+        //Test_Mouse2 lisentner = new Test_Mouse2(dpnl);
         panel.add(dpnl);
         add(panel);
         

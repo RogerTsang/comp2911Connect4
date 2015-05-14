@@ -1,4 +1,3 @@
-
 public class SillyAI implements Iai {
 	IController control;
 	

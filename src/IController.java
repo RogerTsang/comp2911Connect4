@@ -1,4 +1,3 @@
-
 public interface IController {
 	public boolean newGame();
 	public boolean startGame();
