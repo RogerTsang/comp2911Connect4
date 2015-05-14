@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 
-public class GameSystem implements IController, Cloneable{
+public class GameSystem implements IController{
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -67,13 +67,6 @@ public class GameSystem implements IController, Cloneable{
 	 */
 	public Player getCurrentPlayer() {
 		return this.currentPlayer;
-	}
-	/**
-	 * used for duplicating a board for the AI
-	 * @param p the player you want to set it to
-	 */
-	public void setCurrentPlayer(Player p){
-		this.currentPlayer = p;
 	}
 	
 	/**
@@ -207,12 +200,12 @@ public class GameSystem implements IController, Cloneable{
 	 * Get P1 Score
 	 */
 	public int getPlayerScore(Player p) {
+		this.info = String.format("Score: %d - %d", this.P1Score, this.P2Score);
 		switch(p) {
 			case P1: return this.P1Score;
 			case P2: return this.P2Score;
 			default: return -1;
-		}
-				
+		}			
 	}
 	
 	/**
@@ -264,13 +257,9 @@ public class GameSystem implements IController, Cloneable{
 		}
 	}
 	
+
 	@Override
 	public Player[][] getBoard() {
 		return this.board.getState();
-	}
-	
-	public void setBoard(Player[][] b){
-		Board newBoard = new Board(b);
-		this.board = newBoard;
 	}
 }
