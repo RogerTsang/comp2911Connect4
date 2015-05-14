@@ -29,15 +29,20 @@ public class Board {
 	 * @param board	state of the board in array form
 	 */
 	public Board(Player[][] board){
-		this.state = board;
+		this.state = new Player[7][6];
 		for (int column = 0; column < 7; column++) {
 			for (int row = 0; row < 6; row++) {
+				this.state[column][row] = Player.NOONE;
+				if(board[column][row] == Player.P1){
+					this.state[column][row] = Player.P1;
+				} else if(board[column][row] == Player.P2){
+					this.state[column][row] = Player.P2;
+				}
 				if(this.state[column][row] != Player.NOONE){
 					this.numDisc++;
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -245,7 +250,7 @@ public class Board {
 		}
 	}
 	
-	private int countEmptySlot(int column) {
+	public int countEmptySlot(int column) {
 		//check if the column are full
 		int depth = 0;
 		for (int r = 0; r < 6; r++) {
