@@ -49,7 +49,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 		//Create panel where game options will go
         //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(4,1,0,0));
+		optionsPanel.setLayout(new GridLayout(6,1,0,0));
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(this);
 		//restart button
@@ -132,16 +132,26 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 		case "Quit":System.exit(0);
 					break;
 		case "Restart":gameController.newGame();
+					  gameController.detachAI();
 					  gameController.startGame();
-					  boardPanel.update(gameController.getBoard());
-					  boardPanel.updateUI();
 					  break;
+		case "Restart/wAI":gameController.newGame();
+		  				   gameController.attachAI(new SmartAI(gameController));
+		  				   gameController.startGame();
+		  				   break;
 		case "Undo":gameController.undo();
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
+					break;
+		case "Redo":gameController.redo();
+					break;
+		case "Score":gameController.getPlayerScore(Player.P1);
 					break;
 		default:break;
 		}
+		//We need to update GUI when action is done
+		//So I put the following two lines here
+		boardPanel.update(gameController.getBoard());
+		boardPanel.updateUI();
+		
 		this.label.removeAll();
 		this.label.setText(gameController.getInfo());
 		label.updateUI();
