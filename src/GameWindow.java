@@ -115,7 +115,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		case "Quit":System.exit(0);
 					break;
 		case "Restart":gameController.newGame();
-					  gameController.attachAI(new SmartAI(gameController));
+					  //gameController.attachAI(new SmartAI(gameController));
 					  gameController.startGame();
 					  boardPanel.update(gameController.getBoard());
 					  boardPanel.updateUI();
