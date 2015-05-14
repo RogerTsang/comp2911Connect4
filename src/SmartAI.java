@@ -8,7 +8,6 @@ public class SmartAI implements Iai {
 	}
 	
 	public void makeMove() {
-		System.out.println("we got here third");
 		Board testBoard = new Board(control.getBoard());
 		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();
 		//adding all possible moves. We remove them if they are bad (i.e. immediately lose you the game).
@@ -27,9 +26,34 @@ public class SmartAI implements Iai {
 				control.move(move);
 				return;
 			}
+			testBoard.remove(move);
 		}
-		System.out.println("we got here sixth");
-		//does your move immediately allow the other player to win? If so, don't make it.
+		
+		//Will the other player win immediately? Block that move.
+		for(int move:possibleMoves){
+			testBoard.insert(control.getCurrentPlayer(),move);
+			for(int i2=0;i2 <= 6;i2++){
+				if(testBoard.countEmptySlot(i2) != 0){				
+					testBoard.insert(Player.P1,i2);
+
+					System.out.println("Player 2 moving to block win at " + i2);
+					testBoard.debug_printBoard();
+					if(testBoard.checkWin(i2) == Player.P1){
+						System.out.println("Player 2 moving to block win at " + i2);
+						control.move(i2);
+						return;
+					}
+					testBoard.remove(i2);
+				}
+			}
+			testBoard.remove(move);
+		}
+		
+		//Will the other play win with two moves? We need to move to interrupt i.e.(The classic example of two on the bottom with a space either side).
+		
+		
+		
+		//Does your move immediately allow the other player to win? If so, don't make it.
 		for(int move:possibleMoves){
 			testBoard.insert(control.getCurrentPlayer(),move);
 			for(int i2=0;i2 <= 6;i2++){
@@ -50,7 +74,7 @@ public class SmartAI implements Iai {
 		}else{
 			bestMove = 0;
 		}
-		System.out.println("we got here");
+		
 		control.move(bestMove);
 		return;
 	}
