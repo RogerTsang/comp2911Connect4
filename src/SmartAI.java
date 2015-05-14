@@ -11,9 +11,8 @@ public class SmartAI implements Iai {
 		Board testBoard = new Board(control.getBoard());
 		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();
 		//adding all possible moves. We remove them if they are bad (i.e. immediately lose you the game).
-		
+		ArrayList<Integer> toRemove = new ArrayList<Integer>();
 		for(int i=0;i<=6;i++){
-			testBoard.debug_printBoard();
 			if(testBoard.countEmptySlot(i) != 0){
 				possibleMoves.add(i);
 			}
@@ -23,10 +22,55 @@ public class SmartAI implements Iai {
 		for(int move:possibleMoves){
 			testBoard.insert(control.getCurrentPlayer(),move);
 			if(testBoard.checkWin(move) == control.getCurrentPlayer()){
+				System.out.println("We immediately Won");
 				control.move(move);
 				return;
 			}
 			testBoard.remove(move);
+		}
+		
+		//Does your move immediately allow the other player to win? If so, don't make it.
+		for(int move:possibleMoves){
+			testBoard.insert(control.getCurrentPlayer(),move);
+			for(int i2=0;i2 <= 6;i2++){
+				if(testBoard.countEmptySlot(i2) != 0){				
+					testBoard.insert(Player.P1,i2);
+					if(testBoard.checkWin(i2) == Player.P1){
+						toRemove.add(move);
+					}
+					testBoard.remove(i2);
+				}
+			}
+			testBoard.remove(move);
+		}
+		
+		if(toRemove.size() != 0){
+			for(int m:toRemove){
+				if(possibleMoves.indexOf(m) != -1){
+					possibleMoves.remove(possibleMoves.indexOf(m));
+				}
+			}
+		}
+		toRemove.clear();
+		
+		for(int m:possibleMoves){
+			System.out.println(m);
+		}
+		
+		//Will the other play win with two moves? We need to move to interrupt i.e.(The classic example of two on the bottom with a space either side).
+		for(int move:possibleMoves){
+			testBoard.insert(Player.P1,move);
+			for(int i3=0;i3 <= 6;i3++){
+					if(testBoard.countEmptySlot(i3) != 0){				
+						testBoard.insert(Player.P1,i3);
+						if(testBoard.checkWin(i3) == Player.P1){
+							control.move(i3);
+							return;
+						}
+						testBoard.remove(i3);
+					}
+				}
+				testBoard.remove(move);
 		}
 		
 		//Will the other player win immediately? Block that move.
@@ -35,32 +79,10 @@ public class SmartAI implements Iai {
 			for(int i2=0;i2 <= 6;i2++){
 				if(testBoard.countEmptySlot(i2) != 0){				
 					testBoard.insert(Player.P1,i2);
-
-					System.out.println("Player 2 moving to block win at " + i2);
-					testBoard.debug_printBoard();
 					if(testBoard.checkWin(i2) == Player.P1){
-						System.out.println("Player 2 moving to block win at " + i2);
+						System.out.println("We blocked an immediate win");
 						control.move(i2);
 						return;
-					}
-					testBoard.remove(i2);
-				}
-			}
-			testBoard.remove(move);
-		}
-		
-		//Will the other play win with two moves? We need to move to interrupt i.e.(The classic example of two on the bottom with a space either side).
-		
-		
-		
-		//Does your move immediately allow the other player to win? If so, don't make it.
-		for(int move:possibleMoves){
-			testBoard.insert(control.getCurrentPlayer(),move);
-			for(int i2=0;i2 <= 6;i2++){
-				if(testBoard.countEmptySlot(i2) != 0){				
-					testBoard.insert(Player.P1,i2);
-					if(testBoard.checkWin(i2) != Player.NOONE){
-						possibleMoves.remove(move);
 					}
 					testBoard.remove(i2);
 				}
