@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 
-public class GameSystem implements IController, Cloneable{
+public class GameSystem implements IController{
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -68,13 +68,6 @@ public class GameSystem implements IController, Cloneable{
 	public Player getCurrentPlayer() {
 		return this.currentPlayer;
 	}
-	/**
-	 * used for duplicating a board for the AI
-	 * @param p the player you want to set it to
-	 */
-	public void setCurrentPlayer(Player p){
-		this.currentPlayer = p;
-	}
 	
 	/**
 	 * Choose a column to insert a disc
@@ -91,7 +84,7 @@ public class GameSystem implements IController, Cloneable{
 		if (this.board.insert(currentPlayer, column)) {
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
-			this.winner = this.board.checkWin(column);
+			this.winner = this.board.whosWin();
 			this.board.debug_printBoard();
 			switch(this.winner){
 				case P1: this.P1Score++; 
@@ -204,15 +197,15 @@ public class GameSystem implements IController, Cloneable{
 	}
 	
 	/**
-	 * Get P1/P2 Score and update this.info
+	 * Get P1 Score
 	 */
 	public int getPlayerScore(Player p) {
-		this.info = String.format("Score: %d - %d\n", this.P1Score, this.P2Score);	
+		this.info = String.format("Score: %d - %d", this.P1Score, this.P2Score);
 		switch(p) {
 			case P1: return this.P1Score;
 			case P2: return this.P2Score;
 			default: return -1;
-		}
+		}			
 	}
 	
 	/**
@@ -264,13 +257,9 @@ public class GameSystem implements IController, Cloneable{
 		}
 	}
 	
+
 	@Override
 	public Player[][] getBoard() {
 		return this.board.getState();
-	}
-	
-	public void setBoard(Player[][] b){
-		Board newBoard = new Board(b);
-		this.board = newBoard;
 	}
 }

@@ -47,6 +47,9 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		//restart button
 		JButton restartButton = new JButton("Restart");
 		restartButton.addActionListener(this);
+		//restart with AI button
+		JButton restartAIButton = new JButton("Restart/wAI");
+		restartAIButton.addActionListener(this);
 		//undo button
 		JButton undoButton = new JButton("Undo");
 		undoButton.addActionListener(this);
@@ -59,6 +62,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		
 		optionsPanel.add(quitButton);
 		optionsPanel.add(restartButton);
+		optionsPanel.add(restartAIButton);
 		optionsPanel.add(undoButton);
 		optionsPanel.add(redoButton);
 		optionsPanel.add(scoreButton);
@@ -120,9 +124,14 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener{
 		case "Quit":System.exit(0);
 					break;
 		case "Restart":gameController.newGame();
-					  //gameController.attachAI(new SmartAI(gameController));
+					  gameController.detachAI();
 					  gameController.startGame();
 					  break;
+		case "Restart/wAI":gameController.newGame();
+						//Daniel you should add your Smarter AI here
+		  				   gameController.attachAI(new SillyAI());
+		  				   gameController.startGame();
+		  				   break;
 		case "Undo":gameController.undo();
 					break;
 		case "Redo":gameController.redo();
