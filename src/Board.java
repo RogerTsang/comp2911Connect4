@@ -94,28 +94,18 @@ public class Board {
 		}
 		this.numDisc = 0;
 	}
-	
 	/**
-	 * This method should be called after every move is done
-	 * @return Player who win the game.
+	 * Gets the current player based on a boardState. It assumes that the first player is white.
+	 * @return the current player
 	 */
-	/*
-	public Player whosWin() {
-		Player currentWin = Player.NOONE;
-		if ((currentWin = checkFourInRow()) != Player.NOONE) {
-			return currentWin;
-		} else if ((currentWin = checkFourInColumn()) != Player.NOONE) {
-			return currentWin;
-		} else if ((currentWin = checkFourInDiagonalTopRight()) != Player.NOONE) {
-			return currentWin;
-		} else if ((currentWin = checkFourInDiagonalBottomRight()) != Player.NOONE) {
-			return currentWin;
-		} else if ((currentWin = checkDraw()) != Player.NOONE) {
-			return currentWin;
+	public Player getCurrentPlayer(){
+		if(this.numDisc % 2 == 0){
+			return Player.P1;
 		} else {
-			return Player.NOONE;
+			return Player.P2;
 		}
-	}*/
+	}
+	
 	/**
 	 * A Different method for checking who has won the game, based on the last move only instead of scanning the whole board.
 	 * @return winner of the game or nobody if noone has won yet

@@ -1,4 +1,4 @@
-public class SillyAI implements Iai {
+/*public class SillyAI implements Iai {
 	IController control;
 	
 	public void makeMove() {
@@ -20,3 +20,4 @@ public class SillyAI implements Iai {
 		return "I'm silly, I'm sorry";
 	}
 }
+*/

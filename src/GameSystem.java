@@ -214,7 +214,7 @@ public class GameSystem implements IController{
 			this.info="Player 2";
 		} else if (this.currentPlayer == Player.P1 && this.ai != null) {
 			this.currentPlayer = Player.P2;
-			this.ai.makeMove();
+			this.move(this.ai.makeMove());
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
 			this.info = "Player 1";
@@ -224,7 +224,7 @@ public class GameSystem implements IController{
 	public boolean attachAI(Iai bot) {
 		if (this.state == GameState.WAIT_FOR_START) {
 			this.ai = bot;
-			bot.getController(this);
+			bot.getBoard(this.getBoard());
 			return true;
 		} else {
 			return false;			
@@ -233,7 +233,7 @@ public class GameSystem implements IController{
 
 	public boolean detachAI() {
 		if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
-			this.ai.removeController();
+			this.ai.removeBoard();
 			this.ai = null;
 			return true;
 		} else {

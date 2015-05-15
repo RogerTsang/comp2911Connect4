@@ -1,5 +1,5 @@
 public interface Iai {
-	public void getController(IController c);
-	public void removeController();
-	public void makeMove();
+	public void getBoard(Player[][] c);
+	public void removeBoard();
+	public int makeMove();
 }
