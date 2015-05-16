@@ -209,12 +209,9 @@ public class GameSystem implements IController{
 	 * This method will switch player between human P1 or P2(AI).
 	 */
 	private void switchPlayer() {
-		if (this.currentPlayer == Player.P1 && this.ai == null) {
+		if (this.currentPlayer == Player.P1) {
 			this.currentPlayer = Player.P2;
-			this.info="Player 2";
-		} else if (this.currentPlayer == Player.P1 && this.ai != null) {
-			this.currentPlayer = Player.P2;
-			this.move(this.ai.makeMove());
+			this.info = "Player 2";
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
 			this.info = "Player 1";
@@ -241,7 +238,15 @@ public class GameSystem implements IController{
 		}
 	}
 	
-
+	public boolean getAITurn() {
+		if (this.ai != null && this.currentPlayer == Player.P2) {
+			this.move(this.ai.makeMove());
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public Player[][] getBoard() {
 		return this.board.getState();

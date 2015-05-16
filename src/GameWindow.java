@@ -46,7 +46,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 		//Create panel where game options will go
         //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(6,1,0,0));
+		optionsPanel.setLayout(new GridLayout(8,1,0,0));
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(this);
 		//restart button
@@ -64,10 +64,14 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 		//Getscore button
 		JButton scoreButton = new JButton("Score");
 		scoreButton.addActionListener(this);
+		//Request AI move button
+		JButton AIMove = new JButton("AIMove");
+		AIMove.addActionListener(this);
 		
 		optionsPanel.add(quitButton);
 		optionsPanel.add(restartButton);
 		optionsPanel.add(restartAIButton);
+		optionsPanel.add(AIMove);
 		optionsPanel.add(undoButton);
 		optionsPanel.add(redoButton);
 		optionsPanel.add(scoreButton);
@@ -136,6 +140,8 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 		  				   gameController.attachAI(new SmartAI(gameController.getBoard()));
 		  				   gameController.startGame();
 		  				   break;
+		case "AIMove": gameController.getAITurn();
+					   break;
 		case "Undo":gameController.undo();
 					break;
 		case "Redo":gameController.redo();

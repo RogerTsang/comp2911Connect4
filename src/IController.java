@@ -7,6 +7,7 @@ public interface IController {
 	public boolean isFinish();
 	public boolean attachAI(Iai bot);
 	public boolean detachAI();
+	public boolean getAITurn();
 	public Player getCurrentPlayer();
 	public Player getWinner();
 	public Player[][] getBoard();
