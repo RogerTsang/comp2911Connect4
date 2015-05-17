@@ -104,7 +104,10 @@ public class SmartAI implements Iai {
 		//if we haven't made an automatic move by this point, we have to decide between the remaining possible moves.
 		int bestMove = 0;
 		if(possibleMoves.size()!=0){
+			//The possibleMoves list has [0, 1, 2, 3, 4, 5, 6]
+			//And the AI always make move 0 first.
 			bestMove = possibleMoves.get(0);
+			System.out.println(possibleMoves);
 		}else{
 			bestMove = 0;
 		}

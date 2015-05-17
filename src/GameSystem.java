@@ -242,7 +242,7 @@ public class GameSystem implements IController{
 	 * In order to debug, Now the AI can move whatever if it is its turn.
 	 */
 	public boolean getAITurn() {
-		if (this.ai != null) {
+		if (this.ai != null && this.currentPlayer == Player.P2) {
 			this.move(this.ai.makeMove());
 			return true;
 		} else {
