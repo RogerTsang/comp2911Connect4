@@ -196,7 +196,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 			int col = (int) Math.floor(x/(boardWidth/7));
 			if(col == this.col) return;
 			else{
-				boardPanel.highlightCol(gameController.getBoard(), col);
+				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
 				boardPanel.updateUI();
 				this.col = col;
 			}

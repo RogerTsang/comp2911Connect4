@@ -14,12 +14,30 @@ public class GameSquare extends JPanel {
 	private final int CIRCLE_DIAMETER = 50;
 	private Ellipse2D.Double circle;
 	private Color currentColor;
-	private int Transparency;
-	public GameSquare(Color c,int t) {
+	private Color highlighter;
+	private final int ALPHA = 100;
+	
+	/**
+	 * Create a square unit with Highlighted transparent.
+	 * @param c Current Disc Color
+	 * @param h Highlighter Color
+	 */
+	public GameSquare(Color c, Color h) {
 		currentColor = c;
+		highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		Transparency = t;
+	}
+	
+	/**
+	 * Create a square unit with no Highlighter.
+	 * @param c Current Disc Color
+	 */
+	public GameSquare(Color c) {
+		currentColor = c;
+		highlighter = null;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	
 	private void doDrawing(Graphics g) {
@@ -34,12 +52,16 @@ public class GameSquare extends JPanel {
 		circle = new Ellipse2D.Double(x,y,CIRCLE_DIAMETER,CIRCLE_DIAMETER);
 		g2d.setColor(currentColor);
 		g2d.fill(circle);
-		Rectangle2D.Double rectangle= new Rectangle2D.Double(0,0,this.getWidth(),this.getHeight());
-		g2d.setColor(new Color(0,255,0,Transparency));
-		g2d.fill(rectangle);
-		
+		if (highlighter != null) {
+			getHighlighter(g2d);
+		}
 	}
 	
+	private void getHighlighter(Graphics2D g2d) {
+		Rectangle2D.Double rectangle= new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight());
+		g2d.setColor(highlighter);
+		g2d.fill(rectangle);
+	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
