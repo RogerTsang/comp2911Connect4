@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 
-public class GameSystem implements IController{
+ public class GameSystem implements IController{
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -50,7 +50,7 @@ public class GameSystem implements IController{
 	 * Start a new game
 	 */
 	public boolean startGame() {
-		if (this.state == GameState.WAIT_FOR_START ) {
+		if (this.state == GameState.WAIT_FOR_START) {
 			this.state = GameState.PLAYABLE;
 			this.info = "> Use mouse to insert dice,enjoy";
 			return true;
@@ -83,11 +83,11 @@ public class GameSystem implements IController{
 			this.RedoStack.clear();
 			this.winner = this.board.checkWin(column);
 			switch(this.winner){
-				case P1: this.P1Score++; 
+				case P1WIN: this.P1Score++; 
 						 this.state = GameState.FINISH; 
 						 this.info = "> Player 1 has won";
 						 break;
-				case P2: this.P2Score++; 
+				case P2WIN: this.P2Score++; 
 						 this.state = GameState.FINISH; 
 						 this.info = "> Player 2 has won";
 						 break;
