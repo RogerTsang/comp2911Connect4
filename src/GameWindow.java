@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,29 +33,49 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 	
 	public GameWindow(IController g) {
 		gameController = g;
+		initBoardPanel();
+		initResize();
+		initMouse();
 		initUI();
 	}
 	
-	
-	private void initUI() {
-		
-		this.col = -1;
-		
+	private void initBoardPanel() {
 		//Create panel where board will go
 		boardPanel = new GameBoardPanel();
+	}
+	
+	private void initResize() {
+		this.setMinimumSize(new Dimension(300, 300));
+		this.setResizable(true);
+	}
+	
+	private void initMouse() {
+		//This line is just for fun.
+		//Your mouse indicates it is busy.
+		//But it is not of course.
+		this.setCursor(new Cursor(3));
+		//Add Mouse Listener
 		boardPanel.addMouseListener(this);
 		boardPanel.addMouseMotionListener(this);
+	}
+	
+	private void initUI() {
+		this.col = -1;
+		
 		//Create panel where game options will go
-        //quit button
 		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(8,1,0,0));
+		GridLayout gl = new GridLayout(2,4,0,0);
+		optionsPanel.setLayout(gl);
+		
+		//quit button
 		JButton quitButton = new JButton("Quit");
+		quitButton.setSize(50, 25);
 		quitButton.addActionListener(this);
 		//restart button
 		JButton restartButton = new JButton("Restart");
 		restartButton.addActionListener(this);
 		//restart with AI button
-		JButton restartAIButton = new JButton("Restart/wAI");
+		JButton restartAIButton = new JButton("EnableAI");
 		restartAIButton.addActionListener(this);
 		//undo button
 		JButton undoButton = new JButton("Undo");
@@ -84,14 +106,14 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 		//Add panels
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
-        add(boardPanel,BorderLayout.CENTER);
-        add(labelPanel,BorderLayout.SOUTH);
-        add(optionsPanel,BorderLayout.EAST);
+        add(boardPanel, BorderLayout.CENTER);
+        add(labelPanel, BorderLayout.NORTH);
+        add(optionsPanel, BorderLayout.SOUTH);
         
         //Set up window
 		setTitle("First window");
-		pack();
-		setSize(625, 500);
+
+		setSize(625, 625);
 		pane.setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -136,7 +158,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 					  gameController.detachAI();
 					  gameController.startGame();
 					  break;
-		case "Restart/wAI":gameController.newGame();
+		case "EnableAI":gameController.newGame();
 		  				   gameController.attachAI(new SmartAI(gameController.getBoard()));
 		  				   gameController.startGame();
 		  				   break;
@@ -182,7 +204,6 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
 		
 	}
 	

@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
@@ -18,33 +17,38 @@ public class GameBoardPanel extends JPanel {
 				add(square);
 			}
 		}
-		
 		//Set up look of board
 		setBackground(Color.BLACK);
 		setLayout(new GridLayout(6,7,0,0));
 	}
-	  
+	 
+	/**
+	 * When GUI is changed, the method should be always called.
+	 * @param board
+	 */
 	public void update(Player[][] board) {
 		this.removeAll();
 		for (int row = 0; row < 6; row++) {
 			for (int col = 0; col < 7; col++) {
 				GameSquare square;
 				switch(board[col][row]) {
-				case P1: square = new GameSquare(Color.RED); break;
-				case P2: square = new GameSquare(Color.GREEN); break;
-				case NOONE: square = new GameSquare(Color.WHITE); break;
-				default: square = new GameSquare(Color.BLACK); break;
+					case P1: square = new GameSquare(Color.RED); break;
+					case P2: square = new GameSquare(Color.GREEN); break;
+					case NOONE: square = new GameSquare(Color.WHITE); break;
+					default: square = new GameSquare(Color.BLACK); break;
 				}
 				add(square);
 				
 			}
 		}
-		
-		
-		//Set up look of board 
 	}
 	
-	
+	/**
+	 * Highlight the current column.
+	 * @param board Current Board state
+	 * @param current Current Player
+	 * @param col Current Column the mouse is on
+	 */
 	public void highlightCol(Player[][] board, Player current, int col){
 	//repaint preCol
 		this.removeAll();
