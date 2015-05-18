@@ -1,11 +1,13 @@
 import java.util.Stack;
 
 
- public class GameSystem implements IController{
+public class GameSystem implements IController, IGame {
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
 	private Board board;
+	private int connectToWin;
+	private int turnNumber;
 	private int P1Score;
 	private int P2Score;
 	private Stack<Integer> UndoStack;
@@ -18,13 +20,14 @@ import java.util.Stack;
 		this.currentPlayer = Player.P1;
 		this.winner = Player.NOONE;
 		this.board = new Board();
+		this.connectToWin = 4;
+		this.turnNumber = 1;
 		this.P1Score = 0;
 		this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
 		this.RedoStack = new Stack<Integer>();
 		this.ai = null;
 		this.info = null;
-		
 	}
 	
 	/**
@@ -32,17 +35,21 @@ import java.util.Stack;
 	 * @return New game can only generate when PLAYABLE or FINISH
 	 */
 	public boolean newGame() {
-		if (this.state == GameState.PLAYABLE || this.state == GameState.FINISH) {
+	    // if the game is all ready in a state to begin a new game
+	    // there is no need to start a new game
+		if (this.state == GameState.WAIT_FOR_START) {
+		    return false;
+		} else {
 			this.state = GameState.WAIT_FOR_START;
 			this.currentPlayer = Player.P1;
 			this.winner = Player.NOONE;
 			this.board.clear();
+			this.connectToWin = 4;
+			this.turnNumber = 1;
 			this.UndoStack.clear();
 			this.RedoStack.clear();
 			this.info = "> A new game has been started";
 			return true;
-		} else {
-			return false;
 		}
 	}
 	
@@ -50,9 +57,9 @@ import java.util.Stack;
 	 * Start a new game
 	 */
 	public boolean startGame() {
-		if (this.state == GameState.WAIT_FOR_START) {
+		if (this.state == GameState.WAIT_FOR_START ) {
 			this.state = GameState.PLAYABLE;
-			this.info = "> Use mouse to insert dice,enjoy";
+			this.info = "> Use mouse to insert disc,enjoy";
 			return true;
 		} else {
 			return false;
@@ -64,7 +71,11 @@ import java.util.Stack;
 	 * @return
 	 */
 	public Player getCurrentPlayer() {
-		return this.currentPlayer;
+	    if (this.turnNumber % 2 == 1) {
+	        return Player.P1;
+	    } else {
+	        return Player.P2;
+	    }
 	}
 	
 	/**
@@ -73,21 +84,21 @@ import java.util.Stack;
 	 * @return True if the move can be done
 	 */
 	public boolean move(int column) {
-		if (this.state != GameState.PLAYABLE) {
-			this.info = "> The game has end";
-			return false;
-		}
-		
-		if (this.board.insert(currentPlayer, column)) {
+	    if (this.state != GameState.PLAYABLE) {
+            this.info = "> The game has end";
+            return false;
+        }
+	    
+		if (this.board.insert(currentPlayer,column)) {
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
-			this.winner = this.board.checkWin(column);
+			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
 			switch(this.winner){
-				case P1WIN: this.P1Score++; 
+				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH; 
 						 this.info = "> Player 1 has won";
 						 break;
-				case P2WIN: this.P2Score++; 
+				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH; 
 						 this.info = "> Player 2 has won";
 						 break;
@@ -96,11 +107,16 @@ import java.util.Stack;
 						 break;
 				default: switchPlayer(); break;
 			}
+	        this.turnNumber++;
 			return true;
 		} else {
 			return false;
 		}
 	}
+	
+	
+	
+	
 	
 	/**
 	 * Undo the last move. This will cause a player switch
@@ -117,6 +133,7 @@ import java.util.Stack;
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
 				switchPlayer();
+				this.turnNumber--;
 				return true;
 			}
 		} else if (this.currentPlayer != Player.NOONE && this.ai != null) {
@@ -127,6 +144,7 @@ import java.util.Stack;
 				lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
+                this.turnNumber-=2;
 				return true;
 			}
 		}
@@ -221,7 +239,6 @@ import java.util.Stack;
 	public boolean attachAI(Iai bot) {
 		if (this.state == GameState.WAIT_FOR_START) {
 			this.ai = bot;
-			bot.getBoard(this.getBoard());
 			return true;
 		} else {
 			return false;			
@@ -230,7 +247,6 @@ import java.util.Stack;
 
 	public boolean detachAI() {
 		if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
-			this.ai.removeBoard();
 			this.ai = null;
 			return true;
 		} else {
@@ -242,8 +258,8 @@ import java.util.Stack;
 	 * In order to debug, Now the AI can move whatever if it is its turn.
 	 */
 	public boolean getAITurn() {
-		if (this.ai != null && this.currentPlayer == Player.P2) {
-			this.move(this.ai.makeMove());
+		if (this.ai != null) {
+			this.move(this.ai.makeMove((IGame)this,this.board.clone()));
 			return true;
 		} else {
 			return false;
@@ -254,4 +270,148 @@ import java.util.Stack;
 	public Player[][] getBoard() {
 		return this.board.getState();
 	}
+
+    @Override
+    public int getConnectToWin() {
+        return this.connectToWin;
+    }
+    
+    /**
+     * A Different method for checking whether the game has ended, via a win or draw, 
+     * otherwise still playable. It is based on the last move only instead of scanning the whole board.
+     * @return winner of the game or nobody if noone has won yet or draw if drawn
+     */
+    public Player checkWin(Board b, int column, Player p) {
+        int numInARow = 0;
+        Player[][] boardState = b.getState();
+        
+        //get location of last disc
+        int rowOfLastDisc = 0;
+        for (int row = 0; row < this.board.getRowSize(); row++) {
+            if (boardState[column][row] != Player.NOONE) {
+                rowOfLastDisc = row;
+                break;
+            }
+        }
+        
+        //check if there is a vertical win
+        for (int row = rowOfLastDisc; row < board.getRowSize(); row++) {
+            if (boardState[column][row] == p) {
+                numInARow++;
+                if (numInARow == this.connectToWin) {
+                    return p;
+                }
+            } else {
+                break;
+            }
+        }
+        numInARow = 0;
+        
+        //check if there is a horizontal win
+        //check by looking left to right, so find the left most piece
+        //of the possible win connection
+        int columnCheckStart = 0;
+        for (int col = column; col >= 0; col--) {
+            if (boardState[col][rowOfLastDisc] != p) {
+                columnCheckStart = col+1;
+                break;
+            }
+        }
+        for (int col = columnCheckStart; col < this.board.getColumnSize(); col++) {
+            if (boardState[col][rowOfLastDisc] == p) {
+                numInARow++;
+                if (numInARow == this.connectToWin) {
+                    return p;
+                }
+            } else {
+                break;
+            }
+        }
+        numInARow = 0;
+        
+        //check if there is a up-and-left diagonal win
+        int rowCheckStart = 0;
+        columnCheckStart = 0;
+        int row = rowOfLastDisc;
+        int col = column;
+        while (col >= 0 && row >= 0) {
+            if (boardState[col][row] != p) {
+                columnCheckStart = col+1;
+                rowCheckStart = row+1;
+                break;
+            }
+            col--;
+            row--;
+            if (row < 0 || col < 0) {
+                columnCheckStart = col+1;
+                rowCheckStart = row+1;
+                break;
+            }
+        }
+        col = columnCheckStart;
+        row = rowCheckStart;
+        while (col < this.board.getColumnSize() && row < this.board.getRowSize()) {
+            if (boardState[col][row] == p) {
+                numInARow++;
+                if (numInARow == this.connectToWin) {
+                    return p;
+                }
+                col++;
+                row++;
+            } else {
+                break;
+            }
+        }
+        numInARow = 0;
+        
+        //check if there is a up-and-right diagonal win
+        rowCheckStart = 0;
+        columnCheckStart = 0;
+        row = rowOfLastDisc;
+        col = column;
+        while (col >= 0 && row < b.getRowSize()) {
+            if (boardState[col][row] != p) {
+                columnCheckStart = col+1;
+                rowCheckStart = row-1;
+                break;
+            }
+            col--;
+            row++;
+            if (row == b.getRowSize() || col < 0) {
+                columnCheckStart = col+1;
+                rowCheckStart = row-1;
+                break;
+            }
+        }
+        col = columnCheckStart;
+        row = rowCheckStart;
+        while (col < b.getColumnSize() && row >= 0) {
+            if (boardState[col][row] == p) {
+                numInARow++;
+                if (numInARow == this.connectToWin) {
+                    return p;
+                }
+                col++;
+                row--;
+            } else {
+                break;
+            }
+            
+        }
+        numInARow = 0;
+        
+        //otherwise we may have a draw
+        for (col = 0; col < board.getColumnSize(); col++) {
+            if (boardState[col][0] == Player.NOONE) break;
+            if (col == board.getColumnSize()-1) return Player.DRAW;
+        }
+        return Player.NOONE;
+    }
+    
+    @Override
+    public boolean isLegalMove(int column) {
+        if (column < 0 || column >= this.board.getColumnSize()) return false;
+        if (this.board.getState()[column][0] != Player.NOONE) return false;
+        return true;
+    }
 }

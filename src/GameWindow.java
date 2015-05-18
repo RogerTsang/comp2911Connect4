@@ -159,7 +159,7 @@ public class GameWindow extends JFrame implements ActionListener,MouseListener,M
 					  gameController.startGame();
 					  break;
 		case "EnableAI":gameController.newGame();
-		  				   gameController.attachAI(new SmartAI(gameController.getBoard()));
+		  				   gameController.attachAI(new EasyAI(Player.P2));
 		  				   gameController.startGame();
 		  				   break;
 		case "AIMove": gameController.getAITurn();
