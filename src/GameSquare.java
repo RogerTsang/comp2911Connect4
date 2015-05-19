@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,7 +16,7 @@ public class GameSquare extends JPanel {
 	private Ellipse2D.Double circle;
 	private Color currentColor;
 	private Color highlighter;
-	private final int ALPHA = 100;
+	private final int ALPHA = 120;
 	
 	/**
 	 * Create a square unit with Highlighted transparent.
@@ -24,8 +25,9 @@ public class GameSquare extends JPanel {
 	 */
 	public GameSquare(Color c, Color h) {
 		currentColor = c;
-		highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
+		highlighter =  new Color(h.getRed(), h.getGreen(), h.getBlue(),ALPHA);
 		setBackground(Color.BLUE);
+		
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	
@@ -41,7 +43,9 @@ public class GameSquare extends JPanel {
 	}
 	
 	private void doDrawing(Graphics g) {
+		
 		Graphics2D g2d = (Graphics2D) g;
+		
 		float x = getWidth()/2 - CIRCLE_DIAMETER/2;
 		float y = getHeight()/2 - CIRCLE_DIAMETER/2;
 		
@@ -59,7 +63,10 @@ public class GameSquare extends JPanel {
 	
 	private void getHighlighter(Graphics2D g2d) {
 		Rectangle2D.Double rectangle= new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight());
-		g2d.setColor(highlighter);
+		GradientPaint highLighter = new GradientPaint(0,0,
+                new Color(0,0,0,ALPHA), this.getWidth()/2, 0,highlighter, true);
+		setBackground(Color.BLUE);
+		g2d.setPaint(highLighter);
 		g2d.fill(rectangle);
 	}
 	
