@@ -1,12 +1,9 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -39,91 +36,124 @@ public class GameWindow extends JFrame {
 	
 	public GameWindow(IController g) {
 		gameController = g;
-		initBoardPanel();
-		initResize();
-		initMouse();
 		initUI();
 	}
-	
-	private void initBoardPanel() {
-		//Create panel where board will go
-		boardPanel = new GameBoardPanel();
-	}
-	
-	private void initResize() {
-		this.setMinimumSize(new Dimension(300, 300));
-		this.setResizable(true);
-	}
-	
-	private void initMouse() {
-		//This line is just for fun.
-		//Your mouse indicates it is busy.
-		//But it is not of course.
-		this.setCursor(new Cursor(3));
-		//Add Mouse Listener
-		MouseAction mAction = new MouseAction();
-		boardPanel.addMouseListener(mAction);
-		boardPanel.addMouseMotionListener(mAction);
-	}
-	
+
 	private void initUI() {
 		this.col = -1;
 		
-		//Create panel where game options will go
-		JPanel optionsPanel = new JPanel();
-		GridLayout gl = new GridLayout(2,4,0,0);
-		optionsPanel.setLayout(gl);
-		
-		//quit button
-		JButton quitButton = new JButton("Quit");
-		quitButton.setSize(50, 25);
-		quitButton.addActionListener(new ButtonAction());
-		//restart button
-		JButton restartButton = new JButton("Restart");
-		restartButton.addActionListener(new ButtonAction());
-		//restart with AI button
-		JButton restartAIButton = new JButton("EnableAI");
-		restartAIButton.addActionListener(new ButtonAction());
-		//undo button
-		JButton undoButton = new JButton("Undo");
-		undoButton.addActionListener(new ButtonAction());
-		//redo button
-		JButton redoButton = new JButton("Redo");
-		redoButton.addActionListener(new ButtonAction());
-		//Getscore button
-		JButton scoreButton = new JButton("Score");
-		scoreButton.addActionListener(new ButtonAction());
-		//Request AI move button
-		JButton AIMove = new JButton("AIMove");
-		AIMove.addActionListener(new ButtonAction());
-		
-		optionsPanel.add(quitButton);
-		optionsPanel.add(restartButton);
-		optionsPanel.add(restartAIButton);
-		optionsPanel.add(AIMove);
-		optionsPanel.add(undoButton);
-		optionsPanel.add(redoButton);
-		optionsPanel.add(scoreButton);
-		
-		//JLable for show info
+		/*JLabel for show info
 		JPanel labelPanel = new JPanel();
 		label = new JLabel("info");
-		labelPanel.add(label);
+		labelPanel.add(label);*/
 		
-		//Add panels
-		Container pane = getContentPane();
-		pane.setLayout(new BorderLayout());
-        add(boardPanel, BorderLayout.CENTER);
-        add(labelPanel, BorderLayout.NORTH);
-        add(optionsPanel, BorderLayout.SOUTH);
-        
+		//Set up layout and components
+		initLayout();
+		
+		//Set up mouse
+		MouseAction action = new MouseAction();
+		boardPanel.addMouseListener(action);
+		boardPanel.addMouseMotionListener(action);
+		
         //Set up window
-		setTitle("First window");
-
-		setSize(625, 625);
-		pane.setBackground(Color.GRAY);
+		setTitle("Connect Four");
+		setMinimumSize(new Dimension(578, 500));
+		pack();
+		setSize(578,500);
+		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	private void initLayout() {
+		Container pane = getContentPane();
+		pane.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		//c.weightx = 0.5;
+		
+		//Player 1 info panel
+		p1Info = new JPanel();
+		p1Info.setBackground(Color.GREEN);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridheight = 2;
+		c.ipadx = 40;
+		add(p1Info, c);
+		
+		//The panel above the board for displaying the piece when hovering over the column
+		aboveBoardPanel = new JPanel();
+		aboveBoardPanel.setBackground(Color.MAGENTA);
+		c.gridx = 1;
+		c.gridheight = 1;
+		c.gridwidth = 4;
+		//c.ipady = 20;
+		c.ipadx = 0;
+		add(aboveBoardPanel, c);
+		
+		//Player 2 info panel
+		p2Info = new JPanel();
+		p2Info.setBackground(Color.CYAN);
+		c.gridx = 5;
+		c.gridy = 0;
+		c.gridheight = 2;
+		c.ipadx = 40;
+		add(p2Info, c);
+		
+		//The board panel
+		boardPanel = new GameBoardPanel();
+		c.gridx = 1;
+		c.gridy = 1;
+		c.ipadx = 0;
+		c.gridheight = 1;
+		c.gridwidth = 4;
+		add(boardPanel, c);
+		
+		//Quit button
+		JButton quitButton = new JButton("Quit");
+		quitButton.addActionListener(new ButtonAction());
+		c.gridx = 1;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.ipady = 0;
+		c.ipadx = 0;
+		add(quitButton, c);
+		
+		//Restart button
+		JButton restartButton = new JButton("Restart");
+		restartButton.addActionListener(new ButtonAction());
+		c.gridx = 2;
+		add(restartButton, c);
+		
+		//AI move button
+		JButton AIMove = new JButton("AIMove");
+		AIMove.addActionListener(new ButtonAction());
+		c.gridx = 3;
+		add(AIMove, c);
+		
+		//Enable AI button
+		JButton restartAIButton = new JButton("EnableAI");
+		restartAIButton.addActionListener(new ButtonAction());
+		c.gridx = 4;
+		add(restartAIButton, c);
+		
+		//Undo button
+		JButton undoButton = new JButton("Undo");
+		undoButton.addActionListener(new ButtonAction());
+		c.gridx = 2;
+		c.gridy = 3;
+		add(undoButton, c);
+		
+		//Re-do button
+		JButton redoButton = new JButton("Redo");
+		redoButton.addActionListener(new ButtonAction());
+		c.gridx = 3;
+		add(redoButton, c);
+		
+		//Label (temporary)
+		label = new JLabel();
+		c.gridx = 4;
+		add(label, c);
 	}
 	
 	private int translateMouse(int x, int boardWidth) {
@@ -138,7 +168,6 @@ public class GameWindow extends JFrame {
 	
 	public void updateUI() {
 		boardPanel.update(gameController.getBoard());
-		boardPanel.updateUI();
 	}
 	
 	public static void main(String[] args) {
