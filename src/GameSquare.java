@@ -1,10 +1,10 @@
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.GradientPaint;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class GameSquare extends JPanel {
 	
-	private final int CIRCLE_DIAMETER = 50;
 	private Ellipse2D.Double circle;
 	private Color currentColor;
 	private Color highlighter;
 	private final int ALPHA = 120;
+	
 	
 	/**
 	 * Create a square unit with Highlighted transparent.
@@ -27,7 +27,6 @@ public class GameSquare extends JPanel {
 		currentColor = c;
 		highlighter =  new Color(h.getRed(), h.getGreen(), h.getBlue(),ALPHA);
 		setBackground(Color.BLUE);
-		
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	
@@ -43,17 +42,17 @@ public class GameSquare extends JPanel {
 	}
 	
 	private void doDrawing(Graphics g) {
-		
 		Graphics2D g2d = (Graphics2D) g;
-		
-		float x = getWidth()/2 - CIRCLE_DIAMETER/2;
-		float y = getHeight()/2 - CIRCLE_DIAMETER/2;
+		float squareCircleRatio = 0.75f;
+		int width = getWidth();
+		float x = width/2 - width*squareCircleRatio/2;
+		float y = getHeight()/2 - width*squareCircleRatio/2;
 		
 		//Set anti-aliasing and draw circle
 		g2d.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
-		circle = new Ellipse2D.Double(x,y,CIRCLE_DIAMETER,CIRCLE_DIAMETER);
+		circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
 		g2d.setColor(currentColor);
 		g2d.fill(circle);
 		if (highlighter != null) {
