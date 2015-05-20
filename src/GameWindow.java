@@ -42,11 +42,6 @@ public class GameWindow extends JFrame {
 	private void initUI() {
 		this.col = -1;
 		
-		/*JLabel for show info
-		JPanel labelPanel = new JPanel();
-		label = new JLabel("info");
-		labelPanel.add(label);*/
-		
 		//Set up layout and components
 		initLayout();
 		
@@ -59,7 +54,7 @@ public class GameWindow extends JFrame {
 		setTitle("Connect Four");
 		setMinimumSize(new Dimension(578, 500));
 		pack();
-		setSize(578,500);
+		setSize(660,500);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -70,10 +65,12 @@ public class GameWindow extends JFrame {
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
+		boardPanel = new GameBoardPanel();
 		//c.weightx = 0.5;
 		
 		//Player 1 info panel
-		p1Info = new JPanel();
+		Profile p1Profile = new Profile("Player 1");
+		p1Info = new ProfilePanel(p1Profile);
 		p1Info.setBackground(Color.GREEN);
 		c.gridx = 0;
 		c.gridy = 0;
@@ -87,12 +84,14 @@ public class GameWindow extends JFrame {
 		c.gridx = 1;
 		c.gridheight = 1;
 		c.gridwidth = 4;
-		//c.ipady = 20;
+		
+		c.ipady = boardPanel.getWidth()/7;
 		c.ipadx = 0;
 		add(aboveBoardPanel, c);
 		
 		//Player 2 info panel
-		p2Info = new JPanel();
+		Profile p2Profile = new Profile("Player 2");
+		p2Info = new ProfilePanel(p2Profile);
 		p2Info.setBackground(Color.CYAN);
 		c.gridx = 5;
 		c.gridy = 0;
@@ -101,7 +100,6 @@ public class GameWindow extends JFrame {
 		add(p2Info, c);
 		
 		//The board panel
-		boardPanel = new GameBoardPanel();
 		c.gridx = 1;
 		c.gridy = 1;
 		c.ipadx = 0;
@@ -116,7 +114,6 @@ public class GameWindow extends JFrame {
 		c.gridy = 2;
 		c.gridwidth = 1;
 		c.ipady = 0;
-		c.ipadx = 0;
 		add(quitButton, c);
 		
 		//Restart button
