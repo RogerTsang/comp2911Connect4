@@ -15,5 +15,4 @@ public interface IController {
 	public Player[][] getBoard();
 	public Stack<Integer> getWinningDiscs();
 	public int getPlayerScore(Player p);
-	public String getInfo();
 }

@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -22,9 +21,6 @@ public class GameWindow extends JFrame {
 
 	//Pass controller to GUI
 	private IController gameController;
-	
-	//label for print information
-	private JLabel label;
 	
 	//current column mouse point at
 	private int col;
@@ -152,10 +148,6 @@ public class GameWindow extends JFrame {
 		c.gridx = 1;
 		add(optionsButton, c);
 		
-		//Label (temporary)
-		label = new JLabel();
-		c.gridx = 4;
-		add(label, c);
 	}
 	
 	private int translateMouse(int x, int boardWidth) {
@@ -216,10 +208,6 @@ public class GameWindow extends JFrame {
 			//So I put the following two lines here
 			boardPanel.update(gameController.getBoard());
 			boardPanel.updateUI();
-			
-			label.removeAll();
-			label.setText(gameController.getInfo());
-			label.updateUI();
 		}
 		
 	}
@@ -232,10 +220,6 @@ public class GameWindow extends JFrame {
 				int nextMove = -1;
 				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
 				if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
-				updateUI();
-				label.removeAll();
-				label.setText(gameController.getInfo());
-				label.updateUI();
 			}
 			
 			if (!gameController.isFinish()) {

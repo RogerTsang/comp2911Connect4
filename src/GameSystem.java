@@ -14,7 +14,6 @@ public class GameSystem implements IController, IGame {
 	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
-	private String info;
 	
 	public GameSystem() {
 		this.state = GameState.WAIT_FOR_START;
@@ -29,7 +28,6 @@ public class GameSystem implements IController, IGame {
 		this.RedoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
-		this.info = null;
 	}
 	
 	/**
@@ -50,7 +48,6 @@ public class GameSystem implements IController, IGame {
 			this.turnNumber = 1;
 			this.UndoStack.clear();
 			this.RedoStack.clear();
-			this.info = "> A new game has been started";
 			return true;
 		}
 	}
@@ -61,7 +58,6 @@ public class GameSystem implements IController, IGame {
 	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
 			this.state = GameState.PLAYABLE;
-			this.info = "> Use mouse to insert disc,enjoy";
 			return true;
 		} else {
 			return false;
@@ -87,7 +83,6 @@ public class GameSystem implements IController, IGame {
 	 */
 	public boolean move(int column) {
 	    if (this.state != GameState.PLAYABLE) {
-            this.info = "> The game has end";
             return false;
         }
 	    
@@ -98,14 +93,11 @@ public class GameSystem implements IController, IGame {
 			switch(this.winner){
 				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH; 
-						 this.info = "> Player 1 has won";
 						 break;
 				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH; 
-						 this.info = "> Player 2 has won";
 						 break;
 				case DRAW: this.state = GameState.FINISH; 
-						 this.info = "> Game draw";
 						 break;
 				default: switchPlayer(); break;
 			}
@@ -146,8 +138,6 @@ public class GameSystem implements IController, IGame {
 				return true;
 			}
 		}
-		this.info = "> Cannot Undo";
-		System.out.println("> Cannot Undo");
 		return false;
 	}
 	
@@ -186,14 +176,6 @@ public class GameSystem implements IController, IGame {
 	}
 	
 	/**
-	 * Get info
-	 * @return the info
-	 */
-	public String getInfo(){
-		return this.info;
-	}
-	
-	/**
 	 * Get who the winner is
 	 * @return
 	 */
@@ -205,7 +187,6 @@ public class GameSystem implements IController, IGame {
 	 * Get P1 Score
 	 */
 	public int getPlayerScore(Player p) {
-		this.info = String.format("Score: %d - %d", this.P1Score, this.P2Score);
 		switch(p) {
 			case P1: return this.P1Score;
 			case P2: return this.P2Score;
@@ -227,10 +208,8 @@ public class GameSystem implements IController, IGame {
 	private void switchPlayer() {
 		if (this.currentPlayer == Player.P1) {
 			this.currentPlayer = Player.P2;
-			this.info = "Player 2";
 		} else if (this.currentPlayer == Player.P2) {
 			this.currentPlayer = Player.P1;
-			this.info = "Player 1";
 		}
 	}	
 
