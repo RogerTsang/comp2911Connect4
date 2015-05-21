@@ -12,6 +12,7 @@ public class GameSystem implements IController, IGame {
 	private int P2Score;
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
+	private Stack<Integer> winningDiscs;
 	private Iai ai;
 	private String info;
 	
@@ -26,6 +27,7 @@ public class GameSystem implements IController, IGame {
 		this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
 		this.RedoStack = new Stack<Integer>();
+		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
 		this.info = null;
 	}
@@ -299,6 +301,7 @@ public class GameSystem implements IController, IGame {
             if (boardState[column][row] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
+                	recordWinningDiscs(column, rowOfLastDisc, 0);
                     return p;
                 }
             } else {
@@ -321,6 +324,7 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][rowOfLastDisc] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
+                	recordWinningDiscs(columnCheckStart, rowOfLastDisc, 1);
                     return p;
                 }
             } else {
@@ -354,6 +358,7 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][row] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
+                	recordWinningDiscs(columnCheckStart, rowCheckStart, 2);
                     return p;
                 }
                 col++;
@@ -389,6 +394,7 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][row] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
+                	recordWinningDiscs(columnCheckStart, rowCheckStart, 3);
                     return p;
                 }
                 col++;
@@ -406,6 +412,28 @@ public class GameSystem implements IController, IGame {
             if (col == board.getColumnSize()-1) return Player.DRAW;
         }
         return Player.NOONE;
+    }
+    
+    /**
+     * This is a method to recordWinningDiscs
+     * @param col
+     * @param row
+     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right
+     */
+    private void recordWinningDiscs(int col, int row, int mode) {
+    	this.winningDiscs.clear();
+    	for (int i = 0; i < this.connectToWin; i++) {
+    		switch(mode) {
+	        	case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
+	        	case 1: this.winningDiscs.push(col++); this.winningDiscs.push(row); break;
+	        	case 2: this.winningDiscs.push(col++); this.winningDiscs.push(row++); break;
+	        	case 3: this.winningDiscs.push(col++); this.winningDiscs.push(row--); break;
+    		}
+    	}
+    }
+    
+    public Stack<Integer> getWinningDiscs() {
+    	return this.winningDiscs;
     }
     
     @Override
