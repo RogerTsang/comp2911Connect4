@@ -52,9 +52,9 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(578, 500));
+		setMinimumSize(new Dimension(870, 500));
 		pack();
-		setSize(660,500);
+		setSize(870,500);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -71,7 +71,6 @@ public class GameWindow extends JFrame {
 		//Player 1 info panel
 		Profile p1Profile = new Profile("Player 1");
 		p1Info = new ProfilePanel(p1Profile);
-		p1Info.setBackground(Color.GREEN);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 2;
@@ -80,7 +79,6 @@ public class GameWindow extends JFrame {
 		
 		//The panel above the board for displaying the piece when hovering over the column
 		aboveBoardPanel = new JPanel();
-		aboveBoardPanel.setBackground(Color.MAGENTA);
 		c.gridx = 1;
 		c.gridheight = 1;
 		c.gridwidth = 4;
@@ -92,7 +90,6 @@ public class GameWindow extends JFrame {
 		//Player 2 info panel
 		Profile p2Profile = new Profile("Player 2");
 		p2Info = new ProfilePanel(p2Profile);
-		p2Info.setBackground(Color.CYAN);
 		c.gridx = 5;
 		c.gridy = 0;
 		c.gridheight = 2;
@@ -107,6 +104,7 @@ public class GameWindow extends JFrame {
 		c.gridwidth = 4;
 		add(boardPanel, c);
 		
+		c.weightx = 1;
 		//Quit button
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ButtonAction());
