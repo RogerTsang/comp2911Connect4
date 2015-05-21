@@ -42,6 +42,11 @@ public class GameWindow extends JFrame {
 	private void initUI() {
 		this.col = -1;
 		
+		/*JLabel for show info
+		JPanel labelPanel = new JPanel();
+		label = new JLabel("info");
+		labelPanel.add(label);*/
+		
 		//Set up layout and components
 		initLayout();
 		
@@ -52,9 +57,9 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(870, 500));
+		setMinimumSize(new Dimension(578, 500));
 		pack();
-		setSize(870,500);
+		setSize(578,500);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -65,12 +70,11 @@ public class GameWindow extends JFrame {
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		boardPanel = new GameBoardPanel();
 		//c.weightx = 0.5;
 		
 		//Player 1 info panel
-		Profile p1Profile = new Profile("Player 1");
-		p1Info = new ProfilePanel(p1Profile);
+		p1Info = new JPanel();
+		p1Info.setBackground(Color.GREEN);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 2;
@@ -79,17 +83,17 @@ public class GameWindow extends JFrame {
 		
 		//The panel above the board for displaying the piece when hovering over the column
 		aboveBoardPanel = new JPanel();
+		aboveBoardPanel.setBackground(Color.MAGENTA);
 		c.gridx = 1;
 		c.gridheight = 1;
 		c.gridwidth = 4;
-		
-		c.ipady = boardPanel.getWidth()/7;
+		//c.ipady = 20;
 		c.ipadx = 0;
 		add(aboveBoardPanel, c);
 		
 		//Player 2 info panel
-		Profile p2Profile = new Profile("Player 2");
-		p2Info = new ProfilePanel(p2Profile);
+		p2Info = new JPanel();
+		p2Info.setBackground(Color.CYAN);
 		c.gridx = 5;
 		c.gridy = 0;
 		c.gridheight = 2;
@@ -97,6 +101,7 @@ public class GameWindow extends JFrame {
 		add(p2Info, c);
 		
 		//The board panel
+		boardPanel = new GameBoardPanel();
 		c.gridx = 1;
 		c.gridy = 1;
 		c.ipadx = 0;
@@ -104,7 +109,6 @@ public class GameWindow extends JFrame {
 		c.gridwidth = 4;
 		add(boardPanel, c);
 		
-		c.weightx = 1;
 		//Quit button
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ButtonAction());
@@ -112,6 +116,7 @@ public class GameWindow extends JFrame {
 		c.gridy = 2;
 		c.gridwidth = 1;
 		c.ipady = 0;
+		c.ipadx = 0;
 		add(quitButton, c);
 		
 		//Restart button
@@ -144,13 +149,6 @@ public class GameWindow extends JFrame {
 		redoButton.addActionListener(new ButtonAction());
 		c.gridx = 3;
 		add(redoButton, c);
-		
-		
-		//Options button
-		JButton optionsButton = new JButton("Options");
-		optionsButton.addActionListener(new ButtonAction());
-		c.gridx = 1;
-		add(optionsButton, c);
 		
 		//Label (temporary)
 		label = new JLabel();
@@ -197,7 +195,7 @@ public class GameWindow extends JFrame {
 						  gameController.startGame();
 						  break;
 			case "EnableAI":gameController.newGame();
-			  				   gameController.attachAI(new SmartAI(Player.P2));
+			  				   gameController.attachAI(new EasyAI(Player.P2));
 			  				   gameController.startGame();
 			  				   break;
 			case "AIMove": gameController.getAITurn();
@@ -207,8 +205,6 @@ public class GameWindow extends JFrame {
 			case "Redo":gameController.redo();
 						break;
 			case "Score":gameController.getPlayerScore(Player.P1);
-						break;
-			case "Options"://launch options menu
 						break;
 			default:break;
 			}
@@ -225,46 +221,24 @@ public class GameWindow extends JFrame {
 	}
 	
 	public class MouseAction extends MouseAdapter {
-		private boolean mouseEnable = true;
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if (mouseEnable == true) {
-				int nextMove = -1;
-				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
-				if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
-				updateUI();
-				label.removeAll();
-				label.setText(gameController.getInfo());
-				label.updateUI();
-			}
-			
-			if (!gameController.isFinish()) {
-				mouseEnable = true;
-			} else {
-				endGameUI();
-				mouseEnable = false;
-			}
+			int nextMove = -1;
+			if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
+			if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
+			updateUI();
+			label.removeAll();
+			label.setText(gameController.getInfo());
+			label.updateUI();
 		}
 
 		@Override
-		public void mouseMoved(MouseEvent e) {
-			if (mouseEnable == true) {
-				int column = translateMouse(e.getX(), boardPanel.getWidth());
-				if(column == col) return;
-				else{
-					col = column;
-					boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
-					boardPanel.updateUI();
-				}
-			}
-		}
-		
-		/**
-		 * This method is only called once when the game is finished
-		 */
-		public void endGameUI() {
-			if (mouseEnable == true) {
-				boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
+		public void mouseMoved(MouseEvent e){
+			int column = translateMouse(e.getX(), boardPanel.getWidth());
+			if(column == col) return;
+			else{
+				col = column;
+				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
 				boardPanel.updateUI();
 			}
 		}

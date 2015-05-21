@@ -12,7 +12,6 @@ public class GameSystem implements IController, IGame {
 	private int P2Score;
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
-	private Stack<Integer> winningDiscs;
 	private Iai ai;
 	private String info;
 	
@@ -27,7 +26,6 @@ public class GameSystem implements IController, IGame {
 		this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
 		this.RedoStack = new Stack<Integer>();
-		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
 		this.info = null;
 	}
@@ -115,6 +113,10 @@ public class GameSystem implements IController, IGame {
 			return false;
 		}
 	}
+	
+	
+	
+	
 	
 	/**
 	 * Undo the last move. This will cause a player switch
@@ -279,8 +281,6 @@ public class GameSystem implements IController, IGame {
      * otherwise still playable. It is based on the last move only instead of scanning the whole board.
      * @return winner of the game or nobody if noone has won yet or draw if drawn
      */
-    
-    //Does this check if a particular player wins or if anyone wins? I feel it should just check if anyone wins and return the winner (hence making input Player redundant).
     public Player checkWin(Board b, int column, Player p) {
         int numInARow = 0;
         Player[][] boardState = b.getState();
@@ -299,7 +299,6 @@ public class GameSystem implements IController, IGame {
             if (boardState[column][row] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
-                	recordWinningDiscs(column, rowOfLastDisc, 0);
                     return p;
                 }
             } else {
@@ -322,7 +321,6 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][rowOfLastDisc] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
-                	recordWinningDiscs(columnCheckStart, rowOfLastDisc, 1);
                     return p;
                 }
             } else {
@@ -356,7 +354,6 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][row] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
-                	recordWinningDiscs(columnCheckStart, rowCheckStart, 2);
                     return p;
                 }
                 col++;
@@ -392,7 +389,6 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][row] == p) {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
-                	recordWinningDiscs(columnCheckStart, rowCheckStart, 3);
                     return p;
                 }
                 col++;
@@ -412,39 +408,10 @@ public class GameSystem implements IController, IGame {
         return Player.NOONE;
     }
     
-    /**
-     * This is a method to recordWinningDiscs
-     * @param col
-     * @param row
-     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right
-     */
-    private void recordWinningDiscs(int col, int row, int mode) {
-    	this.winningDiscs.clear();
-    	for (int i = 0; i < this.connectToWin; i++) {
-    		switch(mode) {
-	        	case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
-	        	case 1: this.winningDiscs.push(col++); this.winningDiscs.push(row); break;
-	        	case 2: this.winningDiscs.push(col++); this.winningDiscs.push(row++); break;
-	        	case 3: this.winningDiscs.push(col++); this.winningDiscs.push(row--); break;
-    		}
-    	}
-    }
-    
-    public Stack<Integer> getWinningDiscs() {
-    	return this.winningDiscs;
-    }
-    
     @Override
     public boolean isLegalMove(int column) {
         if (column < 0 || column >= this.board.getColumnSize()) return false;
         if (this.board.getState()[column][0] != Player.NOONE) return false;
         return true;
     }
-
-	@Override
-	public boolean isLegalMove(int column, Board b) {
-		if (column < 0 || column >= b.getColumnSize()) return false;
-        if (b.getState()[column][0] != Player.NOONE) return false;
-        return true;
-	}
 }

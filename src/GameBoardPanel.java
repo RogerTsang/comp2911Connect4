@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.Stack;
 
 import javax.swing.JPanel;
 
@@ -68,6 +67,8 @@ public class GameBoardPanel extends JPanel {
 					switch(board[column][row]) {
 						case P1: square = new GameSquare(Color.RED, currentPlayer); break;
 						case P2: square = new GameSquare(Color.GREEN, currentPlayer); break;
+						case P1WIN: square = new GameSquare(Color.ORANGE, currentPlayer); break;
+						case P2WIN: square = new GameSquare(Color.CYAN, currentPlayer); break;
 						case NOONE: square = new GameSquare(Color.WHITE, currentPlayer); break;
 						default: square = new GameSquare(Color.BLACK, currentPlayer); break;
 					}
@@ -75,39 +76,11 @@ public class GameBoardPanel extends JPanel {
 					switch(board[column][row]) {
 						case P1: square = new GameSquare(Color.RED); break;
 						case P2: square = new GameSquare(Color.GREEN); break;
+						case P1WIN: square = new GameSquare(Color.ORANGE); break;
+						case P2WIN: square = new GameSquare(Color.CYAN); break;
 						case NOONE: square = new GameSquare(Color.WHITE); break;
 						default: square = new GameSquare(Color.BLACK); break;
 					}
-				}
-				add(square);
-			}
-		}
-	}
-	
-	public void endGame(Player[][] board, Stack<Integer> winningDiscs) {
-		this.removeAll();
-		boolean[][] winningState = new boolean[7][6];
-		
-		for (int row = 0; row < 6; row++) {
-			for (int col = 0; col < 7; col++) {
-				winningState[col][row] = false;
-			}
-		}
-		
-		for (int i = 0; i < 4; i++) {
-			int winRow = winningDiscs.pop();
-			int winCol = winningDiscs.pop();
-			winningState[winCol][winRow] = true;
-		}
-		
-		for (int row = 0; row < 6; row++) {
-			for (int column = 0; column < 7; column++) {
-				GameSquare square;
-				switch(board[column][row]) {
-					case P1: square = new GameSquare(Color.RED, winningState[column][row]); break;
-					case P2: square = new GameSquare(Color.GREEN, winningState[column][row]); break;
-					case NOONE: square = new GameSquare(Color.WHITE, winningState[column][row]); break;
-					default: square = new GameSquare(Color.BLACK, winningState[column][row]); break;
 				}
 				add(square);
 			}
