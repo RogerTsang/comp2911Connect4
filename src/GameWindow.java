@@ -150,16 +150,6 @@ public class GameWindow extends JFrame {
 		
 	}
 	
-	private int translateMouse(int x, int boardWidth) {
-		int buffer = 3;
-		if (x%(boardWidth/7) < buffer || (x+buffer)%(boardWidth/7) < buffer) return - 1;
-		else {
-			int nextMove = (int) Math.floor(x/(boardWidth/7));
-			return nextMove;
-		}
-		
-	}
-	
 	public void updateUI() {
 		boardPanel.update(gameController.getBoard());
 	}
@@ -187,27 +177,37 @@ public class GameWindow extends JFrame {
 			case "Restart":gameController.newGame();
 						  gameController.detachAI();
 						  gameController.startGame();
+						  boardPanel.update(gameController.getBoard());
+						  boardPanel.updateUI();
 						  break;
 			case "EnableAI":gameController.newGame();
 			  				   gameController.attachAI(new SmartAI(Player.P2));
 			  				   gameController.startGame();
+			  				   boardPanel.update(gameController.getBoard());
+							   boardPanel.updateUI();
 			  				   break;
 			case "AIMove": gameController.getAITurn();
+						   if (gameController.isFinish()) {
+							   boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
+						   } else {
+							   boardPanel.update(gameController.getBoard());
+						   }
+						   boardPanel.updateUI();
 						   break;
 			case "Undo":gameController.undo();
+						boardPanel.update(gameController.getBoard());
+						boardPanel.updateUI();
 						break;
 			case "Redo":gameController.redo();
+						boardPanel.update(gameController.getBoard());
+						boardPanel.updateUI();
 						break;
 			case "Score":gameController.getPlayerScore(Player.P1);
 						break;
 			case "Options"://launch options menu
 						break;
 			default:break;
-			}
-			//We need to update GUI when action is done
-			//So I put the following two lines here
-			boardPanel.update(gameController.getBoard());
-			boardPanel.updateUI();
+			}	
 		}
 		
 	}
@@ -221,7 +221,7 @@ public class GameWindow extends JFrame {
 				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
 				if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
 			}
-			
+			mouseMoved(e);
 			if (!gameController.isFinish()) {
 				mouseEnable = true;
 			} else {
@@ -234,12 +234,9 @@ public class GameWindow extends JFrame {
 		public void mouseMoved(MouseEvent e) {
 			if (mouseEnable == true) {
 				int column = translateMouse(e.getX(), boardPanel.getWidth());
-				if(column == col) return;
-				else{
-					col = column;
-					boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
-					boardPanel.updateUI();
-				}
+				col = column;
+				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
+				boardPanel.updateUI();
 			}
 		}
 		
@@ -251,6 +248,16 @@ public class GameWindow extends JFrame {
 				boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
 				boardPanel.updateUI();
 			}
+		}
+		
+		private int translateMouse(int x, int boardWidth) {
+			int buffer = 3;
+			if (x%(boardWidth/7) < buffer || (x+buffer)%(boardWidth/7) < buffer) return - 1;
+			else {
+				int nextMove = (int) Math.floor(x/(boardWidth/7));
+				return nextMove;
+			}
+			
 		}
 	}
 		

@@ -13,10 +13,8 @@ import javax.swing.JPanel;
 public class GameSquare extends JPanel {
 	
 	private Ellipse2D.Double circle;
-	private Ellipse2D.Double circleOutline;
 	private Color currentColor;
 	private Color highlighter;
-	private boolean outline;
 	private final int ALPHA = 120;
 	
 	/**
@@ -27,8 +25,11 @@ public class GameSquare extends JPanel {
 	public GameSquare(Color c, boolean ol) {
 		currentColor = c;
 		highlighter = null;
-		outline = ol;
-		setBackground(Color.BLUE);
+		if (ol) {
+			setBackground(Color.YELLOW);
+		} else {
+			setBackground(Color.BLUE);
+		}
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	
@@ -40,7 +41,6 @@ public class GameSquare extends JPanel {
 	public GameSquare(Color c, Color h) {
 		currentColor = c;
 		highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
-		outline = false;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
@@ -52,7 +52,6 @@ public class GameSquare extends JPanel {
 	public GameSquare(Color c) {
 		currentColor = c;
 		highlighter = null;
-		outline = false;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
@@ -68,12 +67,6 @@ public class GameSquare extends JPanel {
 		g2d.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		if (outline == true) {
-			circleOutline = new Ellipse2D.Double(x,y,width*squareCircleRatio*1.1,width*squareCircleRatio*1.1);
-			g2d.setColor(Color.YELLOW);
-			g2d.fill(circleOutline);
-		}
 		
 		circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
 		g2d.setColor(currentColor);

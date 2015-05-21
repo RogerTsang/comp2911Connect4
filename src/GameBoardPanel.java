@@ -35,8 +35,6 @@ public class GameBoardPanel extends JPanel {
 				switch(board[col][row]) {
 					case P1: square = new GameSquare(Color.RED); break;
 					case P2: square = new GameSquare(Color.GREEN); break;
-					case P1WIN: square = new GameSquare(Color.ORANGE); break;
-					case P2WIN: square = new GameSquare(Color.CYAN); break;
 					case NOONE: square = new GameSquare(Color.WHITE); break;
 					default: square = new GameSquare(Color.BLACK); break;
 				}
