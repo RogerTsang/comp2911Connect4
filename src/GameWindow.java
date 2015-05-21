@@ -52,9 +52,9 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(578, 500));
+		setMinimumSize(new Dimension(640, 480));
 		pack();
-		setSize(660,500);
+		setSize(640,480);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -147,6 +147,12 @@ public class GameWindow extends JFrame {
 		c.gridx = 3;
 		add(redoButton, c);
 		
+		//Options button
+		JButton optionsButton = new JButton("Options");
+		optionsButton.addActionListener(new ButtonAction());
+		c.gridx = 4;
+		add(optionsButton, c);
+	
 		//Label (temporary)
 		label = new JLabel();
 		c.gridx = 4;
@@ -202,6 +208,8 @@ public class GameWindow extends JFrame {
 			case "Redo":gameController.redo();
 						break;
 			case "Score":gameController.getPlayerScore(Player.P1);
+						break;
+			case "Options"://launch options menu
 						break;
 			default:break;
 			}
