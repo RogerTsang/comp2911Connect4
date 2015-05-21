@@ -5,11 +5,7 @@ public class SmartAI implements Iai {
 	private Player OurID;
 	private Player theirID;
 	
-	public SmartAI(Player[][] players){
-		this.control = players;
-	}
-	
-	private void setID(Player p){
+	public SmartAI(Player p){
 		this.OurID = p;
 		if(p == Player.P1){
 			this.theirID = Player.P2;
@@ -19,16 +15,26 @@ public class SmartAI implements Iai {
 		return;
 	}
 	
-	public int makeMove() {
-		Board testBoard = new Board(control);
-		this.setID(testBoard.getCurrentPlayer());
+	private void setID(Player p){
+		this.OurID = p;
+		if(p == Player.P1){
+			this.theirID = Player.P2;
+		} else {
+			this.theirID = Player.P1;
+		}
+		return;
+	}
+	
+	public int makeMove(IGame g, Board b) {
+		Board testBoard = new Board(b);
+		this.setID(g.getCurrentPlayer());
 		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();		//These are moves we want the AI to make
 		ArrayList<Integer> allPossibleMoves = new ArrayList<Integer>();		//This is all legal moves
-		ArrayList<Integer> toRemove = new ArrayList<Integer>();
+		ArrayList<Integer> toRemove = new ArrayList<Integer>();				//This array allows us to avoid concurrent modification errors.
 		
 		//Adding all legal moves. We remove moves later on if they are poor.
 		for(int i=0;i<=6;i++){
-			if(testBoard.countEmptySlot(i) != 0){
+			if(g.isLegalMove(i)){
 				possibleMoves.add(i);
 				allPossibleMoves.add(i);
 			}
@@ -36,21 +42,20 @@ public class SmartAI implements Iai {
 		
 		//if we immediately win, we make that move.
 		for(int move:possibleMoves){
-			testBoard.insert(this.OurID,move);
-			if(testBoard.checkWin(move) == this.OurID){
-				//System.out.println("We immediately Won");
+			testBoard.insert(this.OurID, move);
+			if(g.checkWin(testBoard, move, this.OurID) == this.OurID){
 				return move;
 			}
 			testBoard.remove(move);
 		}
-		
+
 		//Does your move immediately allow the other player to win? If so, don't make it.
 		for(int move:possibleMoves){
-			testBoard.insert(testBoard.getCurrentPlayer(),move);
+			testBoard.insert(this.OurID,move);
 			for(int m:allPossibleMoves){
-				if(testBoard.countEmptySlot(m) != 0){				
-					testBoard.insert(this.theirID,m);
-					if(testBoard.checkWin(m) == this.theirID){
+				if(g.isLegalMove(m, testBoard)){
+					testBoard.insert(this.theirID, m);
+					if(g.checkWin(testBoard, m, this.theirID) == this.theirID){
 						toRemove.add(move);
 					}
 					testBoard.remove(m);
@@ -58,7 +63,7 @@ public class SmartAI implements Iai {
 			}
 			testBoard.remove(move);
 		}
-		
+
 		if(toRemove.size() != 0){
 			for(int m:toRemove){
 				if(possibleMoves.indexOf(m) != -1){
@@ -67,32 +72,23 @@ public class SmartAI implements Iai {
 			}
 		}
 		toRemove.clear();
-		
+
 		//Will the other player win immediately? Block that move.
-		
 		for(int move2:allPossibleMoves){
-			if(testBoard.countEmptySlot(move2) != 0){				
-				testBoard.insert(testBoard.getCurrentPlayer(),move2);
-				if(testBoard.checkWin(move2) == Player.P1){
-					//System.out.println("We blocked an immediate win");
-					return move2;
-				}
-				testBoard.remove(move2);
+			testBoard.insert(this.theirID, move2);
+			if(g.checkWin(testBoard, move2, this.theirID) == this.theirID){
+				return move2;
 			}
+			testBoard.remove(move2);
 		}
 		
-		/*
-		for(int m:possibleMoves){
-			System.out.println(m);
-		}
-		*/
 		//Will the other player win with two moves? We need to move to interrupt i.e.(The classic example of two on the bottom with a space either side).
 		for(int move:allPossibleMoves){
 			testBoard.insert(this.theirID,move);
 			for(int move2:allPossibleMoves){
-				if(testBoard.countEmptySlot(move2) != 0){				
-					testBoard.insert(this.theirID,move2);
-					if(testBoard.checkWin(move2) == this.theirID){
+				if(g.isLegalMove(move2, testBoard)){
+					testBoard.insert(this.theirID, move2);
+					if(g.checkWin(testBoard,move2,this.theirID) == this.theirID){
 						return move2;
 					}
 					testBoard.remove(move2);
@@ -102,16 +98,33 @@ public class SmartAI implements Iai {
 		}
 		
 		//if we haven't made an automatic move by this point, we have to decide between the remaining possible moves.
-		int bestMove = 0;
+		int bestMove = -1;
 		if(possibleMoves.size()!=0){
-			//The possibleMoves list has [0, 1, 2, 3, 4, 5, 6]
-			//And the AI always make move 0 first.
-			bestMove = possibleMoves.get(0);
-			System.out.println(possibleMoves);
+			for(int i = (int) testBoard.getColumnSize()/2; i>=0; i--){
+				for(int m: possibleMoves){
+					if(m+i == testBoard.getColumnSize() || m+i == 2*i){
+						bestMove = m;
+						break;
+					}
+				}
+				if(bestMove != -1){
+					break;
+				}
+			}
 		}else{
-			bestMove = 0;
+			for(int i = (int) testBoard.getColumnSize()/2; i>=0; i--){
+				for(int m: allPossibleMoves){
+					if(m+i == testBoard.getColumnSize() || m+i == 2*i){
+						bestMove = m;
+						break;
+					}
+				}
+				if(bestMove != -1){
+					break;
+				}
+			}
 		}
-		
+
 		return bestMove;
 	}
 
@@ -119,14 +132,6 @@ public class SmartAI implements Iai {
 	/*private void evaluateBoardPosition(){
 		
 	}*/
-	
-	public void getBoard(Player[][] c) {
-		this.control = c;
-	}
-	
-	public void removeBoard() {
-		this.control = null;
-	}
 	
 	public String toString() {
 		return "I'm smart, I'm sorry :^)";

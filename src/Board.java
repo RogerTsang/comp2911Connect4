@@ -108,6 +108,24 @@ public class Board {
 		}
 	}
 	
+	@SuppressWarnings("incomplete-switch")
+	public void debug_printBoard() {
+		System.out.println("P1 = O         P2 = X");
+		System.out.println(" 0  1  2  3  4  5  6");
+		for (int r = 0; r < 6; r++) {
+			for (int c = 0; c < 7; c++) {
+				switch (this.state[c][r]) {
+					case NOONE: System.out.printf("[ ]"); break;
+					case P1: System.out.printf("[O]"); break;
+					case P2: System.out.printf("[X]"); break;
+					case DRAW: System.err.printf("!Unexpected Player"); break;
+				}
+			}
+			System.out.printf("\n");
+		}
+		System.out.println("<===================>");
+	}
+	
 	public Board clone() {
 	    return new Board(this);
 	}
