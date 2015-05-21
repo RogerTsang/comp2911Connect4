@@ -79,7 +79,6 @@ public class SmartAI implements Iai {
 		//Will the other player win immediately? Block that move.
 		for(int move2:allPossibleMoves){
 			testBoard.insert(this.theirID, move2);
-			testBoard.debug_printBoard();
 			System.out.println(g.checkWin(testBoard, move2, this.theirID));
 			if(g.checkWin(testBoard, move2, this.theirID) == this.theirID){
 				System.out.println("We blocked an immediate win");
