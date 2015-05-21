@@ -114,10 +114,6 @@ public class GameSystem implements IController, IGame {
 		}
 	}
 	
-	
-	
-	
-	
 	/**
 	 * Undo the last move. This will cause a player switch
 	 * @return True if the undo can be done
@@ -281,6 +277,8 @@ public class GameSystem implements IController, IGame {
      * otherwise still playable. It is based on the last move only instead of scanning the whole board.
      * @return winner of the game or nobody if noone has won yet or draw if drawn
      */
+    
+    //Does this check if a particular player wins or if anyone wins? I feel it should just check if anyone wins and return the winner (hence making input Player redundant).
     public Player checkWin(Board b, int column, Player p) {
         int numInARow = 0;
         Player[][] boardState = b.getState();
@@ -414,4 +412,11 @@ public class GameSystem implements IController, IGame {
         if (this.board.getState()[column][0] != Player.NOONE) return false;
         return true;
     }
+
+	@Override
+	public boolean isLegalMove(int column, Board b) {
+		if (column < 0 || column >= b.getColumnSize()) return false;
+        if (b.getState()[column][0] != Player.NOONE) return false;
+        return true;
+	}
 }

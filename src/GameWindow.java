@@ -192,7 +192,7 @@ public class GameWindow extends JFrame {
 						  gameController.startGame();
 						  break;
 			case "EnableAI":gameController.newGame();
-			  				   gameController.attachAI(new EasyAI(Player.P2));
+			  				   gameController.attachAI(new SmartAI(Player.P2));
 			  				   gameController.startGame();
 			  				   break;
 			case "AIMove": gameController.getAITurn();
