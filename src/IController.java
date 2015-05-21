@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 public interface IController {
 	public boolean newGame();
 	public boolean startGame();
@@ -11,6 +13,7 @@ public interface IController {
 	public Player getCurrentPlayer();
 	public Player getWinner();
 	public Player[][] getBoard();
+	public Stack<Integer> getWinningDiscs();
 	public int getPlayerScore(Player p);
 	public String getInfo();
 }

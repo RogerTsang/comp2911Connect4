@@ -218,24 +218,46 @@ public class GameWindow extends JFrame {
 	}
 	
 	public class MouseAction extends MouseAdapter {
+		private boolean mouseEnable = true;
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			int nextMove = -1;
-			if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
-			if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
-			updateUI();
-			label.removeAll();
-			label.setText(gameController.getInfo());
-			label.updateUI();
+			if (mouseEnable == true) {
+				int nextMove = -1;
+				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
+				if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
+				updateUI();
+				label.removeAll();
+				label.setText(gameController.getInfo());
+				label.updateUI();
+			}
+			
+			if (!gameController.isFinish()) {
+				mouseEnable = true;
+			} else {
+				endGameUI();
+				mouseEnable = false;
+			}
 		}
 
 		@Override
-		public void mouseMoved(MouseEvent e){
-			int column = translateMouse(e.getX(), boardPanel.getWidth());
-			if(column == col) return;
-			else{
-				col = column;
-				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
+		public void mouseMoved(MouseEvent e) {
+			if (mouseEnable == true) {
+				int column = translateMouse(e.getX(), boardPanel.getWidth());
+				if(column == col) return;
+				else{
+					col = column;
+					boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
+					boardPanel.updateUI();
+				}
+			}
+		}
+		
+		/**
+		 * This method is only called once when the game is finished
+		 */
+		public void endGameUI() {
+			if (mouseEnable == true) {
+				boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
 				boardPanel.updateUI();
 			}
 		}
