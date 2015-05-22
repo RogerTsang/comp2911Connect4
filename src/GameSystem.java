@@ -1,3 +1,11 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 
@@ -425,5 +433,52 @@ public class GameSystem implements IController, IGame {
 		if (column < 0 || column >= b.getColumnSize()) return false;
         if (b.getState()[column][0] != Player.NOONE) return false;
         return true;
+	}
+	
+	public List<String> getProfileNames() {
+		List<String> names = new ArrayList<String>();
+		File f = new File("profiles");
+		String[] fileNames = f.list();
+		if (fileNames == null || fileNames.length == 0) return names;
+		for (String s : fileNames) {
+			s.replace(".ser", "");
+			names.add(s);
+		}
+		return names;
+	}
+	
+	public Profile getProfile(String name) {
+		Profile p = null;
+		try {
+			//Deserialize profile
+			FileInputStream fileIn = new FileInputStream("./profiles/" + name + ".ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			p = (Profile) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		} catch (ClassNotFoundException c) {
+			c.printStackTrace();
+		}
+		return p;
+	}
+	
+	public void saveProfile(Profile p) {
+		try {
+			//Serialize the profile
+			FileOutputStream fileOut = new FileOutputStream("./profiles/" + p.getName() + ".ser");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(p);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		}
+	}
+	
+	public void deleteProfile(String name) {
+		File toDelete = new File("./profiles/" + name + ".ser");
+		if (toDelete.exists()) toDelete.delete();
 	}
 }

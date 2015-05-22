@@ -39,7 +39,7 @@ public class ProfilePanel extends JPanel {
 		
 		//All the stats related to 
 		gamesPlayed = new JLabel();
-		gamesPlayed.setText("" + p.getNumGamesPlayed());
+		gamesPlayed.setText("" + (int) p.getNumGamesPlayed());
 		gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioH = new JLabel();
 		wlRatioH.setText("" + p.getWLRatioH());

@@ -11,9 +11,7 @@ NEED TO CHANGE:
 
 THINGS TO ADD:
 --------------
-- Change layout to comply with our UI design
-- Show piece over column when mousing over it
-- Pop-up information when someone has won (actually now that I think about this more I'm not sure about it, it will obscure the board so you can't see the end-state)
+- Make win/lose information more noticeable
 - Score shows how many rounds each player has won
 - "Thinking period" for AI
 - Add information on side of board about players. Along with this, have a picture of a piece next to their info that is grayed out when it isn't their turn

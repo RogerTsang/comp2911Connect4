@@ -1,13 +1,16 @@
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Stores information on the profile of a player
  * @author patrickgilfillan
  *
  */
-public class Profile {
+public class Profile implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private String name;
-	private float wLRatioH;
+	private int wLRatioH;
 	private float wLRatioAIEasy;
 	private float wLRatioAIHard;
 	private int numGamesPlayed;
@@ -25,12 +28,7 @@ public class Profile {
 			//Get profile with the given name from the file
 		}
 	}
-
-	/*
-	public saveProfileToFile() {
-		WILL USE THIS METHOD FOR SAVING CURRENT PROFILE TO FILE
-	}
-	*/
+	
 	public String getName() {
 		return name;
 	}
@@ -46,8 +44,13 @@ public class Profile {
 	public float getWLRatioAIHard() {
 		return wLRatioAIHard;
 	}
-	
+
 	public float getNumGamesPlayed() {
 		return numGamesPlayed;
 	}
+	
+	public void addGamePlayed() {
+		numGamesPlayed++;
+	}
+
 }

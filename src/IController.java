@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Stack;
 
 public interface IController {
@@ -15,4 +16,8 @@ public interface IController {
 	public Player[][] getBoard();
 	public Stack<Integer> getWinningDiscs();
 	public int getPlayerScore(Player p);
+	public List<String> getProfileNames();
+	public Profile getProfile(String name);
+	public void saveProfile(Profile p);
+	public void deleteProfile(String name);
 }
