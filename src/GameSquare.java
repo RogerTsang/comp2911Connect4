@@ -55,6 +55,17 @@ public class GameSquare extends JPanel {
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
+	/**
+	 * Create a square unit for position of dropping dice
+	 * @param i dropping dice identifier
+	 * @param c color of Dice dropping
+	 */
+	public GameSquare(boolean i,Color c){
+		currentColor = c;
+		highlighter = null;
+		setBackground(Color.WHITE);
+		
+	}
 	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;

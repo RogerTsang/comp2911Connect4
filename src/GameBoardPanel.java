@@ -12,6 +12,10 @@ public class GameBoardPanel extends JPanel {
 
 	public GameBoardPanel() {
 		//Create the board squares
+		for(int col = 0;col<7;col++){
+			GameSquare square = new GameSquare(true,Color.WHITE);
+			add(square);
+		}
 		for (int col = 0; col < 7; col++) {
 			for (int row = 0; row < 6; row++) {
 				GameSquare square = new GameSquare(Color.WHITE);
@@ -20,7 +24,7 @@ public class GameBoardPanel extends JPanel {
 		}
 		//Set up look of board
 		setBackground(Color.BLACK);
-		setLayout(new GridLayout(6,7,0,0));
+		setLayout(new GridLayout(7,7,0,0));
 	}
 	 
 	/**
@@ -29,6 +33,10 @@ public class GameBoardPanel extends JPanel {
 	 */
 	public void update(Player[][] board) {
 		this.removeAll();
+		for(int col = 0;col<7;col++){
+			GameSquare square = new GameSquare(true,Color.WHITE);
+			add(square);
+		}
 		for (int row = 0; row < 6; row++) {
 			for (int col = 0; col < 7; col++) {
 				GameSquare square;
@@ -53,16 +61,27 @@ public class GameBoardPanel extends JPanel {
 	public void highlightCol(Player[][] board, Player current, int col){
 	//repaint preCol
 		this.removeAll();
+		Color currentPlayer;
+		if (current == Player.P1) {
+			currentPlayer = Color.RED;
+		} else {
+			currentPlayer = Color.GREEN;
+		}
+		for(int colum = 0;colum<7;colum++){
+			if(colum != col){
+				GameSquare square = new GameSquare(true,Color.WHITE);
+				add(square);
+			}else{
+				GameSquare square = new GameSquare(true,currentPlayer);
+				add(square);
+			}
+			
+		}
+		
 		for (int row = 0; row < 6; row++) {
 			for (int column = 0; column < 7; column++) {
 				GameSquare square;
 				if (column == col) {
-					Color currentPlayer;
-					if (current == Player.P1) {
-						currentPlayer = Color.RED;
-					} else {
-						currentPlayer = Color.GREEN;
-					}
 					switch(board[column][row]) {
 						case P1: square = new GameSquare(Color.RED, currentPlayer); break;
 						case P2: square = new GameSquare(Color.GREEN, currentPlayer); break;
