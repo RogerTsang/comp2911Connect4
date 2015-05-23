@@ -172,64 +172,42 @@ public class GameWindow extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			switch (e.getActionCommand()){
-			case "Quit": {
-				System.exit(0);
-				break;
-			}	
-			case "Restart": {
-				gameController.newGame();
-				gameController.detachAI();
-				gameController.startGame();
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-				break;
-			}
-			case "EnableAI": {
-				gameController.newGame();
-				gameController.attachAI(new SmartAI(Player.P2));
-				gameController.startGame();
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-				break;
-			}
-			case "AIMove": {
-				gameController.getAITurn();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				} else {
-					boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
-					boardPanel.updateUI();
-				}
-				break;
-			}
-			case "Undo": {
-				gameController.undo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				}
-				break;
-			}
-			case "Redo": {
-				gameController.redo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				}
-				break;
-			}
-			case "Score": {
-				//This line need to be changed
-				gameController.getPlayerScore(Player.P1);
-				break;
-			}
-			case "Options": {
-				//launch options menu
-				break;
-			}
+			case "Quit":System.exit(0);
+						break;
+			case "Restart":gameController.newGame();
+						  gameController.detachAI();
+						  gameController.startGame();
+						  boardPanel.update(gameController.getBoard());
+						  boardPanel.updateUI();
+						  break;
+			case "EnableAI":gameController.newGame();
+			  				   gameController.attachAI(new SmartAI(Player.P2));
+			  				   gameController.startGame();
+			  				   boardPanel.update(gameController.getBoard());
+							   boardPanel.updateUI();
+			  				   break;
+			case "AIMove": gameController.getAITurn();
+						   if (gameController.isFinish()) {
+							   boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
+						   } else {
+							   boardPanel.update(gameController.getBoard());
+						   }
+						   boardPanel.updateUI();
+						   break;
+			case "Undo":gameController.undo();
+						boardPanel.update(gameController.getBoard());
+						boardPanel.updateUI();
+						break;
+			case "Redo":gameController.redo();
+						boardPanel.update(gameController.getBoard());
+						boardPanel.updateUI();
+						break;
+			case "Score":gameController.getPlayerScore(Player.P1);
+						break;
+			case "Options"://launch options menu
+						break;
 			default:break;
-			}
+			}	
 		}
 		
 	}

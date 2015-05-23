@@ -22,7 +22,6 @@ public class GameSystem implements IController, IGame {
 	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
-	private Sound soundEffect;
 	
 	public GameSystem() {
 		this.state = GameState.WAIT_FOR_START;
@@ -37,7 +36,6 @@ public class GameSystem implements IController, IGame {
 		this.RedoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
-		this.soundEffect = new Sound();
 	}
 	
 	/**
@@ -67,7 +65,6 @@ public class GameSystem implements IController, IGame {
 	 */
 	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
-			soundEffect.play(Sound.RESTART);
 			this.state = GameState.PLAYABLE;
 			return true;
 		} else {
@@ -98,25 +95,17 @@ public class GameSystem implements IController, IGame {
         }
 	    
 		if (this.board.insert(currentPlayer,column)) {
-			if (currentPlayer == Player.P1) {
-				soundEffect.play(Sound.Player1);
-			} else {
-				soundEffect.play(Sound.Player2);
-			}
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
 			switch(this.winner){
 				case P1: this.P1Score++; 
-						 this.state = GameState.FINISH;
-						 soundEffect.play(Sound.WIN);
+						 this.state = GameState.FINISH; 
 						 break;
 				case P2: this.P2Score++; 
-						 this.state = GameState.FINISH;
-						 soundEffect.play(Sound.WIN);
+						 this.state = GameState.FINISH; 
 						 break;
-				case DRAW: this.state = GameState.FINISH;
-						 soundEffect.play(Sound.DRAW);
+				case DRAW: this.state = GameState.FINISH; 
 						 break;
 				default: switchPlayer(); break;
 			}
@@ -190,6 +179,7 @@ public class GameSystem implements IController, IGame {
 				return true;
 			}
 		}
+		System.out.println("> Cannot Redo");
 		return false;
 	}
 	
@@ -404,10 +394,7 @@ public class GameSystem implements IController, IGame {
         //otherwise we may have a draw
         for (col = 0; col < board.getColumnSize(); col++) {
             if (boardState[col][0] == Player.NOONE) break;
-            if (col == board.getColumnSize()-1) { 
-            	recordWinningDiscs(0, 0, 4);
-            	return Player.DRAW;
-            }
+            if (col == board.getColumnSize()-1) return Player.DRAW;
         }
         return Player.NOONE;
     }
@@ -416,19 +403,10 @@ public class GameSystem implements IController, IGame {
      * This is a method to recordWinningDiscs
      * @param col
      * @param row
-     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right 4:Draw
+     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right
      */
     private void recordWinningDiscs(int col, int row, int mode) {
     	this.winningDiscs.clear();
-    	//Draw
-    	if (mode == 4) {
-    		this.winningDiscs.push(0);this.winningDiscs.push(0);
-    		this.winningDiscs.push(0);this.winningDiscs.push(5);
-    		this.winningDiscs.push(6);this.winningDiscs.push(0);
-    		this.winningDiscs.push(6);this.winningDiscs.push(5);
-    		return;
-    	}
-    	//Win
     	for (int i = 0; i < this.connectToWin; i++) {
     		switch(mode) {
 	        	case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
