@@ -18,7 +18,7 @@ public class Sound {
 		draw = Applet.newAudioClip(Sound.class.getResource("draw.wav"));
 	}
 	
-	public synchronized void play(final int type) {
+	public void play(final int type) {
 		try {
 			new Thread() {
 				public void run() {

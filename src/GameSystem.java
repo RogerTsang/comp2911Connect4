@@ -400,7 +400,10 @@ public class GameSystem implements IController, IGame {
         //otherwise we may have a draw
         for (col = 0; col < board.getColumnSize(); col++) {
             if (boardState[col][0] == Player.NOONE) break;
-            if (col == board.getColumnSize()-1) return Player.DRAW;
+            if (col == board.getColumnSize()-1) { 
+            	recordWinningDiscs(0, 0, 4);
+            	return Player.DRAW;
+            }
         }
         return Player.NOONE;
     }
@@ -409,10 +412,19 @@ public class GameSystem implements IController, IGame {
      * This is a method to recordWinningDiscs
      * @param col
      * @param row
-     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right
+     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right 4:Draw
      */
     private void recordWinningDiscs(int col, int row, int mode) {
     	this.winningDiscs.clear();
+    	//Draw
+    	if (mode == 4) {
+    		this.winningDiscs.push(0);this.winningDiscs.push(0);
+    		this.winningDiscs.push(0);this.winningDiscs.push(5);
+    		this.winningDiscs.push(6);this.winningDiscs.push(0);
+    		this.winningDiscs.push(6);this.winningDiscs.push(5);
+    		return;
+    	}
+    	//Win
     	for (int i = 0; i < this.connectToWin; i++) {
     		switch(mode) {
 	        	case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
