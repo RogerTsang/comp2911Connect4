@@ -12,9 +12,9 @@ public class Sound {
 	private final AudioClip draw;
 	
 	public Sound() {
-		player1_drop = Applet.newAudioClip(Sound.class.getResource("drop1.wav"));
-		player2_drop = Applet.newAudioClip(Sound.class.getResource("drop2.wav"));
-		winGame = Applet.newAudioClip(Sound.class.getResource("win.wav"));
+		player1_drop = Applet.newAudioClip(Sound.class.getResource("realisticdrop1.wav"));
+		player2_drop = Applet.newAudioClip(Sound.class.getResource("realisticdrop2.wav"));
+		winGame = Applet.newAudioClip(Sound.class.getResource("evilwin.wav"));
 		draw = Applet.newAudioClip(Sound.class.getResource("draw.wav"));
 	}
 	
@@ -22,15 +22,12 @@ public class Sound {
 		try {
 			new Thread() {
 				public void run() {
-					AudioClip clip;
 					switch (type) {
-					case Player1 : clip = player1_drop; break;
-					case Player2 : clip = player2_drop; break;
-					case WIN: clip = winGame; break;
-					case DRAW: clip = draw; break;
-					default: clip = null;
+					case Player1 : player1_drop.play(); break;
+					case Player2 : player2_drop.play();; break;
+					case WIN: winGame.play();; break;
+					case DRAW: draw.play(); break;
 					}
-					clip.play();
 				}
 			}.start();
 		} catch (Exception e) {
