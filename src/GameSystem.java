@@ -22,6 +22,7 @@ public class GameSystem implements IController, IGame {
 	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
+	private Sound soundEffect;
 	
 	public GameSystem() {
 		this.state = GameState.WAIT_FOR_START;
@@ -36,6 +37,7 @@ public class GameSystem implements IController, IGame {
 		this.RedoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
+		this.soundEffect = new Sound();
 	}
 	
 	/**
@@ -100,12 +102,15 @@ public class GameSystem implements IController, IGame {
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
 			switch(this.winner){
 				case P1: this.P1Score++; 
-						 this.state = GameState.FINISH; 
+						 this.state = GameState.FINISH;
+						 soundEffect.play(Sound.WIN);
 						 break;
 				case P2: this.P2Score++; 
-						 this.state = GameState.FINISH; 
+						 this.state = GameState.FINISH;
+						 soundEffect.play(Sound.WIN);
 						 break;
-				case DRAW: this.state = GameState.FINISH; 
+				case DRAW: this.state = GameState.FINISH;
+						 soundEffect.play(Sound.DRAW);
 						 break;
 				default: switchPlayer(); break;
 			}
@@ -179,7 +184,6 @@ public class GameSystem implements IController, IGame {
 				return true;
 			}
 		}
-		System.out.println("> Cannot Redo");
 		return false;
 	}
 	
@@ -215,8 +219,10 @@ public class GameSystem implements IController, IGame {
 	 */
 	private void switchPlayer() {
 		if (this.currentPlayer == Player.P1) {
+			soundEffect.play(Sound.Player1);
 			this.currentPlayer = Player.P2;
 		} else if (this.currentPlayer == Player.P2) {
+			soundEffect.play(Sound.Player2);
 			this.currentPlayer = Player.P1;
 		}
 	}	
