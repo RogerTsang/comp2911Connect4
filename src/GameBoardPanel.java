@@ -121,14 +121,16 @@ public class GameBoardPanel extends JPanel {
 		for (int r = 0; r < 6; r++) {
 			for (int c = 0; c < 7; c++) {
 				GameSquare square;
-				if(c==col && y<this.getHeight()/7*row){
+				if(c==col && r<=row &&y<this.getHeight()/7*row){
 					switch(board[col][row]) {
 					case P1: square = new GameSquare(Color.RED,true,y-this.getHeight()/7*r); break;
 					case P2: square = new GameSquare(Color.GREEN,true,y-this.getHeight()/7*r); break;
 					case NOONE: square = new GameSquare(Color.WHITE,true,y-this.getHeight()/7*r); break;
 					default: square = new GameSquare(Color.BLACK,true,y-this.getHeight()/7*r); break;
-				}
+					}
 					
+					
+				
 					
 				}else{
 						

@@ -243,8 +243,8 @@ public class GameWindow extends JFrame {
 	}
 	
 	
-	  private void FallingAnimation() {   
-		  FallingListener fallingListener = new FallingListener();
+	  private  void  FallingAnimation() {   
+		  	FallingListener fallingListener = new FallingListener();
 	        this.timer = new Timer(1, fallingListener);
 	        timer.start();
 	    }
@@ -255,7 +255,7 @@ public class GameWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				 if( y < boardPanel.getHeight()){
-					 y++;
+					y = y +5;
 					boardPanel.paintNextMove(gameController.getBoard(), col,y);
 					
 				 }else{
