@@ -61,6 +61,7 @@ public class GameBoardPanel extends JPanel {
 	public void highlightCol(Player[][] board, Player current, int col){
 	//repaint preCol
 		this.removeAll();
+		
 		Color currentPlayer;
 		if (current == Player.P1) {
 			currentPlayer = Color.RED;
@@ -104,6 +105,11 @@ public class GameBoardPanel extends JPanel {
 	public void endGame(Player[][] board, Stack<Integer> winningDiscs) {
 		this.removeAll();
 		boolean[][] winningState = new boolean[7][6];
+		for(int colum = 0;colum<7;colum++){
+			GameSquare square = new GameSquare(true,Color.WHITE);
+			add(square);
+		}
+		
 		
 		for (int row = 0; row < 6; row++) {
 			for (int col = 0; col < 7; col++) {
