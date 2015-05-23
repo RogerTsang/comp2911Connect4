@@ -1,9 +1,11 @@
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.GradientPaint;
 
 import javax.swing.BorderFactory;
@@ -16,7 +18,8 @@ public class GameSquare extends JPanel {
 	private Color currentColor;
 	private Color highlighter;
 	private final int ALPHA = 120;
-	
+	private boolean MI;//moving index
+	private int y;//position
 	/**
 	 * The new square unit with disc highlight
 	 * @param c Disc Color
@@ -31,6 +34,7 @@ public class GameSquare extends JPanel {
 			setBackground(Color.BLUE);
 		}
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		MI = false;
 	}
 	
 	/**
@@ -43,29 +47,35 @@ public class GameSquare extends JPanel {
 		highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		MI = false;
 	}
 	
 	/**
 	 * Create a square unit with no Highlighter.
 	 * @param c Current Disc Color
 	 */
-	public GameSquare(Color c) {
+	public GameSquare(Color c,boolean MI,int y) {
 		currentColor = c;
 		highlighter = null;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = MI;
+		this.y = y;
+		
 	}
 	/**
 	 * Create a square unit for position of dropping dice
 	 * @param i dropping dice identifier
 	 * @param c color of Dice dropping
 	 */
-	public GameSquare(boolean i,Color c){
+	public GameSquare(boolean i,Color c,boolean MI,int y){
 		currentColor = c;
 		highlighter = null;
 		setBackground(Color.WHITE);
-		
+		this.MI = MI;
+		this.y = y;
 	}
+	
 	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -86,6 +96,28 @@ public class GameSquare extends JPanel {
 		if (highlighter != null) {
 			getHighlighter(g2d);
 		}
+		if(MI == true){
+			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 1f);
+
+	        BufferedImage buffImg = new BufferedImage(this.getWidth(), this.getHeight(),
+	                    BufferedImage.TYPE_INT_ARGB);
+	        Graphics2D gbi = buffImg.createGraphics();
+	        
+	        gbi.setPaint(Color.white);
+	        circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
+	        gbi.fill(circle);
+	        gbi.setComposite(ac);
+	        y=this.y;
+	       
+
+	        gbi.setPaint(currentColor);
+	        circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
+	        gbi.fill(circle);
+	        
+	        g2d.drawImage(buffImg,0, 0, null);
+			
+		}
+		
 	}
 	
 	private void getHighlighter(Graphics2D g2d) {

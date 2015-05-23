@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
@@ -25,12 +26,19 @@ public class GameWindow extends JFrame {
 	//current column mouse point at
 	private int col;
 	
+	private Timer timer;
+	
+	//y coordination of falling dice
+	private int y ;
+	
+	
 	//Info panels and panel for showing piece above column
 	JPanel p1Info;
 	JPanel p2Info;
 	JPanel aboveBoardPanel;
 	
 	public GameWindow(IController g) {
+		y = 0;
 		gameController = g;
 		initUI();
 	}
@@ -234,6 +242,30 @@ public class GameWindow extends JFrame {
 		
 	}
 	
+	
+	  private void FallingAnimation() {   
+		  FallingListener fallingListener = new FallingListener();
+	        this.timer = new Timer(1, fallingListener);
+	        timer.start();
+	    }
+	
+	 private class FallingListener implements ActionListener{
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				 if( y < boardPanel.getHeight()){
+					 y++;
+					boardPanel.paintNextMove(gameController.getBoard(), col,y);
+					
+				 }else{
+					 y = 0;
+					 timer.stop();
+				 }
+			}
+	    	
+	    }
+	
 	public class MouseAction extends MouseAdapter {
 		private boolean mouseEnable = true;
 		@Override
@@ -241,7 +273,15 @@ public class GameWindow extends JFrame {
 			if (mouseEnable == true) {
 				int nextMove = -1;
 				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
-				if (nextMove >= 0 && nextMove <= 6) gameController.move(nextMove);
+				if (nextMove >= 0 && nextMove <= 6){
+					if(gameController.move(nextMove)){
+						col = nextMove;
+						FallingAnimation();
+						
+						
+					}
+				
+				}
 			}
 			mouseMoved(e);
 			if (!gameController.isFinish()) {
