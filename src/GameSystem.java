@@ -67,6 +67,7 @@ public class GameSystem implements IController, IGame {
 	 */
 	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
+			soundEffect.play(Sound.RESTART);
 			this.state = GameState.PLAYABLE;
 			return true;
 		} else {
@@ -97,6 +98,11 @@ public class GameSystem implements IController, IGame {
         }
 	    
 		if (this.board.insert(currentPlayer,column)) {
+			if (currentPlayer == Player.P1) {
+				soundEffect.play(Sound.Player1);
+			} else {
+				soundEffect.play(Sound.Player2);
+			}
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
@@ -219,10 +225,8 @@ public class GameSystem implements IController, IGame {
 	 */
 	private void switchPlayer() {
 		if (this.currentPlayer == Player.P1) {
-			soundEffect.play(Sound.Player1);
 			this.currentPlayer = Player.P2;
 		} else if (this.currentPlayer == Player.P2) {
-			soundEffect.play(Sound.Player2);
 			this.currentPlayer = Player.P1;
 		}
 	}	
