@@ -105,6 +105,9 @@ public class GameSquare extends JPanel {
 	        
 	        gbi.setPaint(Color.white);
 	        circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
+	        gbi.setRenderingHint(
+	        		RenderingHints.KEY_ANTIALIASING, 
+	        		RenderingHints.VALUE_ANTIALIAS_ON);
 	        gbi.fill(circle);
 	        gbi.setComposite(ac);
 	        y=this.y;
