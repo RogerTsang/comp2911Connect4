@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -11,6 +12,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -77,32 +79,27 @@ public class GameWindow extends JFrame {
 		p1Info = new ProfilePanel(p1Profile);
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridheight = 2;
+		c.gridheight = 1;
 		c.ipadx = 40;
 		add(p1Info, c);
-		
-		//The panel above the board for displaying the piece when hovering over the column
-		aboveBoardPanel = new JPanel();
-		c.gridx = 1;
-		c.gridheight = 1;
-		c.gridwidth = 4;
-		
-		c.ipady = boardPanel.getWidth()/7;
-		c.ipadx = 0;
-		add(aboveBoardPanel, c);
+		//Undo button
+		JButton undoButton = new JButton("Undo");
+		undoButton.addActionListener(new ButtonAction());
+		undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		p1Info.add(undoButton);
 		
 		//Player 2 info panel
 		Profile p2Profile = new Profile("Player 2");
 		p2Info = new ProfilePanel(p2Profile);
 		c.gridx = 5;
 		c.gridy = 0;
-		c.gridheight = 2;
+		c.gridheight = 1;
 		c.ipadx = 40;
 		add(p2Info, c);
 		
 		//The board panel
 		c.gridx = 1;
-		c.gridy = 1;
+		c.gridy = 0;
 		c.ipadx = 0;
 		c.gridheight = 1;
 		c.gridwidth = 4;
@@ -113,7 +110,7 @@ public class GameWindow extends JFrame {
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ButtonAction());
 		c.gridx = 1;
-		c.gridy = 2;
+		c.gridy = 1;
 		c.gridwidth = 1;
 		c.ipady = 0;
 		add(quitButton, c);
@@ -136,23 +133,10 @@ public class GameWindow extends JFrame {
 		c.gridx = 4;
 		add(restartAIButton, c);
 		
-		//Undo button
-		JButton undoButton = new JButton("Undo");
-		undoButton.addActionListener(new ButtonAction());
-		c.gridx = 2;
-		c.gridy = 3;
-		add(undoButton, c);
-		
-		//Re-do button
-		JButton redoButton = new JButton("Redo");
-		redoButton.addActionListener(new ButtonAction());
-		c.gridx = 3;
-		add(redoButton, c);
-		
-		
 		//Options button
 		JButton optionsButton = new JButton("Options");
 		optionsButton.addActionListener(new ButtonAction());
+		c.gridy = 2;
 		c.gridx = 1;
 		add(optionsButton, c);
 		
@@ -227,13 +211,8 @@ public class GameWindow extends JFrame {
 				}
 				break;
 			}
-			case "Score": {
-				//This line need to be changed
-				gameController.getPlayerScore(Player.P1);
-				break;
-			}
 			case "Options": {
-				//launch options menu
+				showOptions(true);
 				break;
 			}
 			default:break;
@@ -242,6 +221,14 @@ public class GameWindow extends JFrame {
 		
 	}
 	
+	private void showOptions(boolean isInGame) {
+		OptionsPanel options = new OptionsPanel();
+		Object[] message = {options};
+		int option = JOptionPane.showConfirmDialog(this, message, "Choose players", JOptionPane.OK_CANCEL_OPTION);
+		if (option == JOptionPane.OK_OPTION) {
+			System.out.println(options.getPlayer1Name() + " " + options.getPlayer2Name());
+		}
+	}
 	
 	  private  void  FallingAnimation() {   
 		  	FallingListener fallingListener = new FallingListener();
