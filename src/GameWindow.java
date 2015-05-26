@@ -33,10 +33,10 @@ public class GameWindow extends JFrame {
 	private boolean fallingAnimationMutex;
 	
 	//Info panels and panel for showing piece above column
-	JPanel p1Info;
-	JPanel p2Info;
-	Profile p1Profile;
-	Profile p2Profile;
+	private JPanel p1Info;
+	private JPanel p2Info;
+	private Profile p1Profile;
+	private Profile p2Profile;
 	
 	public GameWindow(IController g) {
 		gameController = g;

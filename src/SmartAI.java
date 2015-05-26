@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class SmartAI implements Iai {
-	Player[][] control;
+	private Player[][] control;
 	private Player OurID;
 	private Player theirID;
 	

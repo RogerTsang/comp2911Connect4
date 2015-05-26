@@ -1,8 +1,8 @@
 
 public interface IGame {
-    Player checkWin(Board b, int column, Player p);
-    int getConnectToWin();
-    boolean isLegalMove(int column);
-    boolean isLegalMove(int column, Board b);
-    Player getCurrentPlayer();
+    public Player checkWin(Board b, int column, Player p);
+    public int getConnectToWin();
+    public boolean isLegalMove(int column);
+    public boolean isLegalMove(int column, Board b);
+    public Player getCurrentPlayer();
 }
