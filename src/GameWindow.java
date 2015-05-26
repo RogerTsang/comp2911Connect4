@@ -260,6 +260,10 @@ public class GameWindow extends JFrame {
 					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
 				} else {
 					y = 0;
+					if (gameController.isFinish()) {
+						mouseEnable = false;
+						endGameUI();
+					}
 					fallingAnimationMutex = false;
 				}
 				//1000ms/60fps = 16.7ms 
@@ -268,10 +272,6 @@ public class GameWindow extends JFrame {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
-			if (gameController.isFinish()) {
-				mouseEnable = false;
-				endGameUI();
 			}
 		}
     }
