@@ -31,8 +31,7 @@ public class GameWindow extends JFrame {
 	private Timer timer;
 	
 	//y coordination of falling dice
-	private int y ;
-	
+	private int y;
 	
 	//Info panels and panel for showing piece above column
 	JPanel p1Info;
