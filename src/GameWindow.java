@@ -30,8 +30,6 @@ public class GameWindow extends JFrame {
 	
 	//y coordination of falling dice
 	private boolean mouseEnable;
-	private int y;
-	private Timer timer;
 	private boolean fallingAnimationMutex;
 	
 	//Info panels and panel for showing piece above column
@@ -41,7 +39,6 @@ public class GameWindow extends JFrame {
 	Profile p2Profile;
 	
 	public GameWindow(IController g) {
-		y = 0;
 		gameController = g;
 		mouseEnable = true;
 		fallingAnimationMutex = false;
@@ -190,14 +187,7 @@ public class GameWindow extends JFrame {
 				break;
 			}
 			case "AIMove": {
-				gameController.getAITurn();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				} else {
-					boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
-					boardPanel.updateUI();
-				}
+				letAImove();
 				break;
 			}
 			case "Undo": {
@@ -237,6 +227,17 @@ public class GameWindow extends JFrame {
 		}
 	}
 	
+	public void letAImove() {
+		int pushMousePointingColumn = mousePointingcolumn;
+		if ((mousePointingcolumn = gameController.getAITurn()) < 0) {
+			mousePointingcolumn = pushMousePointingColumn;
+			return;
+		}
+		if (!gameController.isFinish() && !fallingAnimationMutex) {
+			FallingAnimation();
+		}
+	}
+	
 	public void endGameUI() {
 		boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
 		boardPanel.updateUI();
@@ -249,6 +250,8 @@ public class GameWindow extends JFrame {
 	}
 	
 	 private class Falling implements Runnable {
+		private int y;
+		 
 		@Override
 		public void run() {
 			while (fallingAnimationMutex) {
@@ -285,10 +288,6 @@ public class GameWindow extends JFrame {
 						FallingAnimation();
 					}
 				}
-			}
-			
-			if (gameController.isFinish()) {
-				mouseEnable = false;
 			}
 		}
 

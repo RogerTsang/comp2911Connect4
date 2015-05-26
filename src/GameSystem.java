@@ -252,12 +252,13 @@ public class GameSystem implements IController, IGame {
 	/**
 	 * In order to debug, Now the AI can move whatever if it is its turn.
 	 */
-	public boolean getAITurn() {
+	public int getAITurn() {
 		if (this.ai != null) {
-			this.move(this.ai.makeMove((IGame)this,this.board.clone()));
-			return true;
+			int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
+			this.move(AImoveColumn);
+			return AImoveColumn;
 		} else {
-			return false;
+			return -1;
 		}
 	}
 	
