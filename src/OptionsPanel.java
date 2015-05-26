@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -24,17 +26,33 @@ public class OptionsPanel extends JPanel {
 	
 	JComboBox<String> profile1;
 	JComboBox<String> profile2;
+	JComboBox<String> deleteProfile;
 	JComboBox<String> player2OptionsList;
+	IController gameController;
+	JLabel changesText;
+	List<String> nameList;
 	
-	public OptionsPanel() {
+	DefaultComboBoxModel<String> p1model;
+	DefaultComboBoxModel<String> p2model;
+	DefaultComboBoxModel<String> deleteModel;
+	
+	public OptionsPanel(IController gameController, List<String> names) {
+		this.gameController = gameController;
+		nameList = names;
+		
 		initUI();
 	}
 	
 	private void initUI() {
 		//Create all the components
-		String[] names = {"TEST_NAME_1", "TEST_NAME_2"};
-		profile1 = new JComboBox<String>(names);
-		profile2 = new JComboBox<String>(names);
+		//Player 1 and 2 configuration components
+		String[] names = nameList.toArray(new String[nameList.size()]);
+		p1model = new DefaultComboBoxModel<String>(names);
+		p2model = new DefaultComboBoxModel<String>(names);
+		deleteModel = new DefaultComboBoxModel<String>(names);
+		
+		profile1 = new JComboBox<String>(p1model);
+		profile2 = new JComboBox<String>(p2model);
 		String[] player2Options = {"Human opponent", "Easy Computer opponent", "Hard Computer opponent"};
 		player2OptionsList = new JComboBox<String>(player2Options);
 		player2OptionsList.addItemListener(new ItemListener() {
@@ -45,28 +63,45 @@ public class OptionsPanel extends JPanel {
 			}
 			
 		});
-		final JTextField createProfile = new JTextField(10);
-		JButton createProfButton = new JButton("Create new profile");
-		createProfButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!createProfile.getText().contains(" ")) {
-					System.out.println(createProfile.getText());
-					createProfile.setText("Profile added!");
-				}
-			}
-		});
 		
-		final JComboBox<String> deleteProfile = new JComboBox<String>(names);
-		JButton deleteProfButton = new JButton("Delete Profile");
+		//Delete profile components
+		deleteProfile = new JComboBox<String>(deleteModel);
+		JButton deleteProfButton = new JButton("Delete Player");
 		deleteProfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int confirmDelete = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this player?", 
 						                                          "Confirm delete", JOptionPane.YES_NO_OPTION);
-				if (confirmDelete == JOptionPane.OK_OPTION) System.out.println("Will delete");
+				if (confirmDelete == JOptionPane.OK_OPTION) {
+					gameController.deleteProfile((String) deleteProfile.getSelectedItem());
+					nameList.remove(deleteProfile.getSelectedItem());
+					p1model.removeElement(deleteProfile.getSelectedItem());
+					p2model.removeElement(deleteProfile.getSelectedItem());
+					deleteModel.removeElement(deleteProfile.getSelectedItem());
+					changesText.setText("Player deleted");
+				}
 			}
 			
+		});
+		
+		//Create profile components
+		final JTextField createProfile = new JTextField(10);
+		JButton createProfButton = new JButton("Create New Player");
+		createProfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!createProfile.getText().contains(" ") && !nameList.contains(createProfile.getText())) {
+					Profile newProfile = new Profile(createProfile.getText());
+					gameController.saveProfile(newProfile);
+					p1model.addElement(createProfile.getText());
+					p2model.addElement(createProfile.getText());
+					deleteModel.addElement(createProfile.getText());
+					changesText.setText("Player added!");
+				} else {
+					changesText.setText("Name not valid");
+				}
+				createProfile.setText("");
+			}
 		});
 		
 		//Panel where Player 1 options will go
@@ -139,17 +174,22 @@ public class OptionsPanel extends JPanel {
 		add(player2Panel);
 		add(createProfilesPanel);
 		add(deleteProfilesPanel);
+		changesText = new JLabel();
+		changesText.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(changesText);
 		JLabel infoText = new JLabel("Your changes will start next game");
-		infoText.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		infoText.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(infoText);
 	}
 	
 	public String getPlayer1Name() {
+		if (profile1.getSelectedItem() == null) return null;
 		return profile1.getSelectedItem().toString();
 	}
 	
 	public String getPlayer2Name() {
 		if (player2OptionsList.getSelectedItem().toString() == "Human opponent") {
+			if (profile1.getSelectedItem() == null) return null;
 			return profile2.getSelectedItem().toString();
 		} else if (player2OptionsList.getSelectedItem().toString() == "Easy Computer opponent") {
 			return "Easy AI";

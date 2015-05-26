@@ -37,11 +37,13 @@ public class GameWindow extends JFrame {
 	//Info panels and panel for showing piece above column
 	JPanel p1Info;
 	JPanel p2Info;
-	JPanel aboveBoardPanel;
+	Profile p1Profile;
+	Profile p2Profile;
 	
 	public GameWindow(IController g) {
 		y = 0;
 		gameController = g;
+		showOptions();
 		initUI();
 	}
 
@@ -75,7 +77,6 @@ public class GameWindow extends JFrame {
 		//c.weightx = 0.5;
 		
 		//Player 1 info panel
-		Profile p1Profile = new Profile("Player 1");
 		p1Info = new ProfilePanel(p1Profile);
 		c.gridx = 0;
 		c.gridy = 0;
@@ -89,7 +90,6 @@ public class GameWindow extends JFrame {
 		p1Info.add(undoButton);
 		
 		//Player 2 info panel
-		Profile p2Profile = new Profile("Player 2");
 		p2Info = new ProfilePanel(p2Profile);
 		c.gridx = 5;
 		c.gridy = 0;
@@ -165,7 +165,8 @@ public class GameWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			switch (e.getActionCommand()){
 			case "Quit": {
-				System.exit(0);
+				int confirmQuit = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Quit Game", JOptionPane.OK_CANCEL_OPTION);
+				if (confirmQuit == JOptionPane.OK_OPTION) System.exit(0);
 				break;
 			}	
 			case "Restart": {
@@ -212,7 +213,7 @@ public class GameWindow extends JFrame {
 				break;
 			}
 			case "Options": {
-				showOptions(true);
+				showOptions();
 				break;
 			}
 			default:break;
@@ -221,12 +222,14 @@ public class GameWindow extends JFrame {
 		
 	}
 	
-	private void showOptions(boolean isInGame) {
-		OptionsPanel options = new OptionsPanel();
-		Object[] message = {options};
-		int option = JOptionPane.showConfirmDialog(this, message, "Choose players", JOptionPane.OK_CANCEL_OPTION);
+	private void showOptions() {
+		OptionsPanel options = new OptionsPanel(gameController, gameController.getProfileNames());
+		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
-			System.out.println(options.getPlayer1Name() + " " + options.getPlayer2Name());
+		//	System.out.println(options.getPlayer1Name());
+			//System.out.println(options.getPlayer2Name());
+			p1Profile = gameController.getProfile(options.getPlayer1Name());
+			p2Profile = gameController.getProfile(options.getPlayer2Name());
 		}
 	}
 	
