@@ -10,17 +10,17 @@ public class Profile implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
-	private int wAIE;
-	private int lAIE;
-	private int dAIE;
-	private int wAIH;
-	private int lAIH;
-	private int dAIH;
-	private int wP;
-	private int lP;
-	private int dP;
-	private int numGamesPlayed;
-	private File f;
+	private int wAIE;	//win against AI Easy
+	private int lAIE;	//loss against AI Easy
+	private int dAIE;	//draw against AI Easy
+	private int wAIH;	//win against AI Hard
+	private int lAIH;	//loss against AI Hard
+	private int dAIH;	//draw against AI Hard
+	private int wP;		//win against Player
+	private int lP;		//loss against Player
+	private int dP;		//draw against Player
+	private int numGamesPlayed;		//overall games played (redundant?)
+	private File f;		//I dunno what this is.
 	
 	public Profile(String name) {
 		f = null; //Until we implement saving to file

@@ -37,6 +37,7 @@ public class GameSystem implements IController, IGame {
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
 		this.soundEffect = new Sound();
+		this.saveProfile(new Profile("Guest"));
 	}
 	
 	/**

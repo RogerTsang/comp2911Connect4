@@ -45,16 +45,24 @@ public class OptionsPanel extends JPanel {
 		initUI();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void initUI() {
 		//Create all the components
 		//Player 1 and 2 configuration components
 		String[] names = nameList.toArray(new String[nameList.size()]);
+		ArrayList<String> listCopy = (ArrayList<String>) nameList.clone();
 		p1model = new DefaultComboBoxModel<String>(names);
-		if(names.length > 0){
-				names[0] = "";
+		
+		String toRemove = null;
+		if(listCopy.size() > 1){
+			for(String l:listCopy){
+				if(l!="Guest") toRemove = l;
+				break;
+			}
 		}
-		p2model = new DefaultComboBoxModel<String>(names);
-		names = nameList.toArray(new String[nameList.size()]);
+		listCopy.remove(toRemove);
+		p2model = new DefaultComboBoxModel<String>(listCopy.toArray(new String[listCopy.size()]));
+		
 		deleteModel = new DefaultComboBoxModel<String>(names);
 		profile1 = new JComboBox<String>(p1model);
 		profile2 = new JComboBox<String>(p2model);
@@ -62,10 +70,13 @@ public class OptionsPanel extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent f){
 				p2model.removeAllElements();
-				nameList.remove(f.getItem().toString());
-				System.out.println(nameList);
-				String[] p2Names = nameList.toArray(new String[nameList.size()]);
-				nameList.add(f.getItem().toString());
+				
+				ArrayList<String> listCopy = (ArrayList<String>) nameList.clone();
+				
+				if(!f.getItem().toString().equals("Guest")) listCopy.remove(f.getItem().toString());
+				
+				String[] p2Names = listCopy.toArray(new String[listCopy.size()]);
+				
 				for(String n:p2Names){
 					if(gameController.getProfile(n) != null){
 						p2model.addElement(n);
@@ -90,7 +101,23 @@ public class OptionsPanel extends JPanel {
 		
 		//Delete profile components
 		deleteProfile = new JComboBox<String>(deleteModel);
-		JButton deleteProfButton = new JButton("Delete Player");
+		final JButton deleteProfButton = new JButton("Delete Player");
+		
+		if(deleteProfile.getSelectedItem().equals("Guest")){
+			deleteProfButton.setEnabled(false);
+		}
+		
+		deleteProfile.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e){
+				if(deleteProfile.getSelectedItem().equals("Guest")){
+					deleteProfButton.setEnabled(false);
+				} else {
+					deleteProfButton.setEnabled(true);
+				}
+			}
+		});
+		
 		deleteProfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
