@@ -175,6 +175,7 @@ public class GameWindow extends JFrame {
 				gameController.newGame();
 				gameController.detachAI();
 				gameController.startGame();
+				mouseEnable = true;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
 				break;
@@ -183,6 +184,7 @@ public class GameWindow extends JFrame {
 				gameController.newGame();
 				gameController.attachAI(new SmartAI(Player.P2));
 				gameController.startGame();
+				mouseEnable = true;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
 				break;
@@ -235,24 +237,39 @@ public class GameWindow extends JFrame {
 		}
 	}
 	
-	 private void FallingAnimation() {   
-		FallingListener fallingListener = new FallingListener();
-		this.fallingAnimationMutex = true;
-		this.timer = new Timer(1, fallingListener);
-		timer.start();
-	 }
+	public void endGameUI() {
+		boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
+		boardPanel.updateUI();
+	}
 	
-	 private class FallingListener implements ActionListener {
+	private void FallingAnimation() {   
+		Thread FallingThread = new Thread(new Falling());
+		this.fallingAnimationMutex = true;
+		FallingThread.start();
+	}
+	
+	 private class Falling implements Runnable {
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			 if ( y < boardPanel.getHeight()){
-				y = y + 25;
-				boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
-			 } else {
-				 y = 0;
-				 fallingAnimationMutex = false;
-				 timer.stop();
-			 }
+		public void run() {
+			while (fallingAnimationMutex) {
+				if (y < boardPanel.getHeight()){
+					y = y + 25;
+					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
+				} else {
+					y = 0;
+					fallingAnimationMutex = false;
+				}
+				//1000ms/60fps = 16.7ms 
+				try {
+					Thread.sleep(16);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if (gameController.isFinish()) {
+				mouseEnable = false;
+				endGameUI();
+			}
 		}
     }
 	
@@ -268,8 +285,10 @@ public class GameWindow extends JFrame {
 						FallingAnimation();
 					}
 				}
-			} else {
-				System.out.println("> MouseRelease : Mouse disable");
+			}
+			
+			if (gameController.isFinish()) {
+				mouseEnable = false;
 			}
 		}
 
@@ -279,29 +298,11 @@ public class GameWindow extends JFrame {
 				mousePointingcolumn = translateMouse(e.getX(), boardPanel.getWidth());
 				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), mousePointingcolumn);
 				boardPanel.updateUI();
-			} else {
-				System.out.println("> MouseMoved : Mouse disable");
-			}
-		}
-		
-		/**
-		 * This method is only called once when the game is finished
-		 */
-		public void endGameUI() {
-			if (mouseEnable == true) {
-				boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
-				boardPanel.updateUI();
 			}
 		}
 		
 		private int translateMouse(int x, int boardWidth) {
-			int buffer = 3;
-			if (x%(boardWidth/7) < buffer || (x+buffer)%(boardWidth/7) < buffer) return - 1;
-			else {
-				int nextMove = (int) Math.floor(x/(boardWidth/7));
-				return nextMove;
-			}
-			
+			return (int) Math.floor(x/(boardWidth/7));
 		}
 	}
 		
