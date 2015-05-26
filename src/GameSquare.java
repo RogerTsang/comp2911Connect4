@@ -96,7 +96,7 @@ public class GameSquare extends JPanel {
 		if (highlighter != null) {
 			getHighlighter(g2d);
 		}
-		if(MI == true){
+		if (MI == true) {
 			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 1f);
 
 	        BufferedImage buffImg = new BufferedImage(this.getWidth(), this.getHeight(),

@@ -37,7 +37,6 @@ public class EasyAI implements Iai {
             // if we can win on this turn then we will
             b.insert(this.OurID, col);
             if (g.checkWin(b,col,this.OurID) == this.OurID) {
-                System.out.println("We Win");
                 move = col;
                 break;
             }
@@ -45,7 +44,6 @@ public class EasyAI implements Iai {
             // if they can win on this turn we will stop them
             b.insert(this.OppID, col);
             if (g.checkWin(b,col,this.OppID) == this.OppID) {
-                System.out.println("Stop Them!");
                 move = col;
                 break;
             }

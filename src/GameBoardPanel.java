@@ -105,17 +105,17 @@ public class GameBoardPanel extends JPanel {
 	
 	public void paintNextMove(Player[][] board ,int col,int y){
 		this.removeAll();
-		for(int c = 0;c<7;c++){
+		for(int c = 0;c < 7;c++){
 			GameSquare square = new GameSquare(true,Color.WHITE,false,0);
 			add(square);
 		}
 		//get lastMove: [col][row]
 		int row;
-		for(row = 0;row<6;row++){
+		for(row = 0;row < 6;row++){
 			if(board[col][row] != Player.NOONE) break;
 		}
 		int height = this.getHeight();
-		int fallingHeight = (height/6)*(row+1);
+		int fallingHeight = (height/6)*(row);
 	//	for(int y = 0 ; y <fallingHeight;y++){
 			
 		for (int r = 0; r < 6; r++) {
@@ -127,11 +127,7 @@ public class GameBoardPanel extends JPanel {
 					case P2: square = new GameSquare(Color.GREEN,true,y-this.getHeight()/7*r); break;
 					case NOONE: square = new GameSquare(Color.WHITE,true,y-this.getHeight()/7*r); break;
 					default: square = new GameSquare(Color.BLACK,true,y-this.getHeight()/7*r); break;
-					}
-					
-					
-				
-					
+					}	
 				}else{
 						
 					switch(board[c][r]) {
@@ -144,18 +140,10 @@ public class GameBoardPanel extends JPanel {
 				add(square);
 				}
 			}
-				
-				updateUI();
-					
-	//	}
-			
-			
-		
+		updateUI();	
 	}
 	
-	
-	
-	
+
 	public void endGame(Player[][] board, Stack<Integer> winningDiscs) {
 		this.removeAll();
 		boolean[][] winningState = new boolean[7][6];
