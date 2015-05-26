@@ -457,8 +457,8 @@ public class GameSystem implements IController, IGame {
         return true;
 	}
 	
-	public List<String> getProfileNames() {
-		List<String> names = new ArrayList<String>();
+	public ArrayList<String> getProfileNames() {
+		ArrayList<String> names = new ArrayList<String>();
 		File f = new File("./profiles/");
 		String[] fileNames = f.list();
 		if (fileNames == null || fileNames.length == 0) return names;

@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -30,15 +32,15 @@ public class OptionsPanel extends JPanel {
 	JComboBox<String> player2OptionsList;
 	IController gameController;
 	JLabel changesText;
-	List<String> nameList;
+	ArrayList<String> nameList;
 	
 	DefaultComboBoxModel<String> p1model;
 	DefaultComboBoxModel<String> p2model;
 	DefaultComboBoxModel<String> deleteModel;
 	
-	public OptionsPanel(IController gameController, List<String> names) {
+	public OptionsPanel(IController gameController, ArrayList<String> list) {
 		this.gameController = gameController;
-		nameList = names;
+		nameList = list;
 		
 		initUI();
 	}
@@ -48,20 +50,37 @@ public class OptionsPanel extends JPanel {
 		//Player 1 and 2 configuration components
 		String[] names = nameList.toArray(new String[nameList.size()]);
 		p1model = new DefaultComboBoxModel<String>(names);
+		names[0] = "";
 		p2model = new DefaultComboBoxModel<String>(names);
+		names = nameList.toArray(new String[nameList.size()]);
 		deleteModel = new DefaultComboBoxModel<String>(names);
-		
 		profile1 = new JComboBox<String>(p1model);
 		profile2 = new JComboBox<String>(p2model);
+		profile1.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent f){
+				p2model.removeAllElements();
+				nameList.remove(f.getItem().toString());
+				String[] p2Names = nameList.toArray(new String[nameList.size()]);
+				nameList.add(f.getItem().toString());
+				for(String n:p2Names){
+					p2model.addElement(n);
+				}
+				profile2 = new JComboBox<String>(p2model);
+			}
+		});
+		
 		String[] player2Options = {"Human opponent", "Easy Computer opponent", "Hard Computer opponent"};
 		player2OptionsList = new JComboBox<String>(player2Options);
 		player2OptionsList.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getItem().toString() != "Human opponent") profile2.setEnabled(false);
-				else profile2.setEnabled(true);
-			}
-			
+				else{
+					profile2.setEnabled(true);
+					
+				};
+			} 
 		});
 		
 		//Delete profile components
