@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -12,13 +13,14 @@ import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
 public class ProfilePanel extends JPanel {
-	
-	JLabel name;
-	JLabel gamesPlayed;
-	JLabel wlRatioH;
-	JLabel wlRatioAIHard;
-	JLabel wlRatioAIEasy;
-	JToggleButton stats;
+	private static boolean playerOne = true;
+	private ImageIcon avatar;
+	private JLabel name;
+	private JLabel gamesPlayed;
+	private JLabel wlRatioH;
+	private JLabel wlRatioAIHard;
+	private JLabel wlRatioAIEasy;
+	private JToggleButton stats;
 	
 	public ProfilePanel(Profile p) {
 		initUI(p);
@@ -36,6 +38,16 @@ public class ProfilePanel extends JPanel {
 		name = new JLabel();
 		name.setText(p.getName());
 		name.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//Roger: This line is used for general purpose for setting
+		if (playerOne) {
+			avatar = new ImageIcon("res/Circle_Red.png");
+			playerOne = false;
+		} else {
+			avatar = new ImageIcon("res/Circle_Green.png");
+			playerOne = true;
+		}
+		name.setIcon(avatar);
+		
 		
 		//All the stats related to 
 		gamesPlayed = new JLabel();
