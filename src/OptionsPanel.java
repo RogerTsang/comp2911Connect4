@@ -61,10 +61,13 @@ public class OptionsPanel extends JPanel {
 			public void itemStateChanged(ItemEvent f){
 				p2model.removeAllElements();
 				nameList.remove(f.getItem().toString());
+				System.out.println(nameList);
 				String[] p2Names = nameList.toArray(new String[nameList.size()]);
 				nameList.add(f.getItem().toString());
 				for(String n:p2Names){
-					p2model.addElement(n);
+					if(gameController.getProfile(n) != null){
+						p2model.addElement(n);
+					}
 				}
 				profile2 = new JComboBox<String>(p2model);
 			}
