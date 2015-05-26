@@ -459,11 +459,11 @@ public class GameSystem implements IController, IGame {
 	
 	public List<String> getProfileNames() {
 		List<String> names = new ArrayList<String>();
-		File f = new File("profiles");
+		File f = new File("./profiles/");
 		String[] fileNames = f.list();
 		if (fileNames == null || fileNames.length == 0) return names;
 		for (String s : fileNames) {
-			s.replace(".ser", "");
+			s = s.replace(".ser", "");
 			names.add(s);
 		}
 		return names;
@@ -489,6 +489,10 @@ public class GameSystem implements IController, IGame {
 	public void saveProfile(Profile p) {
 		try {
 			//Serialize the profile
+			File f = new File("./profiles/");
+			if(!f.exists()){
+				f.mkdir();
+			}
 			FileOutputStream fileOut = new FileOutputStream("./profiles/" + p.getName() + ".ser");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(p);

@@ -39,16 +39,16 @@ public class ProfilePanel extends JPanel {
 		
 		//All the stats related to 
 		gamesPlayed = new JLabel();
-		gamesPlayed.setText("" + (int) p.getNumGamesPlayed());
+		gamesPlayed.setText("Number of games played: " + (int) p.getNumGamesPlayed());
 		gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioH = new JLabel();
-		wlRatioH.setText("" + p.getWLRatioH());
+		wlRatioH.setText("Ratio against Humans: " + p.getWLRatioH());
 		wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAIHard =  new JLabel();
-		wlRatioAIHard.setText("" + p.getWLRatioAIHard());
+		wlRatioAIHard.setText("Ratio against Hard AI: " + p.getWLRatioAIHard());
 		wlRatioAIHard.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAIEasy = new JLabel();
-		wlRatioAIEasy.setText("" + p.getWLRatioAIEasy());
+		wlRatioAIEasy.setText("Ratio against Easy AI: " + p.getWLRatioAIEasy());
 		wlRatioAIEasy.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		gamesPlayed.setVisible(false);
