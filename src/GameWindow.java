@@ -26,12 +26,13 @@ public class GameWindow extends JFrame {
 	private IController gameController;
 	
 	//current column mouse point at
-	private int col;
-	
-	private Timer timer;
+	private int mousePointingcolumn;
 	
 	//y coordination of falling dice
+	private boolean mouseEnable;
 	private int y;
+	private Timer timer;
+	private boolean fallingAnimationMutex;
 	
 	//Info panels and panel for showing piece above column
 	JPanel p1Info;
@@ -42,12 +43,14 @@ public class GameWindow extends JFrame {
 	public GameWindow(IController g) {
 		y = 0;
 		gameController = g;
+		mouseEnable = true;
+		fallingAnimationMutex = false;
 		showOptions();
 		initUI();
 	}
 
 	private void initUI() {
-		this.col = -1;
+		this.mousePointingcolumn = -1;
 		
 		//Set up layout and components
 		initLayout();
@@ -232,62 +235,52 @@ public class GameWindow extends JFrame {
 		}
 	}
 	
-	  private  void  FallingAnimation() {   
-		  	FallingListener fallingListener = new FallingListener();
-	        this.timer = new Timer(1, fallingListener);
-	        timer.start();
-	    }
+	 private void FallingAnimation() {   
+		FallingListener fallingListener = new FallingListener();
+		this.fallingAnimationMutex = true;
+		this.timer = new Timer(1, fallingListener);
+		timer.start();
+	 }
 	
-	 private class FallingListener implements ActionListener{
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				 if( y < boardPanel.getHeight()){
-					y = y +5;
-					boardPanel.paintNextMove(gameController.getBoard(), col,y);
-					
-				 }else{
-					 y = 0;
-					 timer.stop();
-				 }
-			}
-	    	
-	    }
+	 private class FallingListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			 if ( y < boardPanel.getHeight()){
+				y = y + 25;
+				boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
+			 } else {
+				 y = 0;
+				 fallingAnimationMutex = false;
+				 timer.stop();
+			 }
+		}
+    }
 	
 	public class MouseAction extends MouseAdapter {
-		private boolean mouseEnable = true;
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if (mouseEnable == true) {
+			if (mouseEnable == true && fallingAnimationMutex == false) {
 				int nextMove = -1;
 				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
 				if (nextMove >= 0 && nextMove <= 6){
-					if(gameController.move(nextMove)){
-						col = nextMove;
+					if (gameController.move(nextMove)) {
+						mousePointingcolumn = nextMove;
 						FallingAnimation();
-						
-						
 					}
-				
 				}
-			}
-			mouseMoved(e);
-			if (!gameController.isFinish()) {
-				mouseEnable = true;
 			} else {
-				endGameUI();
-				mouseEnable = false;
+				System.out.println("> MouseRelease : Mouse disable");
 			}
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			if (mouseEnable == true) {
-				int column = translateMouse(e.getX(), boardPanel.getWidth());
-				col = column;
-				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
+			if (mouseEnable == true && fallingAnimationMutex == false) {
+				mousePointingcolumn = translateMouse(e.getX(), boardPanel.getWidth());
+				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), mousePointingcolumn);
 				boardPanel.updateUI();
+			} else {
+				System.out.println("> MouseMoved : Mouse disable");
 			}
 		}
 		
