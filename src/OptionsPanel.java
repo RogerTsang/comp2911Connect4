@@ -26,17 +26,17 @@ import javax.swing.border.LineBorder;
 @SuppressWarnings("serial")
 public class OptionsPanel extends JPanel {
 	
-	JComboBox<String> profile1;
-	JComboBox<String> profile2;
-	JComboBox<String> deleteProfile;
-	JComboBox<String> player2OptionsList;
-	IController gameController;
-	JLabel changesText;
-	ArrayList<String> nameList;
+	private JComboBox<String> profile1;
+	private JComboBox<String> profile2;
+	private JComboBox<String> deleteProfile;
+	private JComboBox<String> player2OptionsList;
+	private IController gameController;
+	private JLabel changesText;
+	private ArrayList<String> nameList;
 	
-	DefaultComboBoxModel<String> p1model;
-	DefaultComboBoxModel<String> p2model;
-	DefaultComboBoxModel<String> deleteModel;
+	private DefaultComboBoxModel<String> p1model;
+	private DefaultComboBoxModel<String> p2model;
+	private DefaultComboBoxModel<String> deleteModel;
 	
 	public OptionsPanel(IController gameController, ArrayList<String> list) {
 		this.gameController = gameController;
@@ -141,7 +141,9 @@ public class OptionsPanel extends JPanel {
 		createProfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!createProfile.getText().contains(" ") && !nameList.contains(createProfile.getText())) {
+				if (!createProfile.getText().contains(" ") &&
+					createProfile.getText().length() > 0 && 
+					!nameList.contains(createProfile.getText())) {
 					Profile newProfile = new Profile(createProfile.getText());
 					gameController.saveProfile(newProfile);
 					p1model.addElement(createProfile.getText());
