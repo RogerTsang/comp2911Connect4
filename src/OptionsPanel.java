@@ -50,7 +50,9 @@ public class OptionsPanel extends JPanel {
 		//Player 1 and 2 configuration components
 		String[] names = nameList.toArray(new String[nameList.size()]);
 		p1model = new DefaultComboBoxModel<String>(names);
-		names[0] = "";
+		if(names.length > 0){
+				names[0] = "";
+		}
 		p2model = new DefaultComboBoxModel<String>(names);
 		names = nameList.toArray(new String[nameList.size()]);
 		deleteModel = new DefaultComboBoxModel<String>(names);
