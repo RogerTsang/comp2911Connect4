@@ -3,12 +3,12 @@ import java.util.List;
 import java.util.Random;
 
 
-public class EasyAI implements Iai {
+public class NoviceAI implements Iai {
 
     private Player OurID;
     private Player OppID;
     
-    public EasyAI(Player id) {
+    public NoviceAI(Player id) {
         this.OurID = id;
         if (id == Player.P1) {
             this.OppID = Player.P2; 

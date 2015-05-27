@@ -86,7 +86,7 @@ public class OptionsPanel extends JPanel {
 			}
 		});
 		
-		String[] player2Options = {"Human opponent", "Easy Computer opponent", "Hard Computer opponent"};
+		String[] player2Options = {"Human Opponent", "Novice CMP Opponent", "Experienced CMP Opponent"};
 		player2OptionsList = new JComboBox<String>(player2Options);
 		player2OptionsList.addItemListener(new ItemListener() {
 			@Override
@@ -245,9 +245,9 @@ public class OptionsPanel extends JPanel {
 			if (profile1.getSelectedItem() == null) return null;
 			return profile2.getSelectedItem().toString();
 		} else if (player2OptionsList.getSelectedItem().toString() == "Easy Computer opponent") {
-			return "Easy Computer";
+			return "Novice CMP";
 		} else {
-			return "Hard Computer";
+			return "Experienced CMP";
 		}
 	}
 }
