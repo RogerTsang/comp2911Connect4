@@ -20,4 +20,5 @@ public interface IController {
 	public Profile getProfile(String name);
 	public void saveProfile(Profile p);
 	public void deleteProfile(String name);
+	public void setProfile(int playerNumber,String name);
 }

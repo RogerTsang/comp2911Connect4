@@ -74,4 +74,10 @@ public class HardAI implements Iai {
 	    
 	        return move;
 	    }
+
+	@Override
+	public String type() {
+		
+		return "Hard";
+	}
 }

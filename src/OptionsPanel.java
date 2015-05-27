@@ -51,7 +51,7 @@ public class OptionsPanel extends JPanel {
 		//Player 1 and 2 configuration components
 		String[] names = nameList.toArray(new String[nameList.size()]);
 		ArrayList<String> listCopy = (ArrayList<String>) nameList.clone();
-		p1model = new DefaultComboBoxModel<String>(names);
+		p1model = new DefaultComboBoxModel<String>(names);		
 		
 		String toRemove = null;
 		if(listCopy.size() > 1){
@@ -66,6 +66,10 @@ public class OptionsPanel extends JPanel {
 		deleteModel = new DefaultComboBoxModel<String>(names);
 		profile1 = new JComboBox<String>(p1model);
 		profile2 = new JComboBox<String>(p2model);
+		
+		gameController.setProfile(1, profile1.getSelectedItem().toString());
+		gameController.setProfile(2, profile2.getSelectedItem().toString());
+		
 		profile1.addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent f){
@@ -83,6 +87,14 @@ public class OptionsPanel extends JPanel {
 					}
 				}
 				profile2 = new JComboBox<String>(p2model);
+				gameController.setProfile(1,f.getItem().toString());
+			}
+		});
+		
+		profile2.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent g){
+				gameController.setProfile(2,g.getItem().toString());
 			}
 		});
 		
@@ -150,6 +162,7 @@ public class OptionsPanel extends JPanel {
 					p2model.addElement(createProfile.getText());
 					deleteModel.addElement(createProfile.getText());
 					changesText.setText("Player added!");
+					nameList.add(createProfile.getText());
 				} else {
 					changesText.setText("Name not valid");
 				}

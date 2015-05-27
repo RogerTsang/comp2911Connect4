@@ -17,6 +17,8 @@ public class GameSystem implements IController, IGame {
 	private int turnNumber;
 	private int P1Score;
 	private int P2Score;
+	private Profile player1;
+	private Profile player2;
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
@@ -106,6 +108,7 @@ public class GameSystem implements IController, IGame {
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
+			this.updateProfile();
 			switch(this.winner){
 				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH;
@@ -298,6 +301,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(column, rowOfLastDisc, 0);
+                	updateProfile();
                     return p;
                 }
             } else {
@@ -321,6 +325,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(columnCheckStart, rowOfLastDisc, 1);
+                	updateProfile();
                     return p;
                 }
             } else {
@@ -355,6 +360,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(columnCheckStart, rowCheckStart, 2);
+                	updateProfile();
                     return p;
                 }
                 col++;
@@ -391,6 +397,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(columnCheckStart, rowCheckStart, 3);
+                	updateProfile();
                     return p;
                 }
                 col++;
@@ -407,6 +414,7 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][0] == Player.NOONE) break;
             if (col == board.getColumnSize()-1) { 
             	recordWinningDiscs(0, 0, 4);
+            	updateProfile();
             	return Player.DRAW;
             }
         }
@@ -507,5 +515,99 @@ public class GameSystem implements IController, IGame {
 	public void deleteProfile(String name) {
 		File toDelete = new File("./profiles/" + name + ".ser");
 		if (toDelete.exists()) toDelete.delete();
+		return;
 	}
+	
+	public void setProfile(int playerNumber, String name){
+		if(playerNumber == 1) this.player1 = this.getProfile(name);
+		else this.player2 = this.getProfile(name);
+		return;
+	}
+	
+	//assumes that the first player is always human.
+	private void updateProfile(){
+		Profile humanProfile1 = null;
+		Profile humanProfile2 = null;
+		String gameType = "other";
+		
+		System.out.println("am I even being called...");
+		
+		if(this.ai != null){
+			if(this.ai.type().equals("Hard")){
+				gameType = "AIH";
+			} else if(this.ai.type().equals("Easy")) {
+				gameType = "AIE";
+			}
+		} else {
+			gameType = "human";
+		}
+		
+		if(gameType == "human"){
+			humanProfile1 = this.player1;
+			humanProfile2 = this.player2;
+		} else{
+			humanProfile1 = this.player1;
+		}
+		
+		switch(gameType){
+			case "AIH":	
+				humanProfile1.addGamePlayed();
+				switch(this.getWinner()){
+					case P1:humanProfile1.addwAIH();
+						break;
+					case P2:humanProfile1.addlAIH();
+						break;
+					case DRAW:humanProfile1.adddAIH();
+						break;
+					default:
+						break;
+					}
+				break;
+			case "AIE":	
+				humanProfile1.addGamePlayed();
+				switch(this.getWinner()){
+					case P1:humanProfile1.addwAIE();
+						break;
+					case P2:humanProfile1.addlAIE();
+						break;
+					case DRAW:humanProfile1.adddAIE();
+						break;
+					default:
+						break;
+					}
+				break;
+			case "human": 
+				switch(this.getWinner()){
+					case P1:humanProfile2.addlP();
+							humanProfile1.addwP();
+
+							humanProfile1.addGamePlayed();
+							humanProfile2.addGamePlayed();
+						break;
+					case P2:humanProfile2.addwP();
+							humanProfile1.addlP();
+
+							humanProfile1.addGamePlayed();
+							humanProfile2.addGamePlayed();
+						break;
+					case DRAW:	humanProfile1.adddP();
+								humanProfile2.adddP();
+
+								humanProfile1.addGamePlayed();
+								humanProfile2.addGamePlayed();
+						break;
+					default:
+						break;
+					}
+				break;
+			default:
+				break;
+		}
+		this.saveProfile(humanProfile1);
+		if(humanProfile2 != null){
+			this.saveProfile(humanProfile2);
+		}
+		return;
+	}
+	
 }

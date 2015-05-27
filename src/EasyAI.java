@@ -53,4 +53,12 @@ public class EasyAI implements Iai {
         return move;
     }
 
+    public String toString() {
+		return "EasyAI";
+	}
+    
+    @Override
+	public String type(){
+		return "Easy";
+	}
 }

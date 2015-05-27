@@ -134,6 +134,11 @@ public class SmartAI implements Iai {
 	}*/
 	
 	public String toString() {
-		return "I'm smart, I'm sorry :^)";
+		return "HardAI";
+	}
+	
+	@Override
+	public String type(){
+		return "Hard";
 	}
 }
