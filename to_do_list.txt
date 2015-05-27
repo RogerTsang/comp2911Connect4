@@ -1,28 +1,11 @@
 NEED TO CHANGE:
 ---------------
-- System and UI need to be in seperate thread (no need to do this right now)
-- System/UI interaction needs to be bi-directional (OR create gameSystem.getAITurn() public method)
-- Decide on whether we want it to be scaleable, and if so, alter the layout manager to GridBagLayout
-- Remove console outputs and alter other outputs
-- Change undo so we only have a limited amount, and not at all in H-H (maybe the amount should depend on difficulty level?)
-- Write toString method for Player (just to clean code up)
-- Change make AI move to return int, it shouldn't call move() in GameSystem- should only interact with Board
-- General code clean-up
-
-THINGS TO ADD:
---------------
-- Make win/lose information more noticeable
-- Score shows how many rounds each player has won
-- "Thinking period" for AI
-- Add information on side of board about players. Along with this, have a picture of a piece next to their info that is grayed out when it isn't their turn
-- Menus and options panel
-- Saving profiles to disc to keep track of stats, and ability to change between profiles on startup and in options panel
-- Scaleable UI
-- Sound when piece drops down column, as well as animation if someone can figure that out
-- More AI difficuly levels/better AI in general
-
-BONUS THINGS TO ADD AFTER ABOVE ARE FINISHED:
----------------------------------------------
-- Change code to be general, e.g. so we can have any n x n size board, with k number of pieces in a row to win
-- Fancy up graphics e.g. draw a proper board and pieces in a graphics program
-- Unlockables
+- Fix UI/animation issues, especially when clicking fast
+- Need losing sound rather than just winning sound for when playing against AI
+- Fix player 2 not greying out properly once we change player 1
+- Change AI to work automatically rather than with buttons
+- Fix Show/Hide stats button messing up UI
+- Saving profile stats
+- Guest profile should not have a show/hide options button (since it doesn't have stats)
+- Make undo only work a certain number of times, and show that amount on the button itself
+- Make profile panels look better? (Lots of white space at this point + undo button isn't positioned very well)

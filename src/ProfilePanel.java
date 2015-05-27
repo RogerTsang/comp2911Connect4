@@ -23,9 +23,7 @@ public class ProfilePanel extends JPanel {
 	private JToggleButton stats;
 	
 	public ProfilePanel(Profile p) {
-		System.out.println("HELLLO");
 		initUI(p);
-		System.out.println("HELLLO");
 	}
 	
 	public ProfilePanel(String aiType) {

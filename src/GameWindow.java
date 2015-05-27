@@ -42,7 +42,7 @@ public class GameWindow extends JFrame {
 		gameController = g;
 		mouseEnable = true;
 		fallingAnimationMutex = false;
-		showOptions();
+		showOptions(false);
 		initUI();
 	}
 
@@ -205,7 +205,7 @@ public class GameWindow extends JFrame {
 				break;
 			}
 			case "Options": {
-				showOptions();
+				showOptions(true);
 				break;
 			}
 			default:break;
@@ -214,18 +214,20 @@ public class GameWindow extends JFrame {
 		
 	}
 	
-	private void showOptions() {
+	private void showOptions(boolean isInGame) {
 		OptionsPanel options = new OptionsPanel(gameController, gameController.getProfileNames());
 		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
 			p1Profile = gameController.getProfile(options.getPlayer1Name());
 			p1Info = new ProfilePanel(p1Profile);
-			if (options.getPlayer2Name() == "Easy Computer" || options.getPlayer2Name() == "Hard Computer") {
+			if (options.getPlayer2Name() == "Novice CMP" || options.getPlayer2Name() == "Experienced CMP") {
 				p2Info = new ProfilePanel(options.getPlayer2Name());
 			} else {
 				p2Profile = gameController.getProfile(options.getPlayer2Name());
 				p2Info = new ProfilePanel(p2Profile);
 			}
+		} else {
+			if (!isInGame) System.exit(0);
 		}
 	}
 	
