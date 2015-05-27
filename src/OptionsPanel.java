@@ -241,10 +241,10 @@ public class OptionsPanel extends JPanel {
 	}
 	
 	public String getPlayer2Name() {
-		if (player2OptionsList.getSelectedItem().toString() == "Human opponent") {
+		if (player2OptionsList.getSelectedItem().toString() == "Human Opponent") {
 			if (profile1.getSelectedItem() == null) return null;
 			return profile2.getSelectedItem().toString();
-		} else if (player2OptionsList.getSelectedItem().toString() == "Easy Computer opponent") {
+		} else if (player2OptionsList.getSelectedItem().toString() == "Novice CMP Opponent") {
 			return "Novice CMP";
 		} else {
 			return "Experienced CMP";
