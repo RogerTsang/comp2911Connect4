@@ -9,6 +9,7 @@ import java.util.Stack;
 
 
 public class GameSystem implements IController, IGame {
+    
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -23,9 +24,10 @@ public class GameSystem implements IController, IGame {
 	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
-	private Sound soundEffect;
+	private Sound soundEffects;
 	
 	public GameSystem() {
+	    
 		this.state = GameState.WAIT_FOR_START;
 		this.currentPlayer = Player.P1;
 		this.winner = Player.NOONE;
@@ -38,8 +40,9 @@ public class GameSystem implements IController, IGame {
 		this.RedoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
-		this.soundEffect = new Sound();
+		this.soundEffects = new Sound();
 		this.saveProfile(new Profile("Guest"));
+		
 	}
 	
 	/**
@@ -47,6 +50,7 @@ public class GameSystem implements IController, IGame {
 	 * @return New game can only generate when PLAYABLE or FINISH
 	 */
 	public boolean newGame() {
+	    
 	    // if the game is all ready in a state to begin a new game
 	    // there is no need to start a new game
 		if (this.state == GameState.WAIT_FOR_START) {
@@ -56,20 +60,17 @@ public class GameSystem implements IController, IGame {
 			this.currentPlayer = Player.P1;
 			this.winner = Player.NOONE;
 			this.board.clear();
-			this.connectToWin = 4;
 			this.turnNumber = 1;
 			this.UndoStack.clear();
 			this.RedoStack.clear();
 			return true;
 		}
+		
 	}
 	
-	/**
-	 * Start a new game
-	 */
 	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
-			soundEffect.play(Sound.RESTART);
+			soundEffects.play(Sound.RESTART);
 			this.state = GameState.PLAYABLE;
 			return true;
 		} else {
@@ -77,10 +78,6 @@ public class GameSystem implements IController, IGame {
 		}
 	}
 	
-	/**
-	 * Inform you whose turn is it
-	 * @return
-	 */
 	public Player getCurrentPlayer() {
 	    if (this.turnNumber % 2 == 1) {
 	        return Player.P1;
@@ -89,41 +86,42 @@ public class GameSystem implements IController, IGame {
 	    }
 	}
 	
-	/**
-	 * Choose a column to insert a disc
-	 * @param column
-	 * @return True if the move can be done
-	 */
-	public boolean move(int column) {
+	public Board getBoard() {
+        return this.board;
+    }
+	
+	public boolean makeMove(int column) {
+	    
 	    if (this.state != GameState.PLAYABLE) {
             return false;
         }
 	    
 		if (this.board.insert(currentPlayer,column)) {
 			if (currentPlayer == Player.P1) {
-				soundEffect.play(Sound.Player1);
+				soundEffects.play(Sound.Player1);
 			} else {
-				soundEffect.play(Sound.Player2);
+				soundEffects.play(Sound.Player2);
 			}
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
 			this.updateProfile();
-			switch(this.winner){
+			switch (this.winner){
 				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH;
-						 soundEffect.play(Sound.WIN);
+						 soundEffects.play(Sound.WIN);
 						 break;
 				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH;
-						 soundEffect.play(Sound.WIN);
+						 soundEffects.play(Sound.WIN);
 						 break;
 				case DRAW: this.state = GameState.FINISH;
-						 soundEffect.play(Sound.DRAW);
+						 soundEffects.play(Sound.DRAW);
 						 break;
 				default: switchPlayer(); break;
 			}
 	        this.turnNumber++;
+	        System.out.println("Move Made");
 			return true;
 		} else {
 			return false;
@@ -196,31 +194,91 @@ public class GameSystem implements IController, IGame {
 		return false;
 	}
 	
-	/**
-	 * Get who the winner is
-	 * @return
-	 */
 	public Player getWinner() {
-		return this.winner;
-	}
+        return this.winner;
+    }
+	
+	public Stack<Integer> getWinningDiscs() {
+        return this.winningDiscs;
+    }
 	
 	/**
-	 * Get P1 Score
-	 */
+     * This is a method to recordWinningDiscs
+     * @param col
+     * @param row
+     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right 4:Draw
+     */
+    private void recordWinningDiscs(int col, int row, int mode) {
+        this.winningDiscs.clear();
+        //Draw
+        if (mode == 4) {
+            this.winningDiscs.push(0);this.winningDiscs.push(0);
+            this.winningDiscs.push(0);this.winningDiscs.push(5);
+            this.winningDiscs.push(6);this.winningDiscs.push(0);
+            this.winningDiscs.push(6);this.winningDiscs.push(5);
+            return;
+        }
+        //Win
+        for (int i = 0; i < this.connectToWin; i++) {
+            switch(mode) {
+                case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
+                case 1: this.winningDiscs.push(col++); this.winningDiscs.push(row); break;
+                case 2: this.winningDiscs.push(col++); this.winningDiscs.push(row++); break;
+                case 3: this.winningDiscs.push(col++); this.winningDiscs.push(row--); break;
+            }
+        }
+    }
+    
+	public boolean isFinish() {
+        return (this.state == GameState.FINISH);
+    }
+	
+	public boolean attachAI(Iai bot) {
+        if (this.state == GameState.WAIT_FOR_START) {
+            this.ai = bot;
+            return true;
+        } else {
+            return false;           
+        }
+    }
+
+    public boolean detachAI() {
+        if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
+            this.ai = null;
+            return true;
+        } else {
+            return false;           
+        }
+    }
+    
+    public boolean hasAIAttached() {
+        boolean hasAI = true;
+        if (this.ai == null) {
+            hasAI =  false;
+        }
+        return hasAI;
+    }
+    
+    /**
+     * In order to debug, Now the AI can move whatever if it is its turn.
+     */
+    public int getAITurn() {
+        if (this.ai != null) {
+            int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
+            this.makeMove(AImoveColumn);
+            System.out.println("CMP move made");
+            return AImoveColumn;
+        } else {
+            return -1;
+        }
+    }
+	
 	public int getPlayerScore(Player p) {
 		switch(p) {
 			case P1: return this.P1Score;
 			case P2: return this.P2Score;
 			default: return -1;
 		}			
-	}
-	
-	/**
-	 * Check if the game is finished.
-	 * @return
-	 */
-	public boolean isFinish() {
-		return (this.state == GameState.FINISH);
 	}
 	
 	/**
@@ -233,60 +291,12 @@ public class GameSystem implements IController, IGame {
 			this.currentPlayer = Player.P1;
 		}
 	}	
-
-	public boolean attachAI(Iai bot) {
-		if (this.state == GameState.WAIT_FOR_START) {
-			this.ai = bot;
-			return true;
-		} else {
-			return false;			
-		}
-	}
-
-	public boolean detachAI() {
-		if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
-			this.ai = null;
-			return true;
-		} else {
-			return false;			
-		}
-	}
 	
-	/**
-	 * In order to debug, Now the AI can move whatever if it is its turn.
-	 */
-	public int getAITurn() {
-		if (this.ai != null) {
-			int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
-			this.move(AImoveColumn);
-			try {
-			    Thread.sleep(1000);                 //1000 milliseconds is one second.
-			} catch(InterruptedException ex) {
-			    Thread.currentThread().interrupt();
-			}
-			return AImoveColumn;
-		} else {
-			return -1;
-		}
-	}
-	
-	@Override
-	public Player[][] getBoard() {
-		return this.board.getState();
-	}
-
-    @Override
-    public int getConnectToWin() {
-        return this.connectToWin;
-    }
-    
     /**
      * A Different method for checking whether the game has ended, via a win or draw, 
      * otherwise still playable. It is based on the last move only instead of scanning the whole board.
      * @return winner of the game or nobody if noone has won yet or draw if drawn
      */
-    
-    //Does this check if a particular player wins or if anyone wins? I feel it should just check if anyone wins and return the winner (hence making input Player redundant).
     public Player checkWin(Board b, int column, Player p) {
         int numInARow = 0;
         Player[][] boardState = b.getState();
@@ -426,46 +436,11 @@ public class GameSystem implements IController, IGame {
         return Player.NOONE;
     }
     
-    /**
-     * This is a method to recordWinningDiscs
-     * @param col
-     * @param row
-     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right 4:Draw
-     */
-    private void recordWinningDiscs(int col, int row, int mode) {
-    	this.winningDiscs.clear();
-    	//Draw
-    	if (mode == 4) {
-    		this.winningDiscs.push(0);this.winningDiscs.push(0);
-    		this.winningDiscs.push(0);this.winningDiscs.push(5);
-    		this.winningDiscs.push(6);this.winningDiscs.push(0);
-    		this.winningDiscs.push(6);this.winningDiscs.push(5);
-    		return;
-    	}
-    	//Win
-    	for (int i = 0; i < this.connectToWin; i++) {
-    		switch(mode) {
-	        	case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
-	        	case 1: this.winningDiscs.push(col++); this.winningDiscs.push(row); break;
-	        	case 2: this.winningDiscs.push(col++); this.winningDiscs.push(row++); break;
-	        	case 3: this.winningDiscs.push(col++); this.winningDiscs.push(row--); break;
-    		}
-    	}
+    public int getConnectToWin() {
+        return this.connectToWin;
     }
     
-    public Stack<Integer> getWinningDiscs() {
-    	return this.winningDiscs;
-    }
-    
-    @Override
-    public boolean isLegalMove(int column) {
-        if (column < 0 || column >= this.board.getColumnSize()) return false;
-        if (this.board.getState()[column][0] != Player.NOONE) return false;
-        return true;
-    }
-
-	@Override
-	public boolean isLegalMove(int column, Board b) {
+	public boolean isLegalMove(Board b, int column) {
 		if (column < 0 || column >= b.getColumnSize()) return false;
         if (b.getState()[column][0] != Player.NOONE) return false;
         return true;
@@ -536,10 +511,10 @@ public class GameSystem implements IController, IGame {
 		String gameType = "other";
 		
 		if(this.ai != null){
-			if(this.ai.type().equals("Experienced")){
-				gameType = "AIH";
-			} else if(this.ai.type().equals("Novice")) {
+			if(this.ai.getDifficulty().equals("Experienced")){
 				gameType = "AIE";
+			} else if(this.ai.getDifficulty().equals("Novice")) {
+				gameType = "AIN";
 			}
 		} else {
 			gameType = "human";

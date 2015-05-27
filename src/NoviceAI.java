@@ -24,7 +24,7 @@ public class NoviceAI implements Iai {
         // get a list of all legal moves
         List<Integer> possibleMoves = new LinkedList<Integer>();
         for (int col = 0; col < b.getColumnSize(); col++) {
-            if (g.isLegalMove(col)) {
+            if (g.isLegalMove(b,col)) {
                 possibleMoves.add(col);
             }
         }
@@ -53,7 +53,7 @@ public class NoviceAI implements Iai {
         return move;
     }
 
-    public String type(){
+    public String getDifficulty() {
     	return "Novice";
     }
     

@@ -2,124 +2,120 @@ import java.util.ArrayList;
 
 public class ExperiencedAI implements Iai {
 
-    private Player OurID;
-	private Player theirID;
+    private Player ourID;
+	private Player oppID;
 	
-	public ExperiencedAI(Player p){
-		this.OurID = p;
-		if(p == Player.P1){
-			this.theirID = Player.P2;
+	/**
+	 * Constructor that sets the ID of the AI.
+	 * @param p Player type that is the AI's ID.
+	 */
+	public ExperiencedAI(Player p) {
+		this.ourID = p;
+		if (p == Player.P1) {
+			this.oppID = Player.P2;
 		} else {
-			this.theirID = Player.P2;
+			this.oppID = Player.P2;
 		}
 		return;
-	}
-	
-	private void setID(Player p){
-		this.OurID = p;
-		if(p == Player.P1){
-			this.theirID = Player.P2;
-		} else {
-			this.theirID = Player.P1;
-		}
-		return;
-	}
+	}	
 	
 	public int makeMove(IGame g, Board b) {
-		Board testBoard = new Board(b);
-		this.setID(g.getCurrentPlayer());
-		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();		//These are moves we want the AI to make
-		ArrayList<Integer> allPossibleMoves = new ArrayList<Integer>();		//This is all legal moves
-		ArrayList<Integer> toRemove = new ArrayList<Integer>();				//This array allows us to avoid concurrent modification errors.
+	    
+	    // These are moves we want the AI to make
+		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();
+		// This is all legal moves
+		ArrayList<Integer> allPossibleMoves = new ArrayList<Integer>();
+		// This array allows us to avoid concurrent modification errors.
+		ArrayList<Integer> toRemove = new ArrayList<Integer>();
 		
-		//Adding all legal moves. We remove moves later on if they are poor.
-		for(int i=0;i<=6;i++){
-			if(g.isLegalMove(i)){
-				possibleMoves.add(i);
-				allPossibleMoves.add(i);
+		// Adding all legal moves. We remove moves later on if they are poor.
+		for (int col = 0; col < b.getColumnSize(); col++) {
+			if (g.isLegalMove(b,col)) {
+				possibleMoves.add(col);
+				allPossibleMoves.add(col);
 			}
 		}
 		
-		//if we immediately win, we make that move.
-		for(int move:possibleMoves){
-			testBoard.insert(this.OurID, move);
-			if(g.checkWin(testBoard, move, this.OurID) == this.OurID){
-				return move;
-			}
-			testBoard.remove(move);
-		}
+		for (int col : possibleMoves) {
+            // If we can win on this turn then we will
+            b.insert(this.ourID, col);
+            if (g.checkWin(b,col,this.ourID) == this.ourID) {
+                return col;
+            }
+            b.remove(col);
+            // if they can win on this turn we will stop them
+            b.insert(this.oppID, col);
+            if (g.checkWin(b,col,this.oppID) == this.oppID) {
+                return col;
+            }
+            b.remove(col);
+        }
 
-		//Does your move immediately allow the other player to win? If so, don't make it.
-		for(int move:possibleMoves){
-			testBoard.insert(this.OurID,move);
-			for(int m:allPossibleMoves){
-				if(g.isLegalMove(m, testBoard)){
-					testBoard.insert(this.theirID, m);
-					if(g.checkWin(testBoard, m, this.theirID) == this.theirID){
-						toRemove.add(move);
+		// Does your move immediately allow the other player to win? If so, don't make it.
+		for (int ourMove : possibleMoves) {
+			b.insert(this.ourID,ourMove);
+			for (int oppMove : allPossibleMoves) {
+				if (g.isLegalMove(b,oppMove)) {
+					b.insert(this.oppID,oppMove);
+					if (g.checkWin(b,oppMove,this.oppID) == this.oppID) {
+						toRemove.add(ourMove);
 					}
-					testBoard.remove(m);
+					b.remove(oppMove);
 				}
 			}
-			testBoard.remove(move);
+			b.remove(ourMove);
 		}
 
-		if(toRemove.size() != 0){
-			for(int m:toRemove){
-				if(possibleMoves.indexOf(m) != -1){
-					possibleMoves.remove(possibleMoves.indexOf(m));
+		if (toRemove.size() != 0) {
+			for (int move : toRemove) {
+				if (possibleMoves.indexOf(move) != -1) {
+					possibleMoves.remove(possibleMoves.indexOf(move));
 				}
 			}
 		}
 		toRemove.clear();
-
-		//Will the other player win immediately? Block that move.
-		for(int move2:allPossibleMoves){
-			testBoard.insert(this.theirID, move2);
-			if(g.checkWin(testBoard, move2, this.theirID) == this.theirID){
-				return move2;
-			}
-			testBoard.remove(move2);
-		}
 		
-		//Will the other player win with two moves? We need to move to interrupt i.e.(The classic example of two on the bottom with a space either side).
-		for(int move:allPossibleMoves){
-			testBoard.insert(this.theirID,move);
-			for(int move2:allPossibleMoves){
-				if(g.isLegalMove(move2, testBoard)){
-					testBoard.insert(this.theirID, move2);
-					if(g.checkWin(testBoard,move2,this.theirID) == this.theirID){
-						return move2;
+		// Will the other player win with two moves?
+		// We need to move to interrupt
+		// i.e.(The classic example of two on the bottom with a space either side)
+		for (int ourMove : allPossibleMoves) {
+			b.insert(this.oppID,ourMove);
+			for (int oppMove:allPossibleMoves) {
+				if (g.isLegalMove(b,oppMove)) {
+					b.insert(this.oppID,oppMove);
+					if (g.checkWin(b,oppMove,this.oppID) == this.oppID) {
+						return oppMove;
 					}
-					testBoard.remove(move2);
+					b.remove(oppMove);
 				}
 			}
-			testBoard.remove(move);
+			b.remove(ourMove);
 		}
 		
-		//if we haven't made an automatic move by this point, we have to decide between the remaining possible moves.
+		// If we haven't made an automatic move by this point
+		// we have to decide between the remaining possible moves.
 		int bestMove = -1;
-		if(possibleMoves.size()!=0){
-			for(int i = (int) testBoard.getColumnSize()/2; i>=0; i--){
-				for(int m: possibleMoves){
-					if(m+i == testBoard.getColumnSize() || m+i == 2*i){
-						bestMove = m;
+		if (possibleMoves.size() != 0) {
+			for (int col = b.getColumnSize()/2; col >= 0; col--) {
+				for (int ourMove : possibleMoves) {
+					if (ourMove + col == b.getColumnSize() || ourMove + col == 2*col) {
+						bestMove = ourMove;
 						break;
 					}
 				}
-				if(bestMove != -1){
+				if (bestMove != -1) {
 					break;
 				}
 			}
-		}else{
-			for(int i = (int) testBoard.getColumnSize()/2; i>=0; i--){
-				for(int m: allPossibleMoves){
-					if(m+i == testBoard.getColumnSize() || m+i == 2*i){
-						bestMove = m;
+		} else {
+			for (int col = b.getColumnSize()/2; col >= 0; col--) {
+				for (int ourMove : allPossibleMoves) {
+					if (ourMove + col == b.getColumnSize() || ourMove + col == 2*col) {
+						bestMove = ourMove;
 						break;
 					}
 				}
-				if(bestMove != -1){
+				if (bestMove != -1) {
 					break;
 				}
 			}
@@ -127,17 +123,9 @@ public class ExperiencedAI implements Iai {
 
 		return bestMove;
 	}
-
 	
-	/*private void evaluateBoardPosition(){
-		
-	}*/
-	
-	public String toString() {
-		return "I'm smart, I'm sorry :^)";
+	public String getDifficulty() {
+	    return "Experienced";
 	}
 	
-	public String type(){
-    	return "Experienced";
-    }
 }

@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -103,9 +101,17 @@ public class OptionsPanel extends JPanel {
 		player2OptionsList.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getItem().toString() != "Human opponent") profile2.setEnabled(false);
-				else{
-					profile2.setEnabled(true);
+				if (e.getItem().toString() == "Human opponent") {
+				    profile2.setEnabled(true);
+				    profile2.setVisible(true);
+				} else {
+				    profile2.setEnabled(false);
+					profile2.setVisible(false);
+					if (e.getItem().toString() == "Novice CMP Opponent") {
+					    gameController.attachAI(new NoviceAI(Player.P2));
+					} else {
+                       gameController.attachAI(new ExperiencedAI(Player.P2));
+					}
 					
 				};
 			} 
@@ -133,8 +139,9 @@ public class OptionsPanel extends JPanel {
 		deleteProfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int confirmDelete = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this player?", 
-						                                          "Confirm delete", JOptionPane.YES_NO_OPTION);
+				int confirmDelete = JOptionPane.showConfirmDialog(null,
+				        "Are you sure you want to delete this player?",
+				        "Confirm delete", JOptionPane.YES_NO_OPTION);
 				if (confirmDelete == JOptionPane.OK_OPTION) {
 					gameController.deleteProfile((String) deleteProfile.getSelectedItem());
 					nameList.remove(deleteProfile.getSelectedItem());
@@ -144,10 +151,9 @@ public class OptionsPanel extends JPanel {
 					changesText.setText("Player deleted");
 				}
 			}
-			
 		});
 		
-		//Create profile components
+		// Create profile components
 		final JTextField createProfile = new JTextField(10);
 		JButton createProfButton = new JButton("Create New Player");
 		createProfButton.addActionListener(new ActionListener() {
@@ -189,7 +195,7 @@ public class OptionsPanel extends JPanel {
 		JLabel oppText = new JLabel("Select opponent");
 		oppText.setAlignmentX(Component.CENTER_ALIGNMENT);
 		player2OptionsList.setAlignmentX(Component.CENTER_ALIGNMENT);
-		JLabel p2Text = new JLabel("Select Player 2 (if opponent is human)");
+		JLabel p2Text = new JLabel("Select Player 2");
 		p2Text.setAlignmentX(Component.CENTER_ALIGNMENT);
 		profile2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		player2Panel.add(oppText);

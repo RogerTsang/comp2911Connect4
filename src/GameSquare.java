@@ -18,8 +18,11 @@ public class GameSquare extends JPanel {
 	private Color currentColor;
 	private Color highlighter;
 	private final int ALPHA = 120;
-	private boolean MI;//moving index
-	private int y;//position
+	// Moving index
+	private boolean MI;
+	// Position
+	private int y;
+	
 	/**
 	 * The new square unit with disc highlight
 	 * @param c Disc Color
@@ -63,6 +66,7 @@ public class GameSquare extends JPanel {
 		this.y = y;
 		
 	}
+	
 	/**
 	 * Create a square unit for position of dropping dice
 	 * @param i dropping dice identifier
@@ -75,7 +79,6 @@ public class GameSquare extends JPanel {
 		this.MI = MI;
 		this.y = y;
 	}
-	
 	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;

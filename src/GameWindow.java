@@ -14,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
@@ -72,7 +71,7 @@ public class GameWindow extends JFrame {
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		boardPanel = new GameBoardPanel();
+		boardPanel = new GameBoardPanel(this.gameController.getBoard());
 		//c.weightx = 0.5;
 		
 		//Player 1 info panel
@@ -103,21 +102,30 @@ public class GameWindow extends JFrame {
 		add(boardPanel, c);
 		
 		c.weightx = 1;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.ipady = 0;
+		
+		//Options button
+        JButton optionsButton = new JButton("Options");
+        optionsButton.addActionListener(new ButtonAction());
+        //c.gridy = 2;
+        c.gridx = 1;
+        add(optionsButton, c);
+		
+        //Restart button
+        JButton restartButton = new JButton("Restart");
+        restartButton.addActionListener(new ButtonAction());
+        c.gridx = 2;
+        add(restartButton, c);
+        
 		//Quit button
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ButtonAction());
-		c.gridx = 1;
-		c.gridy = 1;
-		c.gridwidth = 1;
-		c.ipady = 0;
+		c.gridx = 3;
 		add(quitButton, c);
 		
-		//Restart button
-		JButton restartButton = new JButton("Restart");
-		restartButton.addActionListener(new ButtonAction());
-		c.gridx = 2;
-		add(restartButton, c);
-		
+		 /*
 		//AI move button
 		JButton AIMove = new JButton("AIMove");
 		AIMove.addActionListener(new ButtonAction());
@@ -129,13 +137,7 @@ public class GameWindow extends JFrame {
 		restartAIButton.addActionListener(new ButtonAction());
 		c.gridx = 4;
 		add(restartAIButton, c);
-		
-		//Options button
-		JButton optionsButton = new JButton("Options");
-		optionsButton.addActionListener(new ButtonAction());
-		c.gridy = 2;
-		c.gridx = 1;
-		add(optionsButton, c);
+		*/
 		
 	}
 	
@@ -168,24 +170,10 @@ public class GameWindow extends JFrame {
 			}	
 			case "Restart": {
 				gameController.newGame();
-				gameController.detachAI();
 				gameController.startGame();
 				mouseEnable = true;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
-				break;
-			}
-			case "EnableAI": {
-				gameController.newGame();
-				gameController.attachAI(new ExperiencedAI(Player.P2));
-				gameController.startGame();
-				mouseEnable = true;
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-				break;
-			}
-			case "AIMove": {
-				letAImove();
 				break;
 			}
 			case "Undo": {
@@ -245,7 +233,7 @@ public class GameWindow extends JFrame {
 	}
 	
 	public void endGameUI() {
-		boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
+		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
 		boardPanel.updateUI();
 	}
 	
@@ -262,7 +250,7 @@ public class GameWindow extends JFrame {
 		public void run() {
 			while (fallingAnimationMutex) {
 				if (y < boardPanel.getHeight()){
-					y = y + 25;
+					y += boardPanel.getHeight()/10;
 					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
 				} else {
 					y = 0;
@@ -287,11 +275,17 @@ public class GameWindow extends JFrame {
 		public void mouseReleased(MouseEvent e) {
 			if (mouseEnable == true && fallingAnimationMutex == false) {
 				int nextMove = -1;
-				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
-				if (nextMove >= 0 && nextMove <= 6){
-					if (gameController.move(nextMove)) {
+				if (e.getButton() == MouseEvent.BUTTON1) {
+				    nextMove = translateMouse(e.getX(), boardPanel.getWidth());
+				}
+				if (nextMove >= 0 && nextMove < gameController.getBoard().getColumnSize()) {
+					if (gameController.makeMove(nextMove)) {
 						mousePointingcolumn = nextMove;
 						FallingAnimation();
+						System.out.println("Human move made");
+						if (gameController.hasAIAttached()) {
+			                nextMove = gameController.getAITurn();
+			            }
 					}
 				}
 			}
