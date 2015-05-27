@@ -259,6 +259,11 @@ public class GameSystem implements IController, IGame {
 		if (this.ai != null) {
 			int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
 			this.move(AImoveColumn);
+			try {
+			    Thread.sleep(1000);                 //1000 milliseconds is one second.
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
 			return AImoveColumn;
 		} else {
 			return -1;
@@ -530,12 +535,10 @@ public class GameSystem implements IController, IGame {
 		Profile humanProfile2 = null;
 		String gameType = "other";
 		
-		System.out.println("am I even being called...");
-		
 		if(this.ai != null){
-			if(this.ai.type().equals("Hard")){
+			if(this.ai.type().equals("Experienced")){
 				gameType = "AIH";
-			} else if(this.ai.type().equals("Easy")) {
+			} else if(this.ai.type().equals("Novice")) {
 				gameType = "AIE";
 			}
 		} else {

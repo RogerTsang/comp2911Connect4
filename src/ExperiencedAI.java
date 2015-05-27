@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
-public class SmartAI implements Iai {
-	private Player[][] control;
-	private Player OurID;
+public class ExperiencedAI implements Iai {
+
+    private Player OurID;
 	private Player theirID;
 	
-	public SmartAI(Player p){
+	public ExperiencedAI(Player p){
 		this.OurID = p;
 		if(p == Player.P1){
 			this.theirID = Player.P2;
@@ -134,11 +134,10 @@ public class SmartAI implements Iai {
 	}*/
 	
 	public String toString() {
-		return "HardAI";
+		return "I'm smart, I'm sorry :^)";
 	}
 	
-	@Override
 	public String type(){
-		return "Hard";
-	}
+    	return "Experienced";
+    }
 }

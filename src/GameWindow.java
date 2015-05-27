@@ -177,7 +177,7 @@ public class GameWindow extends JFrame {
 			}
 			case "EnableAI": {
 				gameController.newGame();
-				gameController.attachAI(new SmartAI(Player.P2));
+				gameController.attachAI(new ExperiencedAI(Player.P2));
 				gameController.startGame();
 				mouseEnable = true;
 				boardPanel.update(gameController.getBoard());
