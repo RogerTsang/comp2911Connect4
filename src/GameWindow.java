@@ -76,7 +76,6 @@ public class GameWindow extends JFrame {
 		//c.weightx = 0.5;
 		
 		//Player 1 info panel
-		p1Info = new ProfilePanel(p1Profile);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 1;
@@ -89,7 +88,6 @@ public class GameWindow extends JFrame {
 		p1Info.add(undoButton);
 		
 		//Player 2 info panel
-		p2Info = new ProfilePanel(p2Profile);
 		c.gridx = 5;
 		c.gridy = 0;
 		c.gridheight = 1;
@@ -220,10 +218,14 @@ public class GameWindow extends JFrame {
 		OptionsPanel options = new OptionsPanel(gameController, gameController.getProfileNames());
 		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
-		//	System.out.println(options.getPlayer1Name());
-			//System.out.println(options.getPlayer2Name());
 			p1Profile = gameController.getProfile(options.getPlayer1Name());
-			p2Profile = gameController.getProfile(options.getPlayer2Name());
+			p1Info = new ProfilePanel(p1Profile);
+			if (options.getPlayer2Name() == "Easy Computer" || options.getPlayer2Name() == "Hard Computer") {
+				p2Info = new ProfilePanel(options.getPlayer2Name());
+			} else {
+				p2Profile = gameController.getProfile(options.getPlayer2Name());
+				p2Info = new ProfilePanel(p2Profile);
+			}
 		}
 	}
 	

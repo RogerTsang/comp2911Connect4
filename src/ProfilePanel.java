@@ -23,7 +23,16 @@ public class ProfilePanel extends JPanel {
 	private JToggleButton stats;
 	
 	public ProfilePanel(Profile p) {
+		System.out.println("HELLLO");
 		initUI(p);
+		System.out.println("HELLLO");
+	}
+	
+	public ProfilePanel(String aiType) {
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		name = new JLabel(aiType);
+		name.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(name);
 	}
 	
 	private void initUI(Profile p) {

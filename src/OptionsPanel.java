@@ -245,9 +245,9 @@ public class OptionsPanel extends JPanel {
 			if (profile1.getSelectedItem() == null) return null;
 			return profile2.getSelectedItem().toString();
 		} else if (player2OptionsList.getSelectedItem().toString() == "Easy Computer opponent") {
-			return "Easy AI";
+			return "Easy Computer";
 		} else {
-			return "Hard AI";
+			return "Hard Computer";
 		}
 	}
 }

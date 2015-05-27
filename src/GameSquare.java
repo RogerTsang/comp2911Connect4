@@ -79,10 +79,12 @@ public class GameSquare extends JPanel {
 	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		float squareCircleRatio = 0.75f;
+		float squareCircleRatio = 0.85f;
 		int width = getWidth();
-		float x = width/2 - width*squareCircleRatio/2;
+		if (getHeight() < width) width = getHeight();
+		float x = getWidth()/2 - width*squareCircleRatio/2;
 		float y = getHeight()/2 - width*squareCircleRatio/2;
+		
 		
 		//Set anti-aliasing and draw circle
 		g2d.setRenderingHint(
