@@ -239,9 +239,6 @@ public class GameWindow extends JFrame {
 		}
 		if (!preEndGame && !fallingAnimationMutex) {
 			FallingAnimation();
-			if (gameController.isFinish()) {
-				mouseEnable = false;
-			}
 		}
 	}
 	
@@ -267,10 +264,11 @@ public class GameWindow extends JFrame {
 					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
 				} else {
 					y = 0;
-					fallingAnimationMutex = false;
 					if (gameController.isFinish()) {
+						mouseEnable = false;
 						endGameUI();
 					}
+					fallingAnimationMutex = false;
 				}
 				//1000ms/60fps = 16.7ms 
 				try {
