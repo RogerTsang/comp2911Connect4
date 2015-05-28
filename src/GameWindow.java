@@ -133,20 +133,6 @@ public class GameWindow extends JFrame {
 		c.gridx = 3;
 		add(quitButton, c);
 		
-		 /*
-		//AI move button
-		JButton AIMove = new JButton("AIMove");
-		AIMove.addActionListener(new ButtonAction());
-		c.gridx = 3;
-		add(AIMove, c);
-		
-		//Enable AI button
-		JButton restartAIButton = new JButton("EnableAI");
-		restartAIButton.addActionListener(new ButtonAction());
-		c.gridx = 4;
-		add(restartAIButton, c);
-		*/
-		
 	}
 	
 	public void updateUI() {
@@ -177,17 +163,22 @@ public class GameWindow extends JFrame {
 				break;
 			}	
 			case "Restart": {
-				gameController.newGame();
-				gameController.startGame();
 				//Get profiles for next game
+				gameController.newGame();
 				if (!nextPlayers[0].equals(p1Profile.getName())) {
 					p1Profile = gameController.getProfile(nextPlayers[0]);
 					p1Info.setProfile(p1Profile);
 				}
-				if (nextPlayers[1] == "Novice CMP Opponent" || nextPlayers[1] == "Experienced CMP Opponent") {
+				if (nextPlayers[1] == "Novice CMP Opponent") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
+					gameController.addAI(new NoviceAI(Player.P2));
+				} else if (nextPlayers[1] == "Experienced CMP Opponent") {
+					p2Profile = null;
+					p2Info.changeToAIPanel(nextPlayers[1]);
+					gameController.addAI(new ExperiencedAI(Player.P2));
 				} else {
+					if (gameController.hasAI()) gameController.removeAI();
 					if (p2Profile != null) {
 						if (!nextPlayers[1].equals(p2Profile.getName())) {
 							p2Profile = gameController.getProfile(nextPlayers[1]);
@@ -199,7 +190,8 @@ public class GameWindow extends JFrame {
 						p2Info.setProfile(p2Profile);
 					}
 				}
-				
+
+				gameController.startGame();
 				mouseEnable = true;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
@@ -232,8 +224,12 @@ public class GameWindow extends JFrame {
 			if (!isInGame) {
 				p1Profile = gameController.getProfile(nextPlayers[0]);
 				p1Info = new ProfilePanel(p1Profile);
-				if (nextPlayers[1] == "Novice CMP Opponent" || nextPlayers[1] == "Experienced CMP Opponent") {
+				if (nextPlayers[1] == "Novice CMP Opponent") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
+					gameController.addAI(new NoviceAI(Player.P2));
+				} else if (nextPlayers[1] == "Experienced CMP Opponent") {
+					p2Info = new ProfilePanel(nextPlayers[1]);
+					gameController.addAI(new ExperiencedAI(Player.P2));
 				} else {
 					p2Profile = gameController.getProfile(nextPlayers[1]);
 					p2Info = new ProfilePanel(p2Profile);
@@ -262,17 +258,8 @@ public class GameWindow extends JFrame {
 	public void endGameUI() {
 		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
 		boardPanel.updateUI();
-		this.p1Profile = this.gameController.getProfile(this.p1Profile.getName());
-		this.p2Profile = this.gameController.getProfile(this.p2Profile.getName());
-		this.p1Info.update(this.p1Profile);
-		this.p2Info.update(this.p2Profile);
-		//TODO: figure out a way to avoid having this here. Can we put an action listenener in GameWindow but initialise the button in ProfilePanel?
-		if (gameController.hasAI()) {
-			JButton undoButton = new JButton("Undo");
-			undoButton.addActionListener(new ButtonAction());
-			undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-			p1Info.add(undoButton);
-		}
+		this.p1Info.updateUI();
+		this.p2Info.updateUI();
 	}
 	
 	private synchronized void FallingAnimation() {   
@@ -288,7 +275,7 @@ public class GameWindow extends JFrame {
 		public void run() {
 			while (fallingAnimationMutex) {
 				if (y < boardPanel.getHeight()){
-					y += boardPanel.getHeight()/10;
+					y += boardPanel.getHeight()/20;
 					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
 					//1000ms/60fps = 16.7ms 
 					try {
@@ -341,5 +328,7 @@ public class GameWindow extends JFrame {
 		private int translateMouse(int x, int boardWidth) {
 			return (int) Math.floor(x/(boardWidth/7));
 		}
-	}		
+	}
+		
 }
+

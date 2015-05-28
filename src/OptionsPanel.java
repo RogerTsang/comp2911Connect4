@@ -103,25 +103,6 @@ public class OptionsPanel extends JPanel {
 		
 		String[] player2Options = {"Human Opponent", "Novice CMP Opponent", "Experienced CMP Opponent"};
 		opponentOptionsList = new JComboBox<String>(player2Options);
-		opponentOptionsList.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getItem().toString() == "Human Opponent") {
-				    profileP2.setEnabled(true);
-				    profileP2.setVisible(true);
-				    gameController.removeAI();
-				} else {
-				    profileP2.setEnabled(false);
-					profileP2.setVisible(false);
-					if (e.getItem().toString() == "Novice CMP Opponent") {
-					    gameController.addAI(new NoviceAI(Player.P2));
-					} else {
-						gameController.addAI(new ExperiencedAI(Player.P2));
-					}
-					
-				};
-			} 
-		});
 		
 		//Delete profile components
 		deleteProfile = new JComboBox<String>(deleteModel);
@@ -249,14 +230,7 @@ public class OptionsPanel extends JPanel {
 		JPanel title = new JPanel();
 		title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
 	    title.setAlignmentX(CENTER_ALIGNMENT);
-	    /*
-        try {
-            JLabel picLabel = new JLabel(new ImageIcon(getClass().getResource("/Connect-4-Logo.png")), JLabel.CENTER);
-            title.add(picLabel);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-		*/
+
         // Add panels to options panel
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(title);

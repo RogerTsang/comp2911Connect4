@@ -2,11 +2,6 @@ NEED TO CHANGE:
 ---------------
 - Fix UI/animation issues, especially when clicking fast
 - Need losing sound rather than just winning sound for when playing against AI
-- Fix player 2 not greying out properly once we change player 1 in options
-- Change AI to work automatically rather than with buttons
 - Fix Show/Hide stats button messing up UI
-- Saving profile stats
 - Guest profile should not have a show/hide options button (since it doesn't have stats)
-- Make undo only work a certain number of times, and show that amount on the button itself
-- Make profile panels look better? (Lots of white space at this point + undo button isn't positioned very well)
-- Changing options in-game works properly
+- Maybe make profile panels look better? (Lots of white space at this point + undo button isn't positioned very well)
