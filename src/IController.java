@@ -66,6 +66,12 @@ public interface IController {
 	 * @param p A Player that is the ID of the player whose score to get.
 	 * @return An integer that is the players score.
 	 */
+    public boolean addAI(Iai ai);
+    /**
+     * Removes an AI that is being played against from the game system.
+     * @return A boolean, TRUE if successfully removed otherwise FALSE.
+     */
+    public boolean removeAI();
 	public int getPlayerScore(Player p);
 	
 	public ArrayList<String> getProfileNames();
