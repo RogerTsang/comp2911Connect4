@@ -261,9 +261,11 @@ public class GameWindow extends JFrame {
 	
 	public void endGameUI() {
 		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
+		this.p1Profile = this.gameController.getProfile(this.p1Profile.getName());
+		this.p2Profile = this.gameController.getProfile(this.p2Profile.getName());
+		this.p1Info.update(this.p1Profile);
+		this.p2Info.update(this.p2Profile);
 		boardPanel.updateUI();
-		this.p1Info.updateUI();
-		this.p2Info.updateUI();
 	}
 	
 	private synchronized void FallingAnimation() {   
