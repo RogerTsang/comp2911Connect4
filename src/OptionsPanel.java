@@ -6,16 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -101,7 +96,7 @@ public class OptionsPanel extends JPanel {
 			}
 		});
 		
-		String[] player2Options = {"Human Opponent", "Novice Computer", "Experienced Computer"};
+		String[] player2Options = {"Human Opponent", "Novice AI", "Experienced AI"};
 		opponentOptionsList = new JComboBox<String>(player2Options);
 		opponentOptionsList.addItemListener(new ItemListener() {
 			@Override
@@ -238,14 +233,9 @@ public class OptionsPanel extends JPanel {
 		deleteProfilesPanel.add(deleteProfile, c2);
 		c2.gridx = 1; c.gridwidth = 1;
 		deleteProfilesPanel.add(deleteProfButton, c2);
-		
-		JPanel title = new JPanel();
-		title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
-	    title.setAlignmentX(CENTER_ALIGNMENT);
 
         // Add panels to options panel
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(title);
 		add(player1Panel);
 		add(player2Panel);
 		add(createProfilesPanel);
@@ -267,10 +257,10 @@ public class OptionsPanel extends JPanel {
 		if (opponentOptionsList.getSelectedItem().toString() == "Human Opponent") {
 			if (profileP1.getSelectedItem() == null) return null;
 			return profileP2.getSelectedItem().toString();
-		} else if (opponentOptionsList.getSelectedItem().toString() == "Novice Computer") {
-			return "Novice Computer";
+		} else if (opponentOptionsList.getSelectedItem().toString() == "Novice AI") {
+			return "Novice AI";
 		} else {
-			return "Experienced Computer";
+			return "Experienced AI";
 		}
 	}
 }

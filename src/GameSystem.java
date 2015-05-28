@@ -122,7 +122,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 				default: switchPlayer(); break;
 			}
 	        this.turnNumber++;
-	        System.out.println("Move Made");
 			return true;
 		} else {
 			return false;
@@ -251,7 +250,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
         if (this.ai != null) {
             int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
             this.makeMove(AImoveColumn);
-            System.out.println("CMP move made");
             return AImoveColumn;
         } else {
             return -1;

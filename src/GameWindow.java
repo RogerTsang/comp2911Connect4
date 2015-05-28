@@ -52,7 +52,7 @@ public class GameWindow extends JFrame {
 
 	private void initUI() {
 		this.mousePointingcolumn = -1;
-		
+		this.setResizable(false);
 		//Set up layout and components
 		initLayout();
 		
@@ -63,7 +63,7 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(870, 500));
+		setMinimumSize(new Dimension(1024, 500));
 		pack();
 		setSize(870,500);
 		setBackground(Color.GRAY);
@@ -169,12 +169,12 @@ public class GameWindow extends JFrame {
 					p1Profile = gameController.getProfile(nextPlayers[0]);
 					p1Info.setProfile(p1Profile);
 				}
-				if (nextPlayers[1] == "Novice Computer") {
+				if (nextPlayers[1] == "Novice AI") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
 					undoButton.setVisible(true);
-				} else if (nextPlayers[1] == "Experienced Computer") {
+				} else if (nextPlayers[1] == "Experienced AI") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
@@ -207,12 +207,14 @@ public class GameWindow extends JFrame {
 			}
 			
 			if (e.getSource() == undoButton) {
-				gameController.undo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
+				if (!fallingAnimationMutex) {
+					gameController.undo();
+					if (!gameController.isFinish()) {
+						boardPanel.update(gameController.getBoard());
+						boardPanel.updateUI();
+					}
+					undoButton.setText("Undo: " + gameController.getUndosLeft() + " left");
 				}
-				undoButton.setText("Undo: " + gameController.getUndosLeft() + " left");
 			}
 		}
 	}
@@ -226,10 +228,10 @@ public class GameWindow extends JFrame {
 			if (!isInGame) {
 				p1Profile = gameController.getProfile(nextPlayers[0]);
 				p1Info = new ProfilePanel(p1Profile);
-				if (nextPlayers[1] == "Novice Computer") {
+				if (nextPlayers[1] == "Novice AI") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
-				} else if (nextPlayers[1] == "Experienced Computer") {
+				} else if (nextPlayers[1] == "Experienced AI") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
 				} else {
@@ -309,7 +311,6 @@ public class GameWindow extends JFrame {
 					if (gameController.makeMove(nextMove)) {
 						mousePointingcolumn = nextMove;
 						FallingAnimation();
-						System.out.println("Human move made");
 						if (gameController.hasAI() && !gameController.isFinish()) {
 					        letAImove();
 			            }
