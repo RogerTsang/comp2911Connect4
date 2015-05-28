@@ -13,7 +13,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
@@ -197,6 +196,7 @@ public class GameWindow extends JFrame {
 
 				gameController.startGame();
 				mouseEnable = true;
+				fallingAnimationMutex = false;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
 				break;

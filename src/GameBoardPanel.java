@@ -75,6 +75,10 @@ public class GameBoardPanel extends JPanel {
 	 * @param col The selected column to be highlighted.
 	 */
 	public void highlightCol(Board b, Player current, int column, int previousColumn) {
+		if (previousColumn == -1) {
+			return;
+		}
+		
 		Color currentPlayer;
 		if (current == Player.P1) {
 			currentPlayer = Color.RED;
@@ -83,26 +87,24 @@ public class GameBoardPanel extends JPanel {
 		}
 		
 	    //remove previous column
-		if (previousColumn != -1) {
-			for (int row = 6; row >= 0; row--) {
-				this.remove(row * 7 + previousColumn);
+		for (int row = 6; row >= 0; row--) {
+			this.remove(row * 7 + previousColumn);
+		}
+		
+		GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
+		add(preindicator, boardLayout, previousColumn);
+		
+		for (int row = 0; row < b.getRowSize(); row++) {
+			GameSquare square;
+			switch (b.getState()[previousColumn][row]) {
+				case P1:
+				    square = new GameSquare(Color.RED); break;
+				case P2:
+				    square = new GameSquare(Color.GREEN); break;
+				default:
+				    square = new GameSquare(Color.WHITE); break;
 			}
-			
-			GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
-			add(preindicator, boardLayout, previousColumn);
-			
-			for (int row = 0; row < b.getRowSize(); row++) {
-				GameSquare square;
-				switch (b.getState()[previousColumn][row]) {
-					case P1:
-					    square = new GameSquare(Color.RED); break;
-					case P2:
-					    square = new GameSquare(Color.GREEN); break;
-					default:
-					    square = new GameSquare(Color.WHITE); break;
-				}
-				add(square, boardLayout, (row+1) * 7 + previousColumn);
-			}
+			add(square, boardLayout, (row+1) * 7 + previousColumn);
 		}
 	    //repaint current highlight column
 		for (int row = 6; row >= 0; row--) {
@@ -134,48 +136,47 @@ public class GameBoardPanel extends JPanel {
 	 * @param y The exact y-coordinate of the disc to be drawn.
 	 */
 	public void paintNextMove(Board b, int col, int y) {
-    
-		this.removeAll();
-		
-		//Renew Indicator
-		for (int c = 0; c < b.getColumnSize(); c++) {
-			GameSquare square = new GameSquare(true,Color.WHITE,false,0);
-			add(square);
-		}
-		
 		// Get the animation ending row: [col][row]
-		int row = -1;
-		for (row = 0; row < b.getRowSize(); row++) {
-			if (b.getState()[col][row] != Player.NOONE) {
+		int endRow = -1;
+		for (endRow = 0; endRow < b.getRowSize(); endRow++) {
+			if (b.getState()[col][endRow] != Player.NOONE) {
 			    break;
 			}
 		}
 		
+		//Remove that column
+		for (int removeRow = b.getRowSize(); removeRow >= 0; removeRow--) {
+			this.remove(removeRow * 7 + col);
+		}
+		//The first row should be indicator
+		GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
+		add(preindicator, boardLayout, col);
+		
 		for (int r = 0; r < b.getRowSize(); r++) {
-			for (int c = 0; c < b.getColumnSize(); c++) {
-				GameSquare square;
-				if (c == col && r <= row && y < this.getHeight()/b.getColumnSize()*row) {
-					switch (b.getState()[col][row]) {
-    					case P1:
-    					    square = new GameSquare(Color.RED,true,y-this.getHeight()/b.getColumnSize()*r); break;
-    					case P2:
-    					    square = new GameSquare(Color.GREEN,true,y-this.getHeight()/b.getColumnSize()*r); break;
-    					default:
-    					    square = new GameSquare(Color.WHITE,true,y-this.getHeight()/b.getColumnSize()*r); break;
+			GameSquare square;
+			if (r <= endRow && y < this.getHeight()/b.getColumnSize()*endRow) {
+				//Animation
+				switch (b.getState()[col][endRow]) {
+					case P1:
+					    square = new GameSquare(Color.RED,true,y-this.getHeight()/b.getColumnSize()*r); break;
+					case P2:
+					    square = new GameSquare(Color.GREEN,true,y-this.getHeight()/b.getColumnSize()*r); break;
+					default:
+					    square = new GameSquare(Color.WHITE,true,y-this.getHeight()/b.getColumnSize()*r); break;
 
-					}	
-				} else {
-					switch (b.getState()[c][r]) {
-						case P1:
-						    square = new GameSquare(Color.RED); break;
-						case P2:
-						    square = new GameSquare(Color.GREEN); break;
-						default:
-						    square = new GameSquare(Color.WHITE); break;
-					}
+				}	
+			} else {
+				//Steady Discs
+				switch (b.getState()[col][r]) {
+					case P1:
+					    square = new GameSquare(Color.RED); break;
+					case P2:
+					    square = new GameSquare(Color.GREEN); break;
+					default:
+					    square = new GameSquare(Color.WHITE); break;
 				}
-				add(square);
 			}
+			add(square, boardLayout, (r+1) * 7 + col);
 		}
 		updateUI();
 	}
