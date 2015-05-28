@@ -221,13 +221,15 @@ public class GameWindow extends JFrame {
 	public void letAImove() {
 		int pushMousePointingColumn = mousePointingcolumn;
 		boolean preEndGame = gameController.isFinish();
-		//AI makes move here
 		if ((mousePointingcolumn = gameController.getAITurn()) < 0) {
 			mousePointingcolumn = pushMousePointingColumn;
 			return;
 		}
 		if (!preEndGame && !fallingAnimationMutex) {
 			FallingAnimation();
+			mousePointingcolumn = pushMousePointingColumn;
+		} else {
+			return;
 		}
 	}
 	
@@ -253,6 +255,12 @@ public class GameWindow extends JFrame {
 				if (y < boardPanel.getHeight()){
 					y += boardPanel.getHeight()/10;
 					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
+					//1000ms/60fps = 16.7ms 
+					try {
+						Thread.sleep(16);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				} else {
 					y = 0;
 					if (gameController.isFinish()) {
@@ -260,12 +268,6 @@ public class GameWindow extends JFrame {
 						endGameUI();
 					}
 					fallingAnimationMutex = false;
-				}
-				//1000ms/60fps = 16.7ms 
-				try {
-					Thread.sleep(16);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		}
@@ -284,8 +286,8 @@ public class GameWindow extends JFrame {
 						mousePointingcolumn = nextMove;
 						FallingAnimation();
 						System.out.println("Human move made");
-						if (gameController.hasAI()) {
-					        nextMove = gameController.getAITurn();
+						if (gameController.hasAI() && !gameController.isFinish()) {
+					        letAImove();
 			            }
 					}
 				}
