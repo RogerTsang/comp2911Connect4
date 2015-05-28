@@ -18,8 +18,8 @@ public class ProfilePanel extends JPanel {
 	private JLabel name;
 	private JLabel gamesPlayed;
 	private JLabel wlRatioH;
-	private JLabel wlRatioAIHard;
-	private JLabel wlRatioAIEasy;
+	private JLabel wlRatioAIExperienced;
+	private JLabel wlRatioAINovice;
 	private JToggleButton stats;
 	
 	public ProfilePanel(Profile p) {
@@ -63,31 +63,31 @@ public class ProfilePanel extends JPanel {
 		wlRatioH = new JLabel();
 		wlRatioH.setText("Ratio against Humans: " + p.getWLRatioH());
 		wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
-		wlRatioAIHard =  new JLabel();
-		wlRatioAIHard.setText("Ratio against Hard AI: " + p.getWLRatioAIHard());
-		wlRatioAIHard.setAlignmentX(Component.CENTER_ALIGNMENT);
-		wlRatioAIEasy = new JLabel();
-		wlRatioAIEasy.setText("Ratio against Easy AI: " + p.getWLRatioAIEasy());
-		wlRatioAIEasy.setAlignmentX(Component.CENTER_ALIGNMENT);
+		wlRatioAIExperienced =  new JLabel();
+		wlRatioAIExperienced.setText("Ratio against Hard AI: " + p.getWLRatioAIExperienced());
+		wlRatioAIExperienced.setAlignmentX(Component.CENTER_ALIGNMENT);
+		wlRatioAINovice = new JLabel();
+		wlRatioAINovice.setText("Ratio against Easy AI: " + p.getWLRatioAINovice());
+		wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		gamesPlayed.setVisible(false);
 		wlRatioH.setVisible(false);
-		wlRatioAIHard.setVisible(false);
-		wlRatioAIEasy.setVisible(false);
+		wlRatioAIExperienced.setVisible(false);
+		wlRatioAINovice.setVisible(false);
 		add(name);
 		add(stats);
 		add(gamesPlayed);
 		add(wlRatioH);
-		add(wlRatioAIHard);
-		add(wlRatioAIEasy);
+		add(wlRatioAIExperienced);
+		add(wlRatioAINovice);
 	}
 
 	public void setProfile(Profile p) {
 		name.setText(p.getName());
 		gamesPlayed.setText("" + p.getNumGamesPlayed());
 		wlRatioH.setText("" + p.getWLRatioH());
-		wlRatioAIHard.setText("" + p.getWLRatioAIHard());
-		wlRatioAIEasy.setText("" + p.getWLRatioAIEasy());
+		wlRatioAIExperienced.setText("" + p.getWLRatioAIExperienced());
+		wlRatioAINovice.setText("" + p.getWLRatioAINovice());
 	}
 	
 	public class StatButtonListener implements ActionListener {
@@ -96,13 +96,13 @@ public class ProfilePanel extends JPanel {
 			if (gamesPlayed.isVisible() == false) {
 				gamesPlayed.setVisible(true);
 				wlRatioH.setVisible(true);
-				wlRatioAIHard.setVisible(true);
-				wlRatioAIEasy.setVisible(true);
+				wlRatioAIExperienced.setVisible(true);
+				wlRatioAINovice.setVisible(true);
 			} else {
 				gamesPlayed.setVisible(false);
 				wlRatioH.setVisible(false);
-				wlRatioAIHard.setVisible(false);
-				wlRatioAIEasy.setVisible(false);
+				wlRatioAIExperienced.setVisible(false);
+				wlRatioAINovice.setVisible(false);
 			}
 		}
 		

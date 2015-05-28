@@ -58,12 +58,12 @@ public class Profile implements Serializable {
 		else return this.getwP();
 	}
 	
-	public float getWLRatioAIEasy() {
+	public float getWLRatioAINovice() {
 		if(this.getlAIE() !=0)return this.getwAIE()/this.getlAIE();
 		else return this.getwAIE();
 	}
 	
-	public float getWLRatioAIHard() {
+	public float getWLRatioAIExperienced() {
 		if(this.getlAIE() !=0)return this.getwAIH()/getlAIH();
 		else return this.getwAIH();
 	}

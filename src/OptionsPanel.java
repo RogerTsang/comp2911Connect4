@@ -24,10 +24,10 @@ import javax.swing.border.LineBorder;
 @SuppressWarnings("serial")
 public class OptionsPanel extends JPanel {
 	
-	private JComboBox<String> profile1;
-	private JComboBox<String> profile2;
+	private JComboBox<String> profileP1;
+	private JComboBox<String> profileP2;
 	private JComboBox<String> deleteProfile;
-	private JComboBox<String> player2OptionsList;
+	private JComboBox<String> opponentOptionsList;
 	private IGameOptions gameController;
 	private JLabel changesText;
 	private ArrayList<String> nameList;
@@ -44,6 +44,7 @@ public class OptionsPanel extends JPanel {
 	
 	@SuppressWarnings("unchecked")
 	private void initUI() {
+	    
 		//Create all the components
 		//Player 1 and 2 configuration components
 		String[] names = nameList.toArray(new String[nameList.size()]);
@@ -61,13 +62,13 @@ public class OptionsPanel extends JPanel {
 		p2model = new DefaultComboBoxModel<String>(listCopy.toArray(new String[listCopy.size()]));
 		
 		deleteModel = new DefaultComboBoxModel<String>(names);
-		profile1 = new JComboBox<String>(p1model);
-		profile2 = new JComboBox<String>(p2model);
+		profileP1 = new JComboBox<String>(p1model);
+		profileP2 = new JComboBox<String>(p2model);
 		
-		gameController.setProfile(1, profile1.getSelectedItem().toString());
-		gameController.setProfile(2, profile2.getSelectedItem().toString());
+		gameController.setProfile(1, profileP1.getSelectedItem().toString());
+		gameController.setProfile(2, profileP2.getSelectedItem().toString());
 		
-		profile1.addItemListener(new ItemListener(){
+		profileP1.addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent f){
 				p2model.removeAllElements();
@@ -83,12 +84,12 @@ public class OptionsPanel extends JPanel {
 						p2model.addElement(n);
 					}
 				}
-				profile2 = new JComboBox<String>(p2model);
+				profileP2 = new JComboBox<String>(p2model);
 				gameController.setProfile(1,f.getItem().toString());
 			}
 		});
 		
-		profile2.addItemListener(new ItemListener(){
+		profileP2.addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent g){
 				gameController.setProfile(2,g.getItem().toString());
@@ -96,16 +97,16 @@ public class OptionsPanel extends JPanel {
 		});
 		
 		String[] player2Options = {"Human Opponent", "Novice CMP Opponent", "Experienced CMP Opponent"};
-		player2OptionsList = new JComboBox<String>(player2Options);
-		player2OptionsList.addItemListener(new ItemListener() {
+		opponentOptionsList = new JComboBox<String>(player2Options);
+		opponentOptionsList.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getItem().toString() == "Human opponent") {
-				    profile2.setEnabled(true);
-				    profile2.setVisible(true);
+				    profileP2.setEnabled(true);
+				    profileP2.setVisible(true);
 				} else {
-				    profile2.setEnabled(false);
-					profile2.setVisible(false);
+				    profileP2.setEnabled(false);
+					profileP2.setVisible(false);
 					if (e.getItem().toString() == "Novice CMP Opponent") {
 					    gameController.addAI(new NoviceAI(Player.P2));
 					} else {
@@ -182,9 +183,9 @@ public class OptionsPanel extends JPanel {
 		
 		JLabel p1Text = new JLabel("Select Player 1");
 		p1Text.setAlignmentX(Component.CENTER_ALIGNMENT);
-		profile1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		profileP1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		player1Panel.add(p1Text);
-		player1Panel.add(profile1);
+		player1Panel.add(profileP1);
 		
 		//Panel where Player 2 options will go
 		JPanel player2Panel = new JPanel();
@@ -193,14 +194,14 @@ public class OptionsPanel extends JPanel {
 		
 		JLabel oppText = new JLabel("Select opponent");
 		oppText.setAlignmentX(Component.CENTER_ALIGNMENT);
-		player2OptionsList.setAlignmentX(Component.CENTER_ALIGNMENT);
+		opponentOptionsList.setAlignmentX(Component.CENTER_ALIGNMENT);
 		JLabel p2Text = new JLabel("Select Player 2");
 		p2Text.setAlignmentX(Component.CENTER_ALIGNMENT);
-		profile2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		profileP2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		player2Panel.add(oppText);
-		player2Panel.add(player2OptionsList);
+		player2Panel.add(opponentOptionsList);
 		player2Panel.add(p2Text);
-		player2Panel.add(profile2);
+		player2Panel.add(profileP2);
 		
 		
 		//Panel for creating profiles
@@ -254,18 +255,18 @@ public class OptionsPanel extends JPanel {
 	}
 	
 	public String getPlayer1Name() {
-		if (profile1.getSelectedItem() == null) return null;
-		return profile1.getSelectedItem().toString();
+		if (profileP1.getSelectedItem() == null) return null;
+		return profileP1.getSelectedItem().toString();
 	}
 	
 	public String getPlayer2Name() {
-		if (player2OptionsList.getSelectedItem().toString() == "Human Opponent") {
-			if (profile1.getSelectedItem() == null) return null;
-			return profile2.getSelectedItem().toString();
-		} else if (player2OptionsList.getSelectedItem().toString() == "Novice CMP Opponent") {
-			return "Novice CMP";
+		if (opponentOptionsList.getSelectedItem().toString() == "Human Opponent") {
+			if (profileP1.getSelectedItem() == null) return null;
+			return profileP2.getSelectedItem().toString();
+		} else if (opponentOptionsList.getSelectedItem().toString() == "Novice CMP Opponent") {
+			return "Novice CMP Opponent";
 		} else {
-			return "Experienced CMP";
+			return "Experienced CMP Opponent";
 		}
 	}
 }

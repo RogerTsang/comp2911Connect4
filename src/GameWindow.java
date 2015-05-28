@@ -208,7 +208,7 @@ public class GameWindow extends JFrame {
 		if (option == JOptionPane.OK_OPTION) {
 			p1Profile = gameController.getProfile(options.getPlayer1Name());
 			p1Info = new ProfilePanel(p1Profile);
-			if (options.getPlayer2Name() == "Novice CMP" || options.getPlayer2Name() == "Experienced CMP") {
+			if (options.getPlayer2Name() == "Novice CMP Opponent" || options.getPlayer2Name() == "Experienced CMP Opponent") {
 				p2Info = new ProfilePanel(options.getPlayer2Name());
 			} else {
 				p2Profile = gameController.getProfile(options.getPlayer2Name());
@@ -284,7 +284,7 @@ public class GameWindow extends JFrame {
 						FallingAnimation();
 						System.out.println("Human move made");
 						if (gameController.hasAI()) {
-			                nextMove = gameController.getAITurn();
+					        nextMove = gameController.getAITurn();
 			            }
 					}
 				}

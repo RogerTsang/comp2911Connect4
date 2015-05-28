@@ -55,16 +55,6 @@ public interface IController {
 	 * @param ai An AI object that will make the CMP Opponent move.
 	 * @return A boolean, TRUE if successfully added otherwise FALSE.
 	 */
-	public boolean addAI(Iai ai);
-	/**
-     * Removes an AI that is being played against from the game system.
-     * @return A boolean, TRUE if successfully removed otherwise FALSE.
-     */
-	public boolean removeAI();
-	/**
-	 * Checks to see whether the current game is being played against an AI.
-	 * @return A boolean, TRUE if the opponent is an AI otherwise FALSE.
-	 */
 	public boolean hasAI();
 	/**
 	 * Gets the AI that is being played against turn and proceeds with completing that move.
