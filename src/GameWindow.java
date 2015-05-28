@@ -340,7 +340,14 @@ public class GameWindow extends JFrame {
 		}
 		
 		private int translateMouse(int x, int boardWidth) {
-			return (int) Math.floor(x/(boardWidth/7));
+			int result = (int) Math.floor(x/(boardWidth/7));
+			if (result < 0) {
+				return 0;
+			} else if (result > 6) {
+				return 6;
+			} else {
+				return result;
+			}
 		}
 	}
 		
