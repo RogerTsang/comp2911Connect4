@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -13,6 +14,7 @@ public class GameBoardPanel extends JPanel {
 	//Layout
 	//CurrentIndex = ROW * 7 + COL
 	private GridLayout boardLayout;
+	private Component[] comList;
     
     /**
      * Constructor that creates the visual grid composing of individual game squares.
@@ -32,6 +34,8 @@ public class GameBoardPanel extends JPanel {
 				add(square);
 			}
 		}
+		
+		comList = this.getComponents();
 
 		//Set up look of board
 		setBackground(Color.BLACK);
@@ -44,26 +48,23 @@ public class GameBoardPanel extends JPanel {
 	 * @param board A board object reflecting the current game board.
 	 */
 	public void update(Board b) {
-		this.removeAll();
-		
 		//The very first row for disc indicator
-		for (int col = 0; col < b.getColumnSize();col++) {
-			GameSquare square = new GameSquare(true, Color.WHITE, false, 1);
-			add(square, boardLayout, col);
+		for (int col = 0; col < b.getColumnSize(); col++) {
+			GameSquare indicator = (GameSquare) comList[col];
+			indicator.setIndicator();
 		}
 		
 		for (int row = 0; row < b.getRowSize(); row++) {
 			for (int col = 0; col < b.getColumnSize(); col++) {
-				GameSquare square;
+				GameSquare square = (GameSquare) comList[(row+1) * 7 + col];
 				switch(b.getState()[col][row]) {
 					case P1:
-					    square = new GameSquare(Color.RED); break;
+					    square.setSteadySquare(Color.RED); break;
 					case P2:
-					    square = new GameSquare(Color.GREEN); break;
+					    square.setSteadySquare(Color.GREEN); break;
 					default:
-					    square = new GameSquare(Color.WHITE); break;
+					    square.setSteadySquare(Color.WHITE); break;
 				}
-				add(square, boardLayout, (row+1) * 7 + col);
 			}
 		}
 	}
@@ -86,45 +87,14 @@ public class GameBoardPanel extends JPanel {
 			currentPlayer = Color.GREEN;
 		}
 		
-	    //remove previous column
-		for (int row = 6; row >= 0; row--) {
-			this.remove(row * 7 + previousColumn);
-		}
-		
-		GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
-		add(preindicator, boardLayout, previousColumn);
+		GameSquare preindicator = (GameSquare) comList[previousColumn];
+		preindicator.setIndicator();
 		
 		for (int row = 0; row < b.getRowSize(); row++) {
-			GameSquare square;
-			switch (b.getState()[previousColumn][row]) {
-				case P1:
-				    square = new GameSquare(Color.RED); break;
-				case P2:
-				    square = new GameSquare(Color.GREEN); break;
-				default:
-				    square = new GameSquare(Color.WHITE); break;
-			}
-			add(square, boardLayout, (row+1) * 7 + previousColumn);
-		}
-	    //repaint current highlight column
-		for (int row = 6; row >= 0; row--) {
-			this.remove(row * 7 + column);
-		}
-		
-		GameSquare indicator = new GameSquare(true, currentPlayer, false, 0);
-		add(indicator, boardLayout, column);
-			
-		for (int row = 0; row < b.getRowSize(); row++) {
-			GameSquare square;
-			switch (b.getState()[column][row]) {
-				case P1:
-				    square = new GameSquare(Color.RED, currentPlayer); break;
-				case P2:
-				    square = new GameSquare(Color.GREEN, currentPlayer); break;
-				default:
-				    square = new GameSquare(Color.WHITE, currentPlayer); break;
-			}
-			add(square, boardLayout, (row+1) * 7 + column);
+			GameSquare previous = (GameSquare) comList[(row+1) * 7 + previousColumn];
+			GameSquare square = (GameSquare) comList[(row+1) * 7 + column];
+			previous.removeEffect();
+			square.setHighlight(currentPlayer);
 		}
 		
 	}
@@ -179,6 +149,7 @@ public class GameBoardPanel extends JPanel {
 			add(square, boardLayout, (r+1) * 7 + col);
 		}
 		updateUI();
+		this.comList = this.getComponents();
 	}
 	
 	/**
@@ -187,24 +158,13 @@ public class GameBoardPanel extends JPanel {
 	 * @param winningDiscs A Stack that has the winning disc coordinates; popping the row then the column.
 	 */
 	public void highlightWinningLine(Board b, Stack<Integer> winningDiscs) {
-		int index;
 		int col;
 		int row;
 		for (int i = 0; i < 4; i++) {
 			row = winningDiscs.pop();
 			col = winningDiscs.pop();
-			index = (row + 1) * 7 + col;
-			this.remove(index);
-			GameSquare square;
-			switch (b.getState()[col][row]) {
-				case P1:
-				    square = new GameSquare(Color.RED, true); break;
-				case P2:
-				    square = new GameSquare(Color.GREEN, true); break;
-				default:
-				    square = new GameSquare(Color.WHITE, true); break;
-			}
-			add(square, boardLayout, index);
+			GameSquare square = (GameSquare) comList[(row+1) * 7 + col];
+			square.setWinDisc();
 		}
 	}
 	

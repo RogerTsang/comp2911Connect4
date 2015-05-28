@@ -79,7 +79,6 @@ public class GameSquare extends JPanel {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.MI = MI;
 		this.y = y;
-		
 	}
 	
 	/**
@@ -93,6 +92,44 @@ public class GameSquare extends JPanel {
 		setBackground(Color.WHITE);
 		this.MI = MI;
 		this.y = y;
+	}
+
+	public void setAnimatingDisc(int position) {
+		highlighter = null;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = true;
+		this.y = position;
+	}
+	
+	public void setSteadySquare(Color c) {
+		currentColor = c;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		highlighter = null;
+		MI = false;
+		y = 0;
+	}
+	
+	public void setIndicator(){
+		this.currentColor = Color.WHITE;
+		setBackground(Color.WHITE);
+	}
+	
+	public void setHighlight(Color h) {
+		this.highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
+	}
+	
+	public void setWinDisc() {
+		setBackground(Color.YELLOW);
+	}
+	
+	public void removeEffect() {
+		this.highlighter = null;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = false;
+		this.y = 0;
 	}
 	
 	private void doDrawing(Graphics g) {
