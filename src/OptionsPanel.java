@@ -103,6 +103,18 @@ public class OptionsPanel extends JPanel {
 		
 		String[] player2Options = {"Human Opponent", "Novice CMP Opponent", "Experienced CMP Opponent"};
 		opponentOptionsList = new JComboBox<String>(player2Options);
+		opponentOptionsList.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getItem().toString() == "Human Opponent") {
+				    profileP2.setEnabled(true);
+				    profileP2.setVisible(true);
+				} else {
+				    profileP2.setEnabled(false);
+					profileP2.setVisible(false);
+				};
+			} 
+		});
 		
 		//Delete profile components
 		deleteProfile = new JComboBox<String>(deleteModel);
