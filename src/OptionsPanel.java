@@ -109,6 +109,7 @@ public class OptionsPanel extends JPanel {
 				if (e.getItem().toString() == "Human Opponent") {
 				    profileP2.setEnabled(true);
 				    profileP2.setVisible(true);
+				    gameController.removeAI();
 				} else {
 				    profileP2.setEnabled(false);
 					profileP2.setVisible(false);
@@ -248,15 +249,14 @@ public class OptionsPanel extends JPanel {
 		JPanel title = new JPanel();
 		title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
 	    title.setAlignmentX(CENTER_ALIGNMENT);
-		BufferedImage myPicture;
+	    /*
         try {
-            myPicture = ImageIO.read(new File("res/Connect-4-Logo.png"));
-            JLabel picLabel = new JLabel(new ImageIcon(myPicture),JLabel.CENTER);
+            JLabel picLabel = new JLabel(new ImageIcon(getClass().getResource("/Connect-4-Logo.png")), JLabel.CENTER);
             title.add(picLabel);
-        } catch (IOException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
-		
+		*/
         // Add panels to options panel
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(title);
@@ -267,7 +267,7 @@ public class OptionsPanel extends JPanel {
 		changesText = new JLabel();
 		changesText.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(changesText);
-		JLabel infoText = new JLabel("Your changes will start next game");
+		JLabel infoText = new JLabel("Your changes will be applied next game");
 		infoText.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(infoText);
 	}

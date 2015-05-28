@@ -16,11 +16,11 @@ public class Sound {
 	
 	public Sound() {
 		enableToggle = true;
-		player1_drop = Applet.newAudioClip(Sound.class.getResource("realisticdrop1.wav"));
-		player2_drop = Applet.newAudioClip(Sound.class.getResource("realisticdrop2.wav"));
-		winGame = Applet.newAudioClip(Sound.class.getResource("normalwin.wav"));
-		draw = Applet.newAudioClip(Sound.class.getResource("draw.wav"));
-		restart = Applet.newAudioClip(Sound.class.getResource("restart.wav"));
+		player1_drop = Applet.newAudioClip(getClass().getResource("/realisticdrop1.wav"));
+		player2_drop = Applet.newAudioClip(getClass().getResource("/realisticdrop2.wav"));
+		winGame = Applet.newAudioClip(getClass().getResource("/normalwin.wav"));
+		draw = Applet.newAudioClip(getClass().getResource("/draw.wav"));
+		restart = Applet.newAudioClip(getClass().getResource("/restart.wav"));
 	}
 	
 	public void Soundon() {

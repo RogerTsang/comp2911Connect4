@@ -47,10 +47,10 @@ public class ProfilePanel extends JPanel {
 		name.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//Roger: This line is used for general purpose for setting
 		if (playerOne) {
-			avatar = new ImageIcon("res/Circle_Red.png");
+			avatar = new ImageIcon(getClass().getResource("/Circle_Red.png"));
 			playerOne = false;
 		} else {
-			avatar = new ImageIcon("res/Circle_Green.png");
+			avatar = new ImageIcon(getClass().getResource("/Circle_Green.png"));
 			playerOne = true;
 		}
 		name.setIcon(avatar);
