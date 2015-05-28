@@ -110,7 +110,11 @@ public class GameSystem implements IController, IGame, IGameOptions {
 						 break;
 				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH;
-						 soundEffects.play(Sound.WIN);
+						 if (this.ai == null) {
+							 soundEffects.play(Sound.WIN);
+						 } else {
+							 soundEffects.play(Sound.LOSS);
+						 }
 						 break;
 				case DRAW: this.state = GameState.FINISH;
 						 soundEffects.play(Sound.DRAW);

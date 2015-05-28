@@ -8,11 +8,13 @@ public class Sound {
 	public static final int WIN = 2;
 	public static final int DRAW = 3;
 	public static final int RESTART = 4;
+	public static final int LOSS = 5;
 	private final AudioClip player1_drop;
 	private final AudioClip player2_drop;
 	private final AudioClip winGame;
 	private final AudioClip draw;
 	private final AudioClip restart;
+	private final AudioClip loseGame;
 	
 	public Sound() {
 		enableToggle = true;
@@ -21,6 +23,7 @@ public class Sound {
 		winGame = Applet.newAudioClip(getClass().getResource("/normalwin.wav"));
 		draw = Applet.newAudioClip(getClass().getResource("/draw.wav"));
 		restart = Applet.newAudioClip(getClass().getResource("/restart.wav"));
+		loseGame = Applet.newAudioClip(getClass().getResource("/loss.wav"));
 	}
 	
 	public void Soundon() {
@@ -48,6 +51,7 @@ public class Sound {
 						case WIN: winGame.play(); break;
 						case DRAW: draw.play(); break;
 						case RESTART: restart.play(); break;
+						case LOSS: loseGame.play(); break;
 						}
 					}
 				}.start();
