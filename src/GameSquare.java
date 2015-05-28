@@ -138,9 +138,7 @@ public class GameSquare extends JPanel {
 	        gbi.fill(circle);
 	        
 	        g2d.drawImage(buffImg, 0, 0, null);
-			
 		}
-		
 	}
 	
 	private void getHighlighter(Graphics2D g2d) {

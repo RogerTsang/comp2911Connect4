@@ -284,7 +284,7 @@ public class GameWindow extends JFrame {
 	
 	 private class Falling implements Runnable {
 		private int y;
-		 
+		
 		@Override
 		public void run() {
 			while (fallingAnimationMutex) {
@@ -334,9 +334,6 @@ public class GameWindow extends JFrame {
 			if (mouseEnable == true && fallingAnimationMutex == false) {
 				previousColumn = mousePointingcolumn;
 				mousePointingcolumn = translateMouse(e.getX(), boardPanel.getWidth());
-				if (previousColumn == -1) {
-					previousColumn = mousePointingcolumn;
-				}
 				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), mousePointingcolumn, previousColumn);
 				boardPanel.updateUI();
 			}

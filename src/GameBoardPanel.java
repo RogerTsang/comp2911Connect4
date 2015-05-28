@@ -83,26 +83,27 @@ public class GameBoardPanel extends JPanel {
 		}
 		
 	    //remove previous column
-		for (int row = 6; row >= 0; row--) {
-			this.remove(row * 7 + previousColumn);
-		}
-		
-		GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
-		add(preindicator, boardLayout, previousColumn);
-		
-		for (int row = 0; row < b.getRowSize(); row++) {
-			GameSquare square;
-			switch (b.getState()[previousColumn][row]) {
-				case P1:
-				    square = new GameSquare(Color.RED); break;
-				case P2:
-				    square = new GameSquare(Color.GREEN); break;
-				default:
-				    square = new GameSquare(Color.WHITE); break;
+		if (previousColumn != -1) {
+			for (int row = 6; row >= 0; row--) {
+				this.remove(row * 7 + previousColumn);
 			}
-			add(square, boardLayout, (row+1) * 7 + previousColumn);
+			
+			GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
+			add(preindicator, boardLayout, previousColumn);
+			
+			for (int row = 0; row < b.getRowSize(); row++) {
+				GameSquare square;
+				switch (b.getState()[previousColumn][row]) {
+					case P1:
+					    square = new GameSquare(Color.RED); break;
+					case P2:
+					    square = new GameSquare(Color.GREEN); break;
+					default:
+					    square = new GameSquare(Color.WHITE); break;
+				}
+				add(square, boardLayout, (row+1) * 7 + previousColumn);
+			}
 		}
-		
 	    //repaint current highlight column
 		for (int row = 6; row >= 0; row--) {
 			this.remove(row * 7 + column);
@@ -136,18 +137,20 @@ public class GameBoardPanel extends JPanel {
     
 		this.removeAll();
 		
+		//Renew Indicator
 		for (int c = 0; c < b.getColumnSize(); c++) {
 			GameSquare square = new GameSquare(true,Color.WHITE,false,0);
 			add(square);
 		}
 		
-		// Get lastMove: [col][row]
+		// Get the animation ending row: [col][row]
 		int row = -1;
 		for (row = 0; row < b.getRowSize(); row++) {
 			if (b.getState()[col][row] != Player.NOONE) {
 			    break;
 			}
 		}
+		
 		for (int r = 0; r < b.getRowSize(); r++) {
 			for (int c = 0; c < b.getColumnSize(); c++) {
 				GameSquare square;
@@ -172,11 +175,9 @@ public class GameBoardPanel extends JPanel {
 					}
 				}
 				add(square);
-				}
 			}
-		
-		updateUI();	
-		
+		}
+		updateUI();
 	}
 	
 	/**
@@ -185,44 +186,25 @@ public class GameBoardPanel extends JPanel {
 	 * @param winningDiscs A Stack that has the winning disc coordinates; popping the row then the column.
 	 */
 	public void highlightWinningLine(Board b, Stack<Integer> winningDiscs) {
-	    
-		this.removeAll();
-		
-		boolean[][] winningState = new boolean[b.getColumnSize()][b.getRowSize()];
-		
-		for (int col = 0; col < b.getColumnSize(); col++) {
-			GameSquare square = new GameSquare(true,Color.WHITE,false,0);
-			add(square);
-		}
-		
-		for (int row = 0; row < b.getRowSize(); row++) {
-			for (int col = 0; col < b.getColumnSize(); col++) {
-				winningState[col][row] = false;
+		int index;
+		int col;
+		int row;
+		for (int i = 0; i < 4; i++) {
+			row = winningDiscs.pop();
+			col = winningDiscs.pop();
+			index = (row + 1) * 7 + col;
+			this.remove(index);
+			GameSquare square;
+			switch (b.getState()[col][row]) {
+				case P1:
+				    square = new GameSquare(Color.RED, true); break;
+				case P2:
+				    square = new GameSquare(Color.GREEN, true); break;
+				default:
+				    square = new GameSquare(Color.WHITE, true); break;
 			}
+			add(square, boardLayout, index);
 		}
-		
-		int connectToWin = winningDiscs.size()/2;
-		for (int i = 0; i < connectToWin; i++) {
-			int winRow = winningDiscs.pop();
-			int winCol = winningDiscs.pop();
-			winningState[winCol][winRow] = true;
-		}
-		
-		for (int row = 0; row < b.getRowSize(); row++) {
-			for (int col = 0; col < b.getColumnSize(); col++) {
-				GameSquare square;
-				switch (b.getState()[col][row]) {
-					case P1:
-					    square = new GameSquare(Color.RED, winningState[col][row]); break;
-					case P2:
-					    square = new GameSquare(Color.GREEN, winningState[col][row]); break;
-					default:
-					    square = new GameSquare(Color.WHITE, winningState[col][row]); break;
-				}
-				add(square);
-			}
-		}
-		
 	}
 	
 	@Override

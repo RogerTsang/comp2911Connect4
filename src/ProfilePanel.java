@@ -41,7 +41,7 @@ public class ProfilePanel extends JPanel {
 		this.initUI();
 		this.setProfile(p);
 		this.addComponents();
-		this.updateUI();
+		//this.updateUI();
 	}
 	
 	private void addComponents() {
