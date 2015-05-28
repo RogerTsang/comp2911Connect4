@@ -106,7 +106,7 @@ public class OptionsPanel extends JPanel {
 		opponentOptionsList.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getItem().toString() == "Human opponent") {
+				if (e.getItem().toString() == "Human Opponent") {
 				    profileP2.setEnabled(true);
 				    profileP2.setVisible(true);
 				} else {

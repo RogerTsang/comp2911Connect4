@@ -76,7 +76,7 @@ public class Profile implements Serializable {
 		numGamesPlayed++;
 	}
 
-	public int getlAIE() {
+	public float getlAIE() {
 		return lAIE;
 	}
 
@@ -84,7 +84,7 @@ public class Profile implements Serializable {
 		this.lAIE++;
 	}
 
-	public int getdAIE() {
+	public float getdAIE() {
 		return dAIE;
 	}
 
@@ -92,7 +92,7 @@ public class Profile implements Serializable {
 		this.dAIE++;
 	}
 
-	public int getwAIH() {
+	public float getwAIH() {
 		return wAIH;
 	}
 
@@ -100,7 +100,7 @@ public class Profile implements Serializable {
 		this.wAIH++;
 	}
 
-	public int getlAIH() {
+	public float getlAIH() {
 		return lAIH;
 	}
 
@@ -108,7 +108,7 @@ public class Profile implements Serializable {
 		this.lAIH++;
 	}
 
-	public int getdAIH() {
+	public float getdAIH() {
 		return dAIH;
 	}
 
@@ -116,7 +116,7 @@ public class Profile implements Serializable {
 		this.dAIH++;
 	}
 
-	public int getwP() {
+	public float getwP() {
 		return wP;
 	}
 
@@ -124,7 +124,7 @@ public class Profile implements Serializable {
 		this.wP++;
 	}
 
-	public int getlP() {
+	public float getlP() {
 		return lP;
 	}
 
@@ -136,9 +136,7 @@ public class Profile implements Serializable {
 		this.dP++;
 	}
 	
-	public int getdP() {
+	public float getdP() {
 		return dP;
 	}
-
-
 }

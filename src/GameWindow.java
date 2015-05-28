@@ -199,7 +199,6 @@ public class GameWindow extends JFrame {
 			default:break;
 			}
 		}
-		
 	}
 	
 	private void showOptions(boolean isInGame) {
@@ -235,6 +234,8 @@ public class GameWindow extends JFrame {
 	public void endGameUI() {
 		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
 		boardPanel.updateUI();
+		this.p1Info.updateUI();
+		this.p2Info.updateUI();
 	}
 	
 	private synchronized void FallingAnimation() {   

@@ -58,16 +58,16 @@ public class ProfilePanel extends JPanel {
 		
 		//All the stats related to 
 		gamesPlayed = new JLabel();
-		gamesPlayed.setText("Number of games played: " + (int) p.getNumGamesPlayed());
+		gamesPlayed.setText("Number of games played: " + p.getNumGamesPlayed());
 		gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioH = new JLabel();
-		wlRatioH.setText("Ratio against Humans: " + p.getWLRatioH());
+		wlRatioH.setText("Ratio against Humans: " + String.format("%.2f",p.getWLRatioH()));
 		wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAIExperienced =  new JLabel();
-		wlRatioAIExperienced.setText("Ratio against Hard AI: " + p.getWLRatioAIExperienced());
+		wlRatioAIExperienced.setText("Ratio against Experienced AI: " + String.format("%.2f",p.getWLRatioAIExperienced()));
 		wlRatioAIExperienced.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAINovice = new JLabel();
-		wlRatioAINovice.setText("Ratio against Easy AI: " + p.getWLRatioAINovice());
+		wlRatioAINovice.setText("Ratio against Novice AI: " + String.format("%.2f",p.getWLRatioAINovice()));
 		wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		gamesPlayed.setVisible(false);
@@ -105,6 +105,5 @@ public class ProfilePanel extends JPanel {
 				wlRatioAINovice.setVisible(false);
 			}
 		}
-		
 	}
 }
