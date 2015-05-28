@@ -9,6 +9,10 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class GameBoardPanel extends JPanel {
+	
+	//Layout
+	//CurrentIndex = ROW * 7 + COL
+	private GridLayout boardLayout;
     
     /**
      * Constructor that creates the visual grid composing of individual game squares.
@@ -31,21 +35,21 @@ public class GameBoardPanel extends JPanel {
 
 		//Set up look of board
 		setBackground(Color.BLACK);
-		setLayout(new GridLayout(b.getRowSize()+1,b.getColumnSize(),0,0));
-		
+		boardLayout = new GridLayout(b.getRowSize()+1,b.getColumnSize(),0,0);
+		setLayout(boardLayout);
 	}
-	 
+	
 	/**
 	 * Changes the current GUI to reflect the current state of the game board.
 	 * @param board A board object reflecting the current game board.
 	 */
 	public void update(Board b) {
-	    
 		this.removeAll();
+		
 		//The very first row for disc indicator
 		for (int col = 0; col < b.getColumnSize();col++) {
 			GameSquare square = new GameSquare(true, Color.WHITE, false, 1);
-			add(square);
+			add(square, boardLayout, col);
 		}
 		
 		for (int row = 0; row < b.getRowSize(); row++) {
@@ -59,10 +63,9 @@ public class GameBoardPanel extends JPanel {
 					default:
 					    square = new GameSquare(Color.WHITE); break;
 				}
-				add(square);
+				add(square, boardLayout, (row+1) * 7 + col);
 			}
 		}
-		
 	}
 	
 	/**
@@ -71,51 +74,54 @@ public class GameBoardPanel extends JPanel {
 	 * @param current Current Player whos turn it is.
 	 * @param col The selected column to be highlighted.
 	 */
-	public void highlightCol(Board b, Player current, int column) {
-	    
-	    //repaint preCol
-		this.removeAll();
-		
+	public void highlightCol(Board b, Player current, int column, int previousColumn) {
 		Color currentPlayer;
 		if (current == Player.P1) {
 			currentPlayer = Color.RED;
 		} else {
 			currentPlayer = Color.GREEN;
 		}
-		for (int col = 0; col < b.getColumnSize(); col++) {
-			if (col != column) {
-				GameSquare square = new GameSquare(true,Color.WHITE,false,0);
-				add(square);
-			}else{
-				GameSquare square = new GameSquare(true,currentPlayer,false,0);
-				add(square);
-			}
-			
+		
+	    //remove previous column
+		for (int row = 6; row >= 0; row--) {
+			this.remove(row * 7 + previousColumn);
 		}
+		
+		GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
+		add(preindicator, boardLayout, previousColumn);
+		
 		for (int row = 0; row < b.getRowSize(); row++) {
-			for (int col = 0; col < b.getColumnSize(); col++) {
-				GameSquare square;
-				if (col == column) {
-					switch (b.getState()[col][row]) {
-						case P1:
-						    square = new GameSquare(Color.RED, currentPlayer); break;
-						case P2:
-						    square = new GameSquare(Color.GREEN, currentPlayer); break;
-						default:
-						    square = new GameSquare(Color.WHITE, currentPlayer); break;
-					}
-				} else {
-					switch (b.getState()[col][row]) {
-						case P1:
-						    square = new GameSquare(Color.RED); break;
-						case P2:
-						    square = new GameSquare(Color.GREEN); break;
-						default:
-						    square = new GameSquare(Color.WHITE); break;
-					}
-				}
-				add(square);
+			GameSquare square;
+			switch (b.getState()[previousColumn][row]) {
+				case P1:
+				    square = new GameSquare(Color.RED); break;
+				case P2:
+				    square = new GameSquare(Color.GREEN); break;
+				default:
+				    square = new GameSquare(Color.WHITE); break;
 			}
+			add(square, boardLayout, (row+1) * 7 + previousColumn);
+		}
+		
+	    //repaint current highlight column
+		for (int row = 6; row >= 0; row--) {
+			this.remove(row * 7 + column);
+		}
+		
+		GameSquare indicator = new GameSquare(true, currentPlayer, false, 0);
+		add(indicator, boardLayout, column);
+			
+		for (int row = 0; row < b.getRowSize(); row++) {
+			GameSquare square;
+			switch (b.getState()[column][row]) {
+				case P1:
+				    square = new GameSquare(Color.RED, currentPlayer); break;
+				case P2:
+				    square = new GameSquare(Color.GREEN, currentPlayer); break;
+				default:
+				    square = new GameSquare(Color.WHITE, currentPlayer); break;
+			}
+			add(square, boardLayout, (row+1) * 7 + column);
 		}
 		
 	}
@@ -127,7 +133,7 @@ public class GameBoardPanel extends JPanel {
 	 * @param y The exact y-coordinate of the disc to be drawn.
 	 */
 	public void paintNextMove(Board b, int col, int y) {
-	    
+    
 		this.removeAll();
 		
 		for (int c = 0; c < b.getColumnSize(); c++) {

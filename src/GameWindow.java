@@ -26,6 +26,7 @@ public class GameWindow extends JFrame {
 	
 	//current column mouse point at
 	private int mousePointingcolumn;
+	private int previousColumn;
 	
 	//y coordination of falling dice
 	private boolean mouseEnable;
@@ -52,6 +53,7 @@ public class GameWindow extends JFrame {
 
 	private void initUI() {
 		this.mousePointingcolumn = -1;
+		this.previousColumn = -1;
 		this.setResizable(false);
 		//Set up layout and components
 		initLayout();
@@ -330,8 +332,12 @@ public class GameWindow extends JFrame {
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			if (mouseEnable == true && fallingAnimationMutex == false) {
+				previousColumn = mousePointingcolumn;
 				mousePointingcolumn = translateMouse(e.getX(), boardPanel.getWidth());
-				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), mousePointingcolumn);
+				if (previousColumn == -1) {
+					previousColumn = mousePointingcolumn;
+				}
+				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), mousePointingcolumn, previousColumn);
 				boardPanel.updateUI();
 			}
 		}

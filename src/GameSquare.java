@@ -137,7 +137,7 @@ public class GameSquare extends JPanel {
 	        circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
 	        gbi.fill(circle);
 	        
-	        g2d.drawImage(buffImg,0, 0, null);
+	        g2d.drawImage(buffImg, 0, 0, null);
 			
 		}
 		
