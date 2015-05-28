@@ -73,4 +73,5 @@ public interface IController {
 	public void saveProfile(Profile p);
 	public void deleteProfile(String name);
 	public void setProfile(int playerNumber,String name);
+	public int getUndosLeft();
 }
