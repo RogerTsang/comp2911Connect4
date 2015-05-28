@@ -85,7 +85,7 @@ public class ProfilePanel extends JPanel {
 		gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioH = new JLabel();
 		wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
-		wlRatioAIExperienced =  new JLabel();
+		wlRatioAIExperienced = new JLabel();
 		wlRatioAIExperienced.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAINovice = new JLabel();
 		wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -94,11 +94,10 @@ public class ProfilePanel extends JPanel {
 
 	public void setProfile(Profile p) {
 		name.setText(p.getName());
-		float games = p.getNumGamesPlayed();
 		float WLRatioH = p.getWLRatioH() * 100;
 		float WLRatioE = p.getWLRatioAIExperienced() * 100;
 		float WLRatioN = p.getWLRatioAINovice() * 100;
-		gamesPlayed.setText(String.format("Games played: ", games));
+		gamesPlayed.setText(String.format("Games played: ", p.getNumGamesPlayed()));
 		wlRatioH.setText(String.format("VS Humans: %.2f%%", WLRatioH));
 		wlRatioAIExperienced.setText(String.format("VS Experienced AI: %.2f%%",  WLRatioE));
 		wlRatioAINovice.setText(String.format("VS Novice AI: %.2f%%", WLRatioN));
@@ -108,6 +107,10 @@ public class ProfilePanel extends JPanel {
 	public void changeToAIPanel(String aiName) {
 		stats.setVisible(false);
 		this.name.setText(aiName);
+	}
+	
+	public void skipSettingAIProfile() {
+		playerOne = true;
 	}
 	
 	public class StatButtonListener implements ActionListener {
