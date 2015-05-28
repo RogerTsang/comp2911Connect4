@@ -25,6 +25,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
 	private Sound soundEffects;
+	int numUndosLeft;
 	
 	public GameSystem() {
 	    
@@ -42,7 +43,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		this.ai = null;
 		this.soundEffects = new Sound();
 		this.saveProfile(new Profile("Guest"));
-		
+		this.numUndosLeft = 3;
 	}
 	
 	public boolean newGame() {
@@ -129,17 +130,8 @@ public class GameSystem implements IController, IGame, IGameOptions {
 			return false;
 		}
 		
-		if (this.currentPlayer != Player.NOONE && this.ai == null) {
-			if (!this.UndoStack.isEmpty()) {
-				int lastMove = this.UndoStack.pop();
-				this.RedoStack.add(lastMove);
-				this.board.remove(lastMove);
-				switchPlayer();
-				this.turnNumber--;
-				return true;
-			}
-		} else if (this.currentPlayer != Player.NOONE && this.ai != null) {
-			if (!this.UndoStack.isEmpty()) {
+		if (this.currentPlayer != Player.NOONE && this.ai != null) {
+			if (!this.UndoStack.isEmpty() && numUndosLeft > 0) {
 				int lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
@@ -147,6 +139,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
                 this.turnNumber-=2;
+                this.numUndosLeft--;
 				return true;
 			}
 		}
@@ -427,6 +420,10 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		if (column < 0 || column >= b.getColumnSize()) return false;
         if (b.getState()[column][0] != Player.NOONE) return false;
         return true;
+	}
+	
+	public int getUndosLeft() {
+		return this.numUndosLeft;
 	}
 	
 	public ArrayList<String> getProfileNames() {

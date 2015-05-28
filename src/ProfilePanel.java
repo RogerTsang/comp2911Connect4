@@ -25,27 +25,41 @@ public class ProfilePanel extends JPanel {
 	private JToggleButton stats;
 	
 	public ProfilePanel(Profile p) {
-		initUI(p);
+		initUI();
+		setProfile(p);
+		addComponents();
 	}
 	
 	public ProfilePanel(String aiType) {
-		setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		name = new JLabel(aiType);
-		name.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(name);
+		initUI();
+		stats.setVisible(false);
+		name.setText(aiType);
+		addComponents();
 	}
 	
-	private void initUI(Profile p) {
+	private void addComponents() {
+		gamesPlayed.setVisible(false);
+		wlRatioH.setVisible(false);
+		wlRatioAIExperienced.setVisible(false);
+		wlRatioAINovice.setVisible(false);
+		add(name);
+		add(stats);
+		add(gamesPlayed);
+		add(wlRatioH);
+		add(wlRatioAIExperienced);
+		add(wlRatioAINovice);
+	}
+	
+	private void initUI() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		JToggleButton stats = new JToggleButton("Show/Hide Stats");
+		stats = new JToggleButton("Show/Hide Stats");
 		stats.addActionListener(new StatButtonListener());
 		stats.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		//Name of profile
 		name = new JLabel();
-		name.setText(p.getName());
 		name.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//Roger: This line is used for general purpose for setting
 		if (playerOne) {
@@ -57,26 +71,25 @@ public class ProfilePanel extends JPanel {
 		}
 		name.setIcon(avatar);
 		
-		
 		//All the stats related to 
 		gamesPlayed = new JLabel();
-		gamesPlayed.setText("No. Games Played: " + p.getNumGamesPlayed());
-		gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//gamesPlayed.setText("No. Games Played: " + p.getNumGamesPlayed());
+		//gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ratioLabel = new JLabel();
-		ratioLabel.setText("Ratios:");
-		ratioLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//ratioLabel.setText("Ratios:");
+		//ratioLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		spacer = new JLabel();
-		spacer.setText(" ");
-		spacer.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//spacer.setText(" ");
+		//spacer.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioH = new JLabel();
-		wlRatioH.setText("Against Humans: " + String.format("%.2f",p.getWLRatioH()));
-		wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//wlRatioH.setText("Against Humans: " + String.format("%.2f",p.getWLRatioH()));
+		//wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAIExperienced =  new JLabel();
-		wlRatioAIExperienced.setText("Against Experienced AI: " + String.format("%.2f",p.getWLRatioAIExperienced()));
-		wlRatioAIExperienced.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//wlRatioAIExperienced.setText("Against Experienced AI: " + String.format("%.2f",p.getWLRatioAIExperienced()));
+		//wlRatioAIExperienced.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioAINovice = new JLabel();
-		wlRatioAINovice.setText("Against Novice AI: " + String.format("%.2f",p.getWLRatioAINovice()));
-		wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//wlRatioAINovice.setText("Against Novice AI: " + String.format("%.2f",p.getWLRatioAINovice()));
+		//wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		gamesPlayed.setVisible(false);
 		ratioLabel.setVisible(false);
@@ -96,16 +109,22 @@ public class ProfilePanel extends JPanel {
 	
 	public void setProfile(Profile p) {
 		name.setText(p.getName());
-		gamesPlayed.setText("" + p.getNumGamesPlayed());
-		wlRatioH.setText("" + p.getWLRatioH());
-		wlRatioAIExperienced.setText("" + p.getWLRatioAIExperienced());
-		wlRatioAINovice.setText("" + p.getWLRatioAINovice());
+		gamesPlayed.setText("Number of games played: " + p.getNumGamesPlayed());
+		wlRatioH.setText("Ratio against Humans: " + p.getWLRatioH());
+		wlRatioAIExperienced.setText("Ratio against Experienced AI: " + p.getWLRatioAIExperienced());
+		wlRatioAINovice.setText("Ratio against Novice AI: " + p.getWLRatioAINovice());
+		if (!stats.isVisible()) stats.setVisible(true); 
+	}
+	
+	public void changeToAIPanel(String aiName) {
+		stats.setVisible(false);
+		this.name.setText(aiName);
 	}
 	
 	public void update(Profile p){
 		this.removeAll();
+		this.initUI();
 		this.setProfile(p);
-		this.initUI(p);
 		this.updateUI();
 	}
 	
@@ -128,5 +147,6 @@ public class ProfilePanel extends JPanel {
 				wlRatioAINovice.setVisible(false);
 			}
 		}
+		
 	}
 }

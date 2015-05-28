@@ -36,11 +36,16 @@ public class GameWindow extends JFrame {
 	private ProfilePanel p2Info;
 	private Profile p1Profile;
 	private Profile p2Profile;
+	private JButton undoButton;
+	
+	//Players for next game
+	String[] nextPlayers;
 	
 	public GameWindow(IController g) {
 		gameController = g;
 		mouseEnable = true;
 		fallingAnimationMutex = false;
+		nextPlayers = new String[2];
 		showOptions(false);
 		initUI();
 	}
@@ -81,10 +86,13 @@ public class GameWindow extends JFrame {
 		c.ipadx = 40;
 		add(p1Info, c);
 		//Undo button
-		JButton undoButton = new JButton("Undo");
-		undoButton.addActionListener(new ButtonAction());
-		undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		p1Info.add(undoButton);
+		if (gameController.hasAI()) {
+			undoButton = new JButton("Undo: " + gameController.getUndosLeft() + " left");
+			undoButton.addActionListener(new ButtonAction());
+			undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			p1Info.add(undoButton);
+		}
+		
 		
 		//Player 2 info panel
 		c.gridx = 5;
@@ -171,32 +179,46 @@ public class GameWindow extends JFrame {
 			case "Restart": {
 				gameController.newGame();
 				gameController.startGame();
+				//Get profiles for next game
+				if (!nextPlayers[0].equals(p1Profile.getName())) {
+					p1Profile = gameController.getProfile(nextPlayers[0]);
+					p1Info.setProfile(p1Profile);
+				}
+				if (nextPlayers[1] == "Novice CMP Opponent" || nextPlayers[1] == "Experienced CMP Opponent") {
+					p2Profile = null;
+					p2Info.changeToAIPanel(nextPlayers[1]);
+				} else {
+					if (p2Profile != null) {
+						if (!nextPlayers[1].equals(p2Profile.getName())) {
+							p2Profile = gameController.getProfile(nextPlayers[1]);
+							p2Info.setProfile(p2Profile);
+						}
+					} else {
+						p2Profile = gameController.getProfile(nextPlayers[1]);
+						System.out.println(p2Profile.getNumGamesPlayed());
+						p2Info.setProfile(p2Profile);
+					}
+				}
+				
 				mouseEnable = true;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
 				break;
 			}
-			case "Undo": {
-				gameController.undo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				}
-				break;
-			}/*
-			case "Redo": {
-				gameController.redo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				}
-				break;
-			}*/
 			case "Options": {
 				showOptions(true);
 				break;
 			}
 			default:break;
+			}
+			
+			if (e.getSource() == undoButton) {
+				gameController.undo();
+				if (!gameController.isFinish()) {
+					boardPanel.update(gameController.getBoard());
+					boardPanel.updateUI();
+				}
+				undoButton.setText("Undo: " + gameController.getUndosLeft() + " left");
 			}
 		}
 	}
@@ -205,13 +227,17 @@ public class GameWindow extends JFrame {
 		OptionsPanel options = new OptionsPanel((IGameOptions)gameController, gameController.getProfileNames());
 		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
-			p1Profile = gameController.getProfile(options.getPlayer1Name());
-			p1Info = new ProfilePanel(p1Profile);
-			if (options.getPlayer2Name() == "Novice CMP Opponent" || options.getPlayer2Name() == "Experienced CMP Opponent") {
-				p2Info = new ProfilePanel(options.getPlayer2Name());
-			} else {
-				p2Profile = gameController.getProfile(options.getPlayer2Name());
-				p2Info = new ProfilePanel(p2Profile);
+			nextPlayers[0] = options.getPlayer1Name();
+			nextPlayers[1] = options.getPlayer2Name();
+			if (!isInGame) {
+				p1Profile = gameController.getProfile(nextPlayers[0]);
+				p1Info = new ProfilePanel(p1Profile);
+				if (nextPlayers[1] == "Novice CMP Opponent" || nextPlayers[1] == "Experienced CMP Opponent") {
+					p2Info = new ProfilePanel(nextPlayers[1]);
+				} else {
+					p2Profile = gameController.getProfile(nextPlayers[1]);
+					p2Info = new ProfilePanel(p2Profile);
+				}
 			}
 		} else {
 			if (!isInGame) System.exit(0);
@@ -241,10 +267,12 @@ public class GameWindow extends JFrame {
 		this.p1Info.update(this.p1Profile);
 		this.p2Info.update(this.p2Profile);
 		//TODO: figure out a way to avoid having this here. Can we put an action listenener in GameWindow but initialise the button in ProfilePanel?
-		JButton undoButton = new JButton("Undo");
-		undoButton.addActionListener(new ButtonAction());
-		undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		p1Info.add(undoButton);
+		if (gameController.hasAI()) {
+			JButton undoButton = new JButton("Undo");
+			undoButton.addActionListener(new ButtonAction());
+			undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			p1Info.add(undoButton);
+		}
 	}
 	
 	private synchronized void FallingAnimation() {   
