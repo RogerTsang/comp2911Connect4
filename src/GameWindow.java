@@ -284,7 +284,8 @@ public class GameWindow extends JFrame {
 						FallingAnimation();
 						System.out.println("Human move made");
 						if (gameController.hasAI()) {
-					        nextMove = gameController.getAITurn();
+					        //nextMove = gameController.getAITurn();
+					        letAImove();
 			            }
 					}
 				}
