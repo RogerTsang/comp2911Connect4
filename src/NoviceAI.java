@@ -8,6 +8,10 @@ public class NoviceAI implements Iai {
     private Player OurID;
     private Player OppID;
     
+    /**
+     * Constructor that sets the ID of the AI.
+     * @param p Player type that is the AI's ID.
+     */
     public NoviceAI(Player id) {
         this.OurID = id;
         if (id == Player.P1) {
@@ -52,7 +56,8 @@ public class NoviceAI implements Iai {
         
         return move;
     }
-
+    
+    @Override
     public String getDifficulty() {
     	return "Novice";
     }

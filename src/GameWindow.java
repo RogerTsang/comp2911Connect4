@@ -203,7 +203,7 @@ public class GameWindow extends JFrame {
 	}
 	
 	private void showOptions(boolean isInGame) {
-		OptionsPanel options = new OptionsPanel(gameController, gameController.getProfileNames());
+		OptionsPanel options = new OptionsPanel((IGameOptions)gameController, gameController.getProfileNames());
 		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
 			p1Profile = gameController.getProfile(options.getPlayer1Name());

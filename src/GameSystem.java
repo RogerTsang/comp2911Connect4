@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 
-public class GameSystem implements IController, IGame {
+public class GameSystem implements IController, IGame, IGameOptions {
     
 	private GameState state;
 	private Player currentPlayer;
@@ -45,10 +45,6 @@ public class GameSystem implements IController, IGame {
 		
 	}
 	
-	/**
-	 * Method to generate a new game without disconnecting the Player(AI)s.
-	 * @return New game can only generate when PLAYABLE or FINISH
-	 */
 	public boolean newGame() {
 	    
 	    // if the game is all ready in a state to begin a new game
@@ -128,10 +124,6 @@ public class GameSystem implements IController, IGame {
 		}
 	}
 	
-	/**
-	 * Undo the last move. This will cause a player switch
-	 * @return True if the undo can be done
-	 */
 	public boolean undo() {
 		if (this.state != GameState.PLAYABLE) {
 			return false;
@@ -258,9 +250,6 @@ public class GameSystem implements IController, IGame {
         return hasAI;
     }
     
-    /**
-     * In order to debug, Now the AI can move whatever if it is its turn.
-     */
     public int getAITurn() {
         if (this.ai != null) {
             int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
@@ -291,11 +280,6 @@ public class GameSystem implements IController, IGame {
 		}
 	}	
 	
-    /**
-     * A Different method for checking whether the game has ended, via a win or draw, 
-     * otherwise still playable. It is based on the last move only instead of scanning the whole board.
-     * @return winner of the game or nobody if noone has won yet or draw if drawn
-     */
     public Player checkWin(Board b, int column, Player p) {
         int numInARow = 0;
         Player[][] boardState = b.getState();

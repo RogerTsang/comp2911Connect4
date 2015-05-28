@@ -19,6 +19,7 @@ public class ExperiencedAI implements Iai {
 		return;
 	}	
 	
+	@Override
 	public int makeMove(IGame g, Board b) {
 	    
 	    // These are moves we want the AI to make
@@ -124,6 +125,7 @@ public class ExperiencedAI implements Iai {
 		return bestMove;
 	}
 	
+	@Override
 	public String getDifficulty() {
 	    return "Experienced";
 	}

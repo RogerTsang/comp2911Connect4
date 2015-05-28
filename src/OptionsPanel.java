@@ -28,7 +28,7 @@ public class OptionsPanel extends JPanel {
 	private JComboBox<String> profile2;
 	private JComboBox<String> deleteProfile;
 	private JComboBox<String> player2OptionsList;
-	private IController gameController;
+	private IGameOptions gameController;
 	private JLabel changesText;
 	private ArrayList<String> nameList;
 	
@@ -36,11 +36,10 @@ public class OptionsPanel extends JPanel {
 	private DefaultComboBoxModel<String> p2model;
 	private DefaultComboBoxModel<String> deleteModel;
 	
-	public OptionsPanel(IController gameController, ArrayList<String> list) {
+	public OptionsPanel(IGameOptions gameController, ArrayList<String> list) {
 		this.gameController = gameController;
 		nameList = list;
-		
-		initUI();
+		this.initUI();
 	}
 	
 	@SuppressWarnings("unchecked")
