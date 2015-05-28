@@ -183,7 +183,7 @@ public class GameWindow extends JFrame {
 					boardPanel.updateUI();
 				}
 				break;
-			}
+			}/*
 			case "Redo": {
 				gameController.redo();
 				if (!gameController.isFinish()) {
@@ -191,7 +191,7 @@ public class GameWindow extends JFrame {
 					boardPanel.updateUI();
 				}
 				break;
-			}
+			}*/
 			case "Options": {
 				showOptions(true);
 				break;
@@ -283,7 +283,7 @@ public class GameWindow extends JFrame {
 						mousePointingcolumn = nextMove;
 						FallingAnimation();
 						System.out.println("Human move made");
-						if (gameController.hasAIAttached()) {
+						if (gameController.hasAI()) {
 			                nextMove = gameController.getAITurn();
 			            }
 					}

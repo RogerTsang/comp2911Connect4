@@ -4,7 +4,7 @@ public interface Iai {
      * of the best move possible.
      * @param g Interface to access the main game systems available methods.
      * @param b The current state of the board.
-     * @return An int that is the column the disc is to be inserted to.
+     * @return An integer that is the column the disc is to be inserted to.
      */
 	public int makeMove(IGame g, Board b);
 	/**

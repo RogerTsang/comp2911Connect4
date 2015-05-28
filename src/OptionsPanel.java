@@ -108,9 +108,9 @@ public class OptionsPanel extends JPanel {
 				    profile2.setEnabled(false);
 					profile2.setVisible(false);
 					if (e.getItem().toString() == "Novice CMP Opponent") {
-					    gameController.attachAI(new NoviceAI(Player.P2));
+					    gameController.addAI(new NoviceAI(Player.P2));
 					} else {
-                       gameController.attachAI(new ExperiencedAI(Player.P2));
+                       gameController.addAI(new ExperiencedAI(Player.P2));
 					}
 					
 				};

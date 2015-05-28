@@ -160,11 +160,10 @@ public class GameSystem implements IController, IGame {
 		}
 		return false;
 	}
-	
+	/*
 	/**
 	 * Redo the last move, This will cause a player switch
 	 * @return True if the redo can be done
-	 */
 	public boolean redo() {
 		if (this.state != GameState.PLAYABLE) {
 			return false;
@@ -193,7 +192,7 @@ public class GameSystem implements IController, IGame {
 		}
 		return false;
 	}
-	
+	*/
 	public Player getWinner() {
         return this.winner;
     }
@@ -233,7 +232,7 @@ public class GameSystem implements IController, IGame {
         return (this.state == GameState.FINISH);
     }
 	
-	public boolean attachAI(Iai bot) {
+	public boolean addAI(Iai bot) {
         if (this.state == GameState.WAIT_FOR_START) {
             this.ai = bot;
             return true;
@@ -242,7 +241,7 @@ public class GameSystem implements IController, IGame {
         }
     }
 
-    public boolean detachAI() {
+    public boolean removeAI() {
         if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
             this.ai = null;
             return true;
@@ -251,7 +250,7 @@ public class GameSystem implements IController, IGame {
         }
     }
     
-    public boolean hasAIAttached() {
+    public boolean hasAI() {
         boolean hasAI = true;
         if (this.ai == null) {
             hasAI =  false;
