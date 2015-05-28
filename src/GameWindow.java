@@ -32,8 +32,8 @@ public class GameWindow extends JFrame {
 	private boolean fallingAnimationMutex;
 	
 	//Info panels and panel for showing piece above column
-	private JPanel p1Info;
-	private JPanel p2Info;
+	private ProfilePanel p1Info;
+	private ProfilePanel p2Info;
 	private Profile p1Profile;
 	private Profile p2Profile;
 	
@@ -236,8 +236,15 @@ public class GameWindow extends JFrame {
 	public void endGameUI() {
 		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
 		boardPanel.updateUI();
-		this.p1Info.updateUI();
-		this.p2Info.updateUI();
+		this.p1Profile = this.gameController.getProfile(this.p1Profile.getName());
+		this.p2Profile = this.gameController.getProfile(this.p2Profile.getName());
+		this.p1Info.update(this.p1Profile);
+		this.p2Info.update(this.p2Profile);
+		//TODO: figure out a way to avoid having this here. Can we put an action listenener in GameWindow but initialise the button in ProfilePanel?
+		JButton undoButton = new JButton("Undo");
+		undoButton.addActionListener(new ButtonAction());
+		undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		p1Info.add(undoButton);
 	}
 	
 	private synchronized void FallingAnimation() {   
@@ -306,7 +313,5 @@ public class GameWindow extends JFrame {
 		private int translateMouse(int x, int boardWidth) {
 			return (int) Math.floor(x/(boardWidth/7));
 		}
-	}
-		
+	}		
 }
-

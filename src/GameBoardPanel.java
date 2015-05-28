@@ -60,10 +60,8 @@ public class GameBoardPanel extends JPanel {
 					    square = new GameSquare(Color.BLACK,false,0); break;
 				}
 				add(square);
-				
 			}
 		}
-		
 	}
 	
 	/**

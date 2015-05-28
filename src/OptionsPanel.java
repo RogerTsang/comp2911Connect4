@@ -115,7 +115,7 @@ public class OptionsPanel extends JPanel {
 					if (e.getItem().toString() == "Novice CMP Opponent") {
 					    gameController.addAI(new NoviceAI(Player.P2));
 					} else {
-                       gameController.addAI(new ExperiencedAI(Player.P2));
+						gameController.addAI(new ExperiencedAI(Player.P2));
 					}
 					
 				};
