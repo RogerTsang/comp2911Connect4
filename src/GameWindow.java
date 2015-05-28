@@ -86,13 +86,13 @@ public class GameWindow extends JFrame {
 		c.ipadx = 40;
 		add(p1Info, c);
 		//Undo button
-		if (gameController.hasAI()) {
-			undoButton = new JButton("Undo: " + gameController.getUndosLeft() + " left");
-			undoButton.addActionListener(new ButtonAction());
-			undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-			p1Info.add(undoButton);
+		undoButton = new JButton("Undo: " + gameController.getUndosLeft() + " left");
+		undoButton.addActionListener(new ButtonAction());
+		undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		p1Info.add(undoButton);
+		if (!gameController.hasAI()) {
+			undoButton.setVisible(false);
 		}
-		
 		
 		//Player 2 info panel
 		c.gridx = 5;
@@ -173,12 +173,15 @@ public class GameWindow extends JFrame {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
+					undoButton.setVisible(true);
 				} else if (nextPlayers[1] == "Experienced Computer") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
+					undoButton.setVisible(true);
 				} else {
 					if (gameController.hasAI()) gameController.removeAI();
+					undoButton.setVisible(false);
 					if (p2Profile != null) {
 						if (!nextPlayers[1].equals(p2Profile.getName())) {
 							p2Profile = gameController.getProfile(nextPlayers[1]);
