@@ -24,20 +24,34 @@ public class GameSquare extends JPanel {
 	private int y;
 	
 	/**
-	 * The new square unit with disc highlight
-	 * @param c Disc Color
-	 * @param ol Disc highlight toggle
+	 * The basic panel with colored circle inside
+	 * @param c The color of circle
 	 */
-	public GameSquare(Color c, boolean ol) {
+	public GameSquare(Color c) {
+		currentColor = c;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		highlighter = null;
+		MI = false;
+		y = 0;
+	}
+	
+	/**
+	 * The new square unit with disc winning highlight
+	 * @param c Disc Color
+	 * @param criticalDisc Discs which make the win
+	 */
+	public GameSquare(Color c, boolean criticalDisc) {
 		currentColor = c;
 		highlighter = null;
-		if (ol) {
+		if (criticalDisc) {
 			setBackground(Color.YELLOW);
 		} else {
 			setBackground(Color.BLUE);
 		}
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		MI = false;
+		y = 0;
 	}
 	
 	/**
@@ -51,13 +65,14 @@ public class GameSquare extends JPanel {
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		MI = false;
+		y = 0;
 	}
 	
 	/**
 	 * Create a square unit with no Highlighter.
 	 * @param c Current Disc Color
 	 */
-	public GameSquare(Color c,boolean MI,int y) {
+	public GameSquare(Color c, boolean MI, int y) {
 		currentColor = c;
 		highlighter = null;
 		setBackground(Color.BLUE);
@@ -69,10 +84,10 @@ public class GameSquare extends JPanel {
 	
 	/**
 	 * Create a square unit for position of dropping dice
-	 * @param i dropping dice identifier
+	 * @param i dropping dice indicator
 	 * @param c color of Dice dropping
 	 */
-	public GameSquare(boolean i,Color c,boolean MI,int y){
+	public GameSquare(boolean i, Color c, boolean MI, int y){
 		currentColor = c;
 		highlighter = null;
 		setBackground(Color.WHITE);

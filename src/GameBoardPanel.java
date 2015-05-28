@@ -21,12 +21,14 @@ public class GameBoardPanel extends JPanel {
 			GameSquare square = new GameSquare(true,Color.WHITE,false,0);
 			add(square);
 		}
+
 		for (int col = 0; col < b.getColumnSize(); col++) {
 			for (int row = 0; row < b.getRowSize(); row++) {
 				GameSquare square = new GameSquare(Color.WHITE,false,0);
 				add(square);
 			}
 		}
+
 		//Set up look of board
 		setBackground(Color.BLACK);
 		setLayout(new GridLayout(b.getRowSize()+1,b.getColumnSize(),0,0));
@@ -40,9 +42,9 @@ public class GameBoardPanel extends JPanel {
 	public void update(Board b) {
 	    
 		this.removeAll();
-		
+		//The very first row for disc indicator
 		for (int col = 0; col < b.getColumnSize();col++) {
-			GameSquare square = new GameSquare(true,Color.WHITE,false,0);
+			GameSquare square = new GameSquare(true, Color.WHITE, false, 1);
 			add(square);
 		}
 		
@@ -51,17 +53,16 @@ public class GameBoardPanel extends JPanel {
 				GameSquare square;
 				switch(b.getState()[col][row]) {
 					case P1:
-					    square = new GameSquare(Color.RED,false,0); break;
+					    square = new GameSquare(Color.RED); break;
 					case P2:
-					    square = new GameSquare(Color.GREEN,false,0); break;
-					case NOONE:
-					    square = new GameSquare(Color.WHITE,false,0); break;
+					    square = new GameSquare(Color.GREEN); break;
 					default:
-					    square = new GameSquare(Color.BLACK,false,0); break;
+					    square = new GameSquare(Color.WHITE); break;
 				}
 				add(square);
 			}
 		}
+		
 	}
 	
 	/**
@@ -100,21 +101,17 @@ public class GameBoardPanel extends JPanel {
 						    square = new GameSquare(Color.RED, currentPlayer); break;
 						case P2:
 						    square = new GameSquare(Color.GREEN, currentPlayer); break;
-						case NOONE:
-						    square = new GameSquare(Color.WHITE, currentPlayer); break;
 						default:
-						    square = new GameSquare(Color.BLACK, currentPlayer); break;
+						    square = new GameSquare(Color.WHITE, currentPlayer); break;
 					}
 				} else {
 					switch (b.getState()[col][row]) {
 						case P1:
-						    square = new GameSquare(Color.RED,false,0); break;
+						    square = new GameSquare(Color.RED); break;
 						case P2:
-						    square = new GameSquare(Color.GREEN,false,0); break;
-						case NOONE:
-						    square = new GameSquare(Color.WHITE,false,0); break;
+						    square = new GameSquare(Color.GREEN); break;
 						default:
-						    square = new GameSquare(Color.BLACK,false,0); break;
+						    square = new GameSquare(Color.WHITE); break;
 					}
 				}
 				add(square);
@@ -154,21 +151,18 @@ public class GameBoardPanel extends JPanel {
     					    square = new GameSquare(Color.RED,true,y-this.getHeight()/b.getColumnSize()*r); break;
     					case P2:
     					    square = new GameSquare(Color.GREEN,true,y-this.getHeight()/b.getColumnSize()*r); break;
-    					case NOONE:
-    					    square = new GameSquare(Color.WHITE,true,y-this.getHeight()/b.getColumnSize()*r); break;
     					default:
-    					    square = new GameSquare(Color.BLACK,true,y-this.getHeight()/b.getColumnSize()*r); break;
+    					    square = new GameSquare(Color.WHITE,true,y-this.getHeight()/b.getColumnSize()*r); break;
+
 					}	
 				} else {
 					switch (b.getState()[c][r]) {
 						case P1:
-						    square = new GameSquare(Color.RED,false,0); break;
+						    square = new GameSquare(Color.RED); break;
 						case P2:
-						    square = new GameSquare(Color.GREEN,false,0); break;
-						case NOONE:
-						    square = new GameSquare(Color.WHITE,false,0); break;
+						    square = new GameSquare(Color.GREEN); break;
 						default:
-						    square = new GameSquare(Color.BLACK,false,0); break;
+						    square = new GameSquare(Color.WHITE); break;
 					}
 				}
 				add(square);
@@ -216,10 +210,8 @@ public class GameBoardPanel extends JPanel {
 					    square = new GameSquare(Color.RED, winningState[col][row]); break;
 					case P2:
 					    square = new GameSquare(Color.GREEN, winningState[col][row]); break;
-					case NOONE:
-					    square = new GameSquare(Color.WHITE, winningState[col][row]); break;
 					default:
-					    square = new GameSquare(Color.BLACK, winningState[col][row]); break;
+					    square = new GameSquare(Color.WHITE, winningState[col][row]); break;
 				}
 				add(square);
 			}
