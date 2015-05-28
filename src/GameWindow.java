@@ -122,7 +122,7 @@ public class GameWindow extends JFrame {
         add(optionsButton, c);
 		
         //Restart button
-        JButton restartButton = new JButton("Restart");
+        JButton restartButton = new JButton("New Game");
         restartButton.addActionListener(new ButtonAction());
         c.gridx = 2;
         add(restartButton, c);
@@ -162,18 +162,18 @@ public class GameWindow extends JFrame {
 				if (confirmQuit == JOptionPane.OK_OPTION) System.exit(0);
 				break;
 			}	
-			case "Restart": {
+			case "New Game": {
 				//Get profiles for next game
 				gameController.newGame();
 				if (!nextPlayers[0].equals(p1Profile.getName())) {
 					p1Profile = gameController.getProfile(nextPlayers[0]);
 					p1Info.setProfile(p1Profile);
 				}
-				if (nextPlayers[1] == "Novice CMP Opponent") {
+				if (nextPlayers[1] == "Novice Computer") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
-				} else if (nextPlayers[1] == "Experienced CMP Opponent") {
+				} else if (nextPlayers[1] == "Experienced Computer") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
@@ -186,7 +186,6 @@ public class GameWindow extends JFrame {
 						}
 					} else {
 						p2Profile = gameController.getProfile(nextPlayers[1]);
-						System.out.println(p2Profile.getNumGamesPlayed());
 						p2Info.setProfile(p2Profile);
 					}
 				}
@@ -224,10 +223,10 @@ public class GameWindow extends JFrame {
 			if (!isInGame) {
 				p1Profile = gameController.getProfile(nextPlayers[0]);
 				p1Info = new ProfilePanel(p1Profile);
-				if (nextPlayers[1] == "Novice CMP Opponent") {
+				if (nextPlayers[1] == "Novice Computer") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
-				} else if (nextPlayers[1] == "Experienced CMP Opponent") {
+				} else if (nextPlayers[1] == "Experienced Computer") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
 				} else {
