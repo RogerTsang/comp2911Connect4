@@ -167,7 +167,7 @@ public class GameWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			switch (e.getActionCommand()){
 			case "Quit": {
-				int confirmQuit = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Quit Game", JOptionPane.OK_CANCEL_OPTION);
+				int confirmQuit = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Quit Game", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 				if (confirmQuit == JOptionPane.OK_OPTION) System.exit(0);
 				break;
 			}	

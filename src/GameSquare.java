@@ -10,6 +10,7 @@ import java.awt.GradientPaint;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.plaf.ColorUIResource;
 
 /**
  * One square in a Connect4 game board
@@ -33,7 +34,7 @@ public class GameSquare extends JPanel {
 	public GameSquare(Color c) {
 		currentColor = c;
 		ALPHA = 120;
-		setBackground(Color.BLUE);
+		setBackground(new ColorUIResource(40,90,255));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		highlighter = null;
 		MI = false;
@@ -52,7 +53,7 @@ public class GameSquare extends JPanel {
 		if (criticalDisc) {
 			setBackground(Color.YELLOW);
 		} else {
-			setBackground(Color.BLUE);
+			setBackground(new ColorUIResource(40,90,255));
 		}
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		MI = false;
@@ -68,7 +69,7 @@ public class GameSquare extends JPanel {
 		currentColor = c;
 		ALPHA = 120;
 		highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
-		setBackground(Color.BLUE);
+		setBackground(new ColorUIResource(40,90,255));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		MI = false;
 		y = 0;
@@ -82,7 +83,7 @@ public class GameSquare extends JPanel {
 		currentColor = c;
 		ALPHA = 120;
 		highlighter = null;
-		setBackground(Color.BLUE);
+		setBackground(new ColorUIResource(40,90,255));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.MI = MI;
 		this.y = y;
@@ -100,6 +101,44 @@ public class GameSquare extends JPanel {
 		setBackground(Color.WHITE);
 		this.MI = MI;
 		this.y = y;
+	}
+
+	public void setAnimatingDisc(int position) {
+		highlighter = null;
+		setBackground(new ColorUIResource(40,90,255));
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = true;
+		this.y = position;
+	}
+	
+	public void setSteadySquare(Color c) {
+		currentColor = c;
+		setBackground(new ColorUIResource(40,90,255));
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		highlighter = null;
+		MI = false;
+		y = 0;
+	}
+	
+	public void setIndicator(){
+		this.currentColor = Color.WHITE;
+		setBackground(Color.WHITE);
+	}
+	
+	public void setHighlight(Color h) {
+		this.highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
+	}
+	
+	public void setWinDisc() {
+		setBackground(Color.YELLOW);
+	}
+	
+	public void removeEffect() {
+		this.highlighter = null;
+		setBackground(new ColorUIResource(40,90,255));
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = false;
+		this.y = 0;
 	}
 	
 	private void doDrawing(Graphics g) {
@@ -152,7 +191,7 @@ public class GameSquare extends JPanel {
 		Rectangle2D.Double rectangle= new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight());
 		GradientPaint highLighter = new GradientPaint(0,0,
                 new Color(0,0,0,ALPHA), this.getWidth()/2, 0,highlighter, true);
-		setBackground(Color.BLUE);
+		setBackground(new ColorUIResource(40,90,255));
 		g2d.setPaint(highLighter);
 		g2d.fill(rectangle);
 	}
