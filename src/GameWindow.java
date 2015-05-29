@@ -274,9 +274,9 @@ public class GameWindow extends JFrame {
 		if (!this.gameController.hasAI()) {
 			this.p2Profile = this.gameController.getProfile(this.p2Profile.getName());
 		}
-		this.p1Info.update(this.p1Profile);
+		this.p1Info.setProfile(this.p1Profile);
 		if (!this.gameController.hasAI()) {
-			this.p2Info.update(this.p2Profile);
+			this.p2Info.setProfile(this.p2Profile);
 		} else {
 			this.p2Info.skipSettingAIProfile();
 		}

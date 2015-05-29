@@ -36,13 +36,6 @@ public class ProfilePanel extends JPanel {
 		addComponents();
 	}
 	
-	public void update(Profile p){
-		this.removeAll();
-		this.initUI();
-		this.setProfile(p);
-		this.addComponents();
-	}
-	
 	private void addComponents() {
 		gamesPlayed.setVisible(false);
 		wlRatioH.setVisible(false);
