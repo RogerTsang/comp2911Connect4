@@ -21,7 +21,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	private Profile player1;
 	private Profile player2;
 	private Stack<Integer> UndoStack;
-	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
 	private Sound soundEffects;
@@ -38,7 +37,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		this.P1Score = 0;
 		this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
-		this.RedoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
 		this.soundEffects = new Sound();
@@ -59,7 +57,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 			this.board.clear();
 			this.turnNumber = 1;
 			this.UndoStack.clear();
-			this.RedoStack.clear();
 			this.numUndosLeft = 3;
 			return true;
 		}
@@ -101,7 +98,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 				soundEffects.play(Sound.Player2);
 			}
 			this.UndoStack.add(column);
-			this.RedoStack.clear();
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
 			this.updateProfile();
 			switch (this.winner){
@@ -137,10 +133,8 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		if (this.currentPlayer != Player.NOONE && this.ai != null) {
 			if (!this.UndoStack.isEmpty() && numUndosLeft > 0) {
 				int lastMove = this.UndoStack.pop();
-				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
 				lastMove = this.UndoStack.pop();
-				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
                 this.turnNumber-=2;
                 this.numUndosLeft--;
@@ -149,39 +143,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		}
 		return false;
 	}
-	/*
-	/**
-	 * Redo the last move, This will cause a player switch
-	 * @return True if the redo can be done
-	public boolean redo() {
-		if (this.state != GameState.PLAYABLE) {
-			return false;
-		}
-		
-		if (this.currentPlayer != Player.NOONE && this.ai == null) {
-			if (!this.RedoStack.isEmpty()) {
-				int reMove = this.RedoStack.pop();
-				this.UndoStack.add(reMove);
-				this.board.insert(this.currentPlayer, reMove);
-				switchPlayer();
-				return true;
-			}
-		} else if (this.currentPlayer != Player.NOONE && this.ai != null) {
-			if (!this.RedoStack.isEmpty()) {
-				int reMove = this.RedoStack.pop();
-				this.UndoStack.add(reMove);
-				this.board.insert(this.currentPlayer, reMove);
-				reMove = this.RedoStack.pop();
-				this.UndoStack.add(reMove);
-				this.currentPlayer = Player.P2;
-				this.board.insert(this.currentPlayer, reMove);
-				this.currentPlayer = Player.P1;
-				return true;
-			}
-		}
-		return false;
-	}
-	*/
+	
 	public Player getWinner() {
         return this.winner;
     }
