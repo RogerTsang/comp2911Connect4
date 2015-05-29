@@ -149,7 +149,17 @@ public class GameBoardPanel extends JPanel {
 			this.remove(removeRow * 7 + col);
 		}
 		//The first row should be indicator
-		GameSquare preindicator = new GameSquare(true, Color.WHITE, false, 0);
+		GameSquare preindicator;
+		switch (b.getState()[col][endRow]) {
+		case P1:
+			preindicator = new GameSquare(true,Color.RED,true,y); break;
+		case P2:
+			preindicator = new GameSquare(true,Color.GREEN,true,y); break;
+		default:
+			preindicator = new GameSquare(true,Color.WHITE,true,y); break;
+
+	}	
+		
 		add(preindicator, boardLayout, col);
 		
 		for (int r = 0; r < b.getRowSize(); r++) {
@@ -158,11 +168,11 @@ public class GameBoardPanel extends JPanel {
 				//Animation
 				switch (b.getState()[col][endRow]) {
 					case P1:
-					    square = new GameSquare(Color.RED,true,y-this.getHeight()/b.getColumnSize()*r); break;
+					    square = new GameSquare(Color.RED,true,y-this.getHeight()/b.getColumnSize()*(r+1)); break;
 					case P2:
-					    square = new GameSquare(Color.GREEN,true,y-this.getHeight()/b.getColumnSize()*r); break;
+					    square = new GameSquare(Color.GREEN,true,y-this.getHeight()/b.getColumnSize()*(r+1)); break;
 					default:
-					    square = new GameSquare(Color.WHITE,true,y-this.getHeight()/b.getColumnSize()*r); break;
+					    square = new GameSquare(Color.WHITE,true,y-this.getHeight()/b.getColumnSize()*(r+1)); break;
 
 				}	
 			} else {
