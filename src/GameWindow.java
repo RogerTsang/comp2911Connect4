@@ -13,6 +13,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+/**
+ * Represents the window in which the game will be displayed
+ */
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
 	
@@ -40,8 +43,12 @@ public class GameWindow extends JFrame {
 	private JButton undoButton;
 	
 	//Players for next game
-	String[] nextPlayers;
+	private String[] nextPlayers;
 	
+	/**
+	 * Create a new GameWindow
+	 * @param g The game controller object that serves as the back-end of a game
+	 */
 	public GameWindow(IController g) {
 		gameController = g;
 		mouseEnable = true;
@@ -50,7 +57,7 @@ public class GameWindow extends JFrame {
 		showOptions(false);
 		initUI();
 	}
-
+	
 	private void initUI() {
 		this.mousePointingcolumn = -1;
 		this.previousColumn = -1;
@@ -136,6 +143,9 @@ public class GameWindow extends JFrame {
 		
 	}
 	
+	/**
+	 * Update the GameWindow's UI
+	 */
 	public void updateUI() {
 		boardPanel.update(gameController.getBoard());
 	}
@@ -154,7 +164,7 @@ public class GameWindow extends JFrame {
 		});
 	}
 
-	public class ButtonAction implements ActionListener {
+	private class ButtonAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			switch (e.getActionCommand()){
@@ -226,8 +236,8 @@ public class GameWindow extends JFrame {
 			}
 		}
 	}
-	
-	public void resizeWindow() {
+
+	private void resizeWindow() {
 		setSize(boardHeight+p1Info.getWidth()+p2Info.getWidth()+statsBuffer+50, boardHeight);
 	}
 	
@@ -259,6 +269,9 @@ public class GameWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Get a move from an AI if we currently have one playing
+	 */
 	public void letAImove() {
 		boolean preEndGame = gameController.isFinish();
 		mousePointingcolumn = gameController.getAITurn();
@@ -267,6 +280,10 @@ public class GameWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Update the info panels with new statistics after the end of a game.
+	 * Also display the winning squares
+	 */
 	public void endGameUI() {
 		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
 		this.p1Profile = this.gameController.getProfile(this.p1Profile.getName());
@@ -315,7 +332,7 @@ public class GameWindow extends JFrame {
 		}
     }
 	
-	public class MouseAction extends MouseAdapter {
+	private class MouseAction extends MouseAdapter {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if (mouseEnable == true && fallingAnimationMutex == false) {

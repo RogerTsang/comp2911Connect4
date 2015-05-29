@@ -1,6 +1,9 @@
 import java.applet.Applet;
 import java.applet.AudioClip;
 
+/**
+ * Sound effects for Connect4 game
+ */
 public class Sound {
 	private boolean enableToggle;
 	public static final int Player1 = 0;
@@ -16,6 +19,9 @@ public class Sound {
 	private final AudioClip restart;
 	private final AudioClip loseGame;
 	
+	/**
+	 * Create a new set of sounds
+	 */
 	public Sound() {
 		enableToggle = true;
 		player1_drop = Applet.newAudioClip(getClass().getResource("/realisticdrop1.wav"));
@@ -26,18 +32,32 @@ public class Sound {
 		loseGame = Applet.newAudioClip(getClass().getResource("/loss.wav"));
 	}
 	
+	/**
+	 * Turn the sound on
+	 */
 	public void Soundon() {
 		enableToggle = true;
 	}
 	
+	/**
+	 * Turn the sound off
+	 */
 	public void Soundoff() {
 		enableToggle = false;
 	}
 	
+	/**
+	 * Finds if the sound is currently on or off
+	 * @return If the sound if on or off
+	 */
 	public boolean getSoundToggle() {
 		return enableToggle;
 	}
 	
+	/**
+	 * Play a sound effect
+	 * @param type Type of sound to play
+	 */
 	public synchronized void play(final int type) {
 		if (enableToggle == false) {
 			return;

@@ -11,7 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-
+/**
+ * Panel used to display profile information to the sides of a game board
+ * @author patrickgilfillan
+ *
+ */
 @SuppressWarnings("serial")
 public class ProfilePanel extends JPanel {
 	private static boolean playerOne = true;
@@ -23,12 +27,20 @@ public class ProfilePanel extends JPanel {
 	private JLabel wlRatioAINovice;
 	private JToggleButton stats;
 	
+	/**
+	 * Create a new panel which stores human profile information
+	 * @param p Profile to display
+	 */
 	public ProfilePanel(Profile p) {
 		initUI();
 		setProfile(p);
 		addComponents();
 	}
 	
+	/**
+	 * Create a new panel which represents an AI opponent
+	 * @param aiType Name of AI
+	 */
 	public ProfilePanel(String aiType) {
 		initUI();
 		stats.setVisible(false);
@@ -83,7 +95,11 @@ public class ProfilePanel extends JPanel {
 		wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 	}
-
+	
+	/**
+	 * Set or update the profile displaying on this panel
+	 * @param p Profile to display on the profile
+	 */
 	public void setProfile(Profile p) {
 		name.setText(p.getName());
 		float WLRatioH = p.getWLRatioH() * 100;
@@ -97,16 +113,23 @@ public class ProfilePanel extends JPanel {
 		else stats.setVisible(true);
 	}
 	
+	/**
+	 * Change this panel to represent an AI
+	 * @param aiName
+	 */
 	public void changeToAIPanel(String aiName) {
 		stats.setVisible(false);
 		this.name.setText(aiName);
 	}
 	
+	/**
+	 * Skips setting this as an AI panel
+	 */
 	public void skipSettingAIProfile() {
 		playerOne = true;
 	}
 	
-	public class StatButtonListener implements ActionListener {
+	private class StatButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (gamesPlayed.isVisible() == false) {
