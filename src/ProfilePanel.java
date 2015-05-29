@@ -104,7 +104,7 @@ public class ProfilePanel extends JPanel {
 		float WLRatioH = p.getWLRatioH() * 100;
 		float WLRatioE = p.getWLRatioAIExperienced() * 100;
 		float WLRatioN = p.getWLRatioAINovice() * 100;
-		gamesPlayed.setText(String.format("Games played: ", p.getNumGamesPlayed()));
+		gamesPlayed.setText(String.format("Games played: " + p.getNumGamesPlayed()));
 		wlRatioH.setText(String.format("VS Humans: %.2f%%", WLRatioH));
 		wlRatioAIExperienced.setText(String.format("VS Experienced AI: %.2f%%",  WLRatioE));
 		wlRatioAINovice.setText(String.format("VS Novice AI: %.2f%%", WLRatioN));
