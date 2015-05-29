@@ -51,9 +51,8 @@ public interface IController {
      */
 	public boolean isFinish();
 	/**
-	 * Adds an AI to be played against to the game system.
-	 * @param ai An AI object that will make the CMP Opponent move.
-	 * @return A boolean, TRUE if successfully added otherwise FALSE.
+	 * Check if the current game has an AI
+	 * @return If game has AI
 	 */
 	public boolean hasAI();
 	/**
@@ -62,9 +61,9 @@ public interface IController {
 	 */
 	public int getAITurn();
 	/**
-	 * Gets the current score (amount of wins) of a player.
-	 * @param p A Player that is the ID of the player whose score to get.
-	 * @return An integer that is the players score.
+	 * Adds an AI to be played against to the game system.
+	 * @param ai An AI object that will make the CMP Opponent move.
+	 * @return A boolean, TRUE if successfully added otherwise FALSE.
 	 */
     public boolean addAI(Iai ai);
     /**

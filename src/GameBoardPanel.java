@@ -41,7 +41,7 @@ public class GameBoardPanel extends JPanel {
 	
 	/**
 	 * Changes the current GUI to reflect the current state of the game board.
-	 * @param board A board object reflecting the current game board.
+	 * @param b A board object reflecting the current game board.
 	 */
 	public void update(Board b) {
 		this.removeAll();
@@ -72,7 +72,8 @@ public class GameBoardPanel extends JPanel {
 	 * Highlights a column with the colour of the current player.
 	 * @param b Board object that has the current board state.
 	 * @param current Current Player whos turn it is.
-	 * @param col The selected column to be highlighted.
+	 * @param column The selected column to be highlighted.
+	 * @param previousColumn Previous column
 	 */
 	public void highlightCol(Board b, Player current, int column, int previousColumn) {
 		if (previousColumn == -1) {

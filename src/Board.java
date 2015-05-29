@@ -35,7 +35,7 @@ public class Board {
 	
 	/**
 	 * Alternate constructor with a current board state.
-	 * @param State of the board in a 2D array of type Player.
+	 * @param board State of the board in a 2D array of type Player.
 	 */
 	public Board(Board board){
 	    this.columnSize = board.getColumnSize();
@@ -72,7 +72,7 @@ public class Board {
 	
 	/**
 	 * Removes a disc from the board.
-	 * @param The column the disc is to be removed from.
+	 * @param column The column the disc is to be removed from.
 	 * @return A boolean, TRUE if successfully removed otherwise FALSE.
 	 */
 	public boolean remove(int column) {

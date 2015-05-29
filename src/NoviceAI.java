@@ -14,7 +14,7 @@ public class NoviceAI implements Iai {
     
     /**
      * Constructor that sets the ID of the AI.
-     * @param p Player type that is the AI's ID.
+     * @param id Player type that is the AI's ID.
      */
     public NoviceAI(Player id) {
         this.OurID = id;
