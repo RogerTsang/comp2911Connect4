@@ -3,12 +3,16 @@ import java.util.List;
 import java.util.Random;
 
 
-public class EasyAI implements Iai {
+public class NoviceAI implements Iai {
 
     private Player OurID;
     private Player OppID;
     
-    public EasyAI(Player id) {
+    /**
+     * Constructor that sets the ID of the AI.
+     * @param p Player type that is the AI's ID.
+     */
+    public NoviceAI(Player id) {
         this.OurID = id;
         if (id == Player.P1) {
             this.OppID = Player.P2; 
@@ -24,7 +28,7 @@ public class EasyAI implements Iai {
         // get a list of all legal moves
         List<Integer> possibleMoves = new LinkedList<Integer>();
         for (int col = 0; col < b.getColumnSize(); col++) {
-            if (g.isLegalMove(col)) {
+            if (g.isLegalMove(b,col)) {
                 possibleMoves.add(col);
             }
         }
@@ -37,7 +41,6 @@ public class EasyAI implements Iai {
             // if we can win on this turn then we will
             b.insert(this.OurID, col);
             if (g.checkWin(b,col,this.OurID) == this.OurID) {
-                System.out.println("We Win");
                 move = col;
                 break;
             }
@@ -45,7 +48,6 @@ public class EasyAI implements Iai {
             // if they can win on this turn we will stop them
             b.insert(this.OppID, col);
             if (g.checkWin(b,col,this.OppID) == this.OppID) {
-                System.out.println("Stop Them!");
                 move = col;
                 break;
             }
@@ -54,5 +56,10 @@ public class EasyAI implements Iai {
         
         return move;
     }
-
+    
+    @Override
+    public String getDifficulty() {
+    	return "Novice";
+    }
+    
 }

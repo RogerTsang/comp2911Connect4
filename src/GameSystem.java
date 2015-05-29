@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 
-public class GameSystem implements IController, IGame {
+public class GameSystem implements IController, IGame, IGameOptions {
+    
 	private GameState state;
 	private Player currentPlayer;
 	private Player winner;
@@ -17,13 +18,17 @@ public class GameSystem implements IController, IGame {
 	private int turnNumber;
 	private int P1Score;
 	private int P2Score;
+	private Profile player1;
+	private Profile player2;
 	private Stack<Integer> UndoStack;
 	private Stack<Integer> RedoStack;
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
-	private Sound soundEffect;
+	private Sound soundEffects;
+	int numUndosLeft;
 	
 	public GameSystem() {
+	    
 		this.state = GameState.WAIT_FOR_START;
 		this.currentPlayer = Player.P1;
 		this.winner = Player.NOONE;
@@ -36,14 +41,13 @@ public class GameSystem implements IController, IGame {
 		this.RedoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
-		this.soundEffect = new Sound();
+		this.soundEffects = new Sound();
+		this.saveProfile(new Profile("Guest"));
+		this.numUndosLeft = 3;
 	}
 	
-	/**
-	 * Method to generate a new game without disconnecting the Player(AI)s.
-	 * @return New game can only generate when PLAYABLE or FINISH
-	 */
 	public boolean newGame() {
+	    
 	    // if the game is all ready in a state to begin a new game
 	    // there is no need to start a new game
 		if (this.state == GameState.WAIT_FOR_START) {
@@ -53,20 +57,17 @@ public class GameSystem implements IController, IGame {
 			this.currentPlayer = Player.P1;
 			this.winner = Player.NOONE;
 			this.board.clear();
-			this.connectToWin = 4;
 			this.turnNumber = 1;
 			this.UndoStack.clear();
 			this.RedoStack.clear();
 			return true;
 		}
+		
 	}
 	
-	/**
-	 * Start a new game
-	 */
 	public boolean startGame() {
 		if (this.state == GameState.WAIT_FOR_START ) {
-			soundEffect.play(Sound.RESTART);
+			soundEffects.play(Sound.RESTART);
 			this.state = GameState.PLAYABLE;
 			return true;
 		} else {
@@ -74,10 +75,6 @@ public class GameSystem implements IController, IGame {
 		}
 	}
 	
-	/**
-	 * Inform you whose turn is it
-	 * @return
-	 */
 	public Player getCurrentPlayer() {
 	    if (this.turnNumber % 2 == 1) {
 	        return Player.P1;
@@ -86,36 +83,41 @@ public class GameSystem implements IController, IGame {
 	    }
 	}
 	
-	/**
-	 * Choose a column to insert a disc
-	 * @param column
-	 * @return True if the move can be done
-	 */
-	public boolean move(int column) {
+	public Board getBoard() {
+        return this.board;
+    }
+	
+	public boolean makeMove(int column) {
+	    
 	    if (this.state != GameState.PLAYABLE) {
             return false;
         }
 	    
 		if (this.board.insert(currentPlayer,column)) {
 			if (currentPlayer == Player.P1) {
-				soundEffect.play(Sound.Player1);
+				soundEffects.play(Sound.Player1);
 			} else {
-				soundEffect.play(Sound.Player2);
+				soundEffects.play(Sound.Player2);
 			}
 			this.UndoStack.add(column);
 			this.RedoStack.clear();
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
-			switch(this.winner){
+			this.updateProfile();
+			switch (this.winner){
 				case P1: this.P1Score++; 
 						 this.state = GameState.FINISH;
-						 soundEffect.play(Sound.WIN);
+						 soundEffects.play(Sound.WIN);
 						 break;
 				case P2: this.P2Score++; 
 						 this.state = GameState.FINISH;
-						 soundEffect.play(Sound.WIN);
+						 if (this.ai == null) {
+							 soundEffects.play(Sound.WIN);
+						 } else {
+							 soundEffects.play(Sound.LOSS);
+						 }
 						 break;
 				case DRAW: this.state = GameState.FINISH;
-						 soundEffect.play(Sound.DRAW);
+						 soundEffects.play(Sound.DRAW);
 						 break;
 				default: switchPlayer(); break;
 			}
@@ -126,26 +128,13 @@ public class GameSystem implements IController, IGame {
 		}
 	}
 	
-	/**
-	 * Undo the last move. This will cause a player switch
-	 * @return True if the undo can be done
-	 */
 	public boolean undo() {
 		if (this.state != GameState.PLAYABLE) {
 			return false;
 		}
 		
-		if (this.currentPlayer != Player.NOONE && this.ai == null) {
-			if (!this.UndoStack.isEmpty()) {
-				int lastMove = this.UndoStack.pop();
-				this.RedoStack.add(lastMove);
-				this.board.remove(lastMove);
-				switchPlayer();
-				this.turnNumber--;
-				return true;
-			}
-		} else if (this.currentPlayer != Player.NOONE && this.ai != null) {
-			if (!this.UndoStack.isEmpty()) {
+		if (this.currentPlayer != Player.NOONE && this.ai != null) {
+			if (!this.UndoStack.isEmpty() && numUndosLeft > 0) {
 				int lastMove = this.UndoStack.pop();
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
@@ -153,16 +142,16 @@ public class GameSystem implements IController, IGame {
 				this.RedoStack.add(lastMove);
 				this.board.remove(lastMove);
                 this.turnNumber-=2;
+                this.numUndosLeft--;
 				return true;
 			}
 		}
 		return false;
 	}
-	
+	/*
 	/**
 	 * Redo the last move, This will cause a player switch
 	 * @return True if the redo can be done
-	 */
 	public boolean redo() {
 		if (this.state != GameState.PLAYABLE) {
 			return false;
@@ -191,32 +180,88 @@ public class GameSystem implements IController, IGame {
 		}
 		return false;
 	}
-	
-	/**
-	 * Get who the winner is
-	 * @return
-	 */
+	*/
 	public Player getWinner() {
-		return this.winner;
-	}
+        return this.winner;
+    }
+	
+	public Stack<Integer> getWinningDiscs() {
+        return this.winningDiscs;
+    }
 	
 	/**
-	 * Get P1 Score
-	 */
+     * This is a method to recordWinningDiscs
+     * @param col
+     * @param row
+     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right 4:Draw
+     */
+    private void recordWinningDiscs(int col, int row, int mode) {
+        this.winningDiscs.clear();
+        //Draw
+        if (mode == 4) {
+            this.winningDiscs.push(0);this.winningDiscs.push(0);
+            this.winningDiscs.push(0);this.winningDiscs.push(5);
+            this.winningDiscs.push(6);this.winningDiscs.push(0);
+            this.winningDiscs.push(6);this.winningDiscs.push(5);
+            return;
+        }
+        //Win
+        for (int i = 0; i < this.connectToWin; i++) {
+            switch(mode) {
+                case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
+                case 1: this.winningDiscs.push(col++); this.winningDiscs.push(row); break;
+                case 2: this.winningDiscs.push(col++); this.winningDiscs.push(row++); break;
+                case 3: this.winningDiscs.push(col++); this.winningDiscs.push(row--); break;
+            }
+        }
+    }
+    
+	public boolean isFinish() {
+        return (this.state == GameState.FINISH);
+    }
+	
+	public boolean addAI(Iai bot) {
+        if (this.state == GameState.WAIT_FOR_START) {
+            this.ai = bot;
+            return true;
+        } else {
+            return false;           
+        }
+    }
+
+    public boolean removeAI() {
+        if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
+            this.ai = null;
+            return true;
+        } else {
+            return false;           
+        }
+    }
+    
+    public boolean hasAI() {
+        boolean hasAI = true;
+        if (this.ai == null) {
+            hasAI =  false;
+        }
+        return hasAI;
+    }
+    
+    public int getAITurn() {
+        if (this.ai != null) {
+            int AImoveColumn = this.ai.makeMove((IGame)this, this.board.clone());
+            this.makeMove(AImoveColumn);
+            return AImoveColumn;
+        } else {
+            return -1;
+        }
+    }
+	
 	public int getPlayerScore(Player p) {
 		switch(p) {
 			case P1: return this.P1Score;
 			case P2: return this.P2Score;
 			default: return -1;
 		}			
-	}
-	
-	/**
-	 * Check if the game is finished.
-	 * @return
-	 */
-	public boolean isFinish() {
-		return (this.state == GameState.FINISH);
 	}
 	
 	/**
@@ -229,54 +274,7 @@ public class GameSystem implements IController, IGame {
 			this.currentPlayer = Player.P1;
 		}
 	}	
-
-	public boolean attachAI(Iai bot) {
-		if (this.state == GameState.WAIT_FOR_START) {
-			this.ai = bot;
-			return true;
-		} else {
-			return false;			
-		}
-	}
-
-	public boolean detachAI() {
-		if (this.state == GameState.WAIT_FOR_START && this.ai != null) {
-			this.ai = null;
-			return true;
-		} else {
-			return false;			
-		}
-	}
 	
-	/**
-	 * In order to debug, Now the AI can move whatever if it is its turn.
-	 */
-	public boolean getAITurn() {
-		if (this.ai != null) {
-			this.move(this.ai.makeMove((IGame)this,this.board.clone()));
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	public Player[][] getBoard() {
-		return this.board.getState();
-	}
-
-    @Override
-    public int getConnectToWin() {
-        return this.connectToWin;
-    }
-    
-    /**
-     * A Different method for checking whether the game has ended, via a win or draw, 
-     * otherwise still playable. It is based on the last move only instead of scanning the whole board.
-     * @return winner of the game or nobody if noone has won yet or draw if drawn
-     */
-    
-    //Does this check if a particular player wins or if anyone wins? I feel it should just check if anyone wins and return the winner (hence making input Player redundant).
     public Player checkWin(Board b, int column, Player p) {
         int numInARow = 0;
         Player[][] boardState = b.getState();
@@ -296,6 +294,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(column, rowOfLastDisc, 0);
+                	updateProfile();
                     return p;
                 }
             } else {
@@ -319,6 +318,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(columnCheckStart, rowOfLastDisc, 1);
+                	updateProfile();
                     return p;
                 }
             } else {
@@ -353,6 +353,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(columnCheckStart, rowCheckStart, 2);
+                	updateProfile();
                     return p;
                 }
                 col++;
@@ -389,6 +390,7 @@ public class GameSystem implements IController, IGame {
                 numInARow++;
                 if (numInARow == this.connectToWin) {
                 	recordWinningDiscs(columnCheckStart, rowCheckStart, 3);
+                	updateProfile();
                     return p;
                 }
                 col++;
@@ -405,55 +407,25 @@ public class GameSystem implements IController, IGame {
             if (boardState[col][0] == Player.NOONE) break;
             if (col == board.getColumnSize()-1) { 
             	recordWinningDiscs(0, 0, 4);
+            	updateProfile();
             	return Player.DRAW;
             }
         }
         return Player.NOONE;
     }
     
-    /**
-     * This is a method to recordWinningDiscs
-     * @param col
-     * @param row
-     * @param mode 0:Vertical 1:Horizontal 2:Up-Left 3:Up-Right 4:Draw
-     */
-    private void recordWinningDiscs(int col, int row, int mode) {
-    	this.winningDiscs.clear();
-    	//Draw
-    	if (mode == 4) {
-    		this.winningDiscs.push(0);this.winningDiscs.push(0);
-    		this.winningDiscs.push(0);this.winningDiscs.push(5);
-    		this.winningDiscs.push(6);this.winningDiscs.push(0);
-    		this.winningDiscs.push(6);this.winningDiscs.push(5);
-    		return;
-    	}
-    	//Win
-    	for (int i = 0; i < this.connectToWin; i++) {
-    		switch(mode) {
-	        	case 0: this.winningDiscs.push(col); this.winningDiscs.push(row++); break;
-	        	case 1: this.winningDiscs.push(col++); this.winningDiscs.push(row); break;
-	        	case 2: this.winningDiscs.push(col++); this.winningDiscs.push(row++); break;
-	        	case 3: this.winningDiscs.push(col++); this.winningDiscs.push(row--); break;
-    		}
-    	}
+    public int getConnectToWin() {
+        return this.connectToWin;
     }
     
-    public Stack<Integer> getWinningDiscs() {
-    	return this.winningDiscs;
-    }
-    
-    @Override
-    public boolean isLegalMove(int column) {
-        if (column < 0 || column >= this.board.getColumnSize()) return false;
-        if (this.board.getState()[column][0] != Player.NOONE) return false;
-        return true;
-    }
-
-	@Override
-	public boolean isLegalMove(int column, Board b) {
+	public boolean isLegalMove(Board b, int column) {
 		if (column < 0 || column >= b.getColumnSize()) return false;
         if (b.getState()[column][0] != Player.NOONE) return false;
         return true;
+	}
+	
+	public int getUndosLeft() {
+		return this.numUndosLeft;
 	}
 	
 	public ArrayList<String> getProfileNames() {
@@ -505,5 +477,97 @@ public class GameSystem implements IController, IGame {
 	public void deleteProfile(String name) {
 		File toDelete = new File("./profiles/" + name + ".ser");
 		if (toDelete.exists()) toDelete.delete();
+		return;
 	}
+	
+	public void setProfile(int playerNumber, String name){
+		if(playerNumber == 1) this.player1 = this.getProfile(name);
+		else this.player2 = this.getProfile(name);
+		return;
+	}
+	
+	//assumes that the first player is always human.
+	private void updateProfile(){
+		Profile humanProfile1 = null;
+		Profile humanProfile2 = null;
+		String gameType = "other";
+		
+		if(this.ai != null){
+			if(this.ai.getDifficulty().equals("Experienced")){
+				gameType = "AIE";
+			} else if(this.ai.getDifficulty().equals("Novice")) {
+				gameType = "AIN";
+			}
+		} else {
+			gameType = "human";
+		}
+		
+		if(gameType == "human"){
+			humanProfile1 = this.player1;
+			humanProfile2 = this.player2;
+		} else{
+			humanProfile1 = this.player1;
+		}
+		
+		switch(gameType){
+			case "AIH":	
+				humanProfile1.addGamePlayed();
+				switch(this.getWinner()){
+					case P1:humanProfile1.addwAIH();
+						break;
+					case P2:humanProfile1.addlAIH();
+						break;
+					case DRAW:humanProfile1.adddAIH();
+						break;
+					default:
+						break;
+					}
+				break;
+			case "AIE":	
+				humanProfile1.addGamePlayed();
+				switch(this.getWinner()){
+					case P1:humanProfile1.addwAIE();
+						break;
+					case P2:humanProfile1.addlAIE();
+						break;
+					case DRAW:humanProfile1.adddAIE();
+						break;
+					default:
+						break;
+					}
+				break;
+			case "human": 
+				switch(this.getWinner()){
+					case P1:humanProfile2.addlP();
+							humanProfile1.addwP();
+
+							humanProfile1.addGamePlayed();
+							humanProfile2.addGamePlayed();
+						break;
+					case P2:humanProfile2.addwP();
+							humanProfile1.addlP();
+
+							humanProfile1.addGamePlayed();
+							humanProfile2.addGamePlayed();
+						break;
+					case DRAW:	humanProfile1.adddP();
+								humanProfile2.adddP();
+
+								humanProfile1.addGamePlayed();
+								humanProfile2.addGamePlayed();
+						break;
+					default:
+						break;
+					}
+				break;
+			default:
+				break;
+		}
+		this.saveProfile(humanProfile1);
+		if(humanProfile2 != null){
+			this.saveProfile(humanProfile2);
+		}
+		return;
+	}
+	
 }

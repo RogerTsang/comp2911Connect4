@@ -13,8 +13,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.Timer;
 
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
@@ -26,29 +24,36 @@ public class GameWindow extends JFrame {
 	private IController gameController;
 	
 	//current column mouse point at
-	private int col;
-	
-	private Timer timer;
+	private int mousePointingcolumn;
+	private int previousColumn;
 	
 	//y coordination of falling dice
-	private int y;
+	private boolean mouseEnable;
+	private boolean fallingAnimationMutex;
 	
 	//Info panels and panel for showing piece above column
-	JPanel p1Info;
-	JPanel p2Info;
-	Profile p1Profile;
-	Profile p2Profile;
+	private ProfilePanel p1Info;
+	private ProfilePanel p2Info;
+	private Profile p1Profile;
+	private Profile p2Profile;
+	private JButton undoButton;
+	
+	//Players for next game
+	String[] nextPlayers;
 	
 	public GameWindow(IController g) {
-		y = 0;
 		gameController = g;
-		showOptions();
+		mouseEnable = true;
+		fallingAnimationMutex = false;
+		nextPlayers = new String[2];
+		showOptions(false);
 		initUI();
 	}
 
 	private void initUI() {
-		this.col = -1;
-		
+		this.mousePointingcolumn = -1;
+		this.previousColumn = -1;
+		this.setResizable(false);
 		//Set up layout and components
 		initLayout();
 		
@@ -59,7 +64,7 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(870, 500));
+		setMinimumSize(new Dimension(1024, 500));
 		pack();
 		setSize(870,500);
 		setBackground(Color.GRAY);
@@ -72,24 +77,25 @@ public class GameWindow extends JFrame {
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		boardPanel = new GameBoardPanel();
+		boardPanel = new GameBoardPanel(this.gameController.getBoard());
 		//c.weightx = 0.5;
 		
 		//Player 1 info panel
-		p1Info = new ProfilePanel(p1Profile);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 1;
 		c.ipadx = 40;
 		add(p1Info, c);
 		//Undo button
-		JButton undoButton = new JButton("Undo");
+		undoButton = new JButton("Undo: " + gameController.getUndosLeft() + " left");
 		undoButton.addActionListener(new ButtonAction());
 		undoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		p1Info.add(undoButton);
+		if (!gameController.hasAI()) {
+			undoButton.setVisible(false);
+		}
 		
 		//Player 2 info panel
-		p2Info = new ProfilePanel(p2Profile);
 		c.gridx = 5;
 		c.gridy = 0;
 		c.gridheight = 1;
@@ -105,39 +111,28 @@ public class GameWindow extends JFrame {
 		add(boardPanel, c);
 		
 		c.weightx = 1;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.ipady = 0;
+		
+		//Options button
+        JButton optionsButton = new JButton("Options");
+        optionsButton.addActionListener(new ButtonAction());
+        //c.gridy = 2;
+        c.gridx = 1;
+        add(optionsButton, c);
+		
+        //Restart button
+        JButton restartButton = new JButton("New Game");
+        restartButton.addActionListener(new ButtonAction());
+        c.gridx = 2;
+        add(restartButton, c);
+        
 		//Quit button
 		JButton quitButton = new JButton("Quit");
 		quitButton.addActionListener(new ButtonAction());
-		c.gridx = 1;
-		c.gridy = 1;
-		c.gridwidth = 1;
-		c.ipady = 0;
-		add(quitButton, c);
-		
-		//Restart button
-		JButton restartButton = new JButton("Restart");
-		restartButton.addActionListener(new ButtonAction());
-		c.gridx = 2;
-		add(restartButton, c);
-		
-		//AI move button
-		JButton AIMove = new JButton("AIMove");
-		AIMove.addActionListener(new ButtonAction());
 		c.gridx = 3;
-		add(AIMove, c);
-		
-		//Enable AI button
-		JButton restartAIButton = new JButton("EnableAI");
-		restartAIButton.addActionListener(new ButtonAction());
-		c.gridx = 4;
-		add(restartAIButton, c);
-		
-		//Options button
-		JButton optionsButton = new JButton("Options");
-		optionsButton.addActionListener(new ButtonAction());
-		c.gridy = 2;
-		c.gridx = 1;
-		add(optionsButton, c);
+		add(quitButton, c);
 		
 	}
 	
@@ -168,147 +163,191 @@ public class GameWindow extends JFrame {
 				if (confirmQuit == JOptionPane.OK_OPTION) System.exit(0);
 				break;
 			}	
-			case "Restart": {
+			case "New Game": {
+				//Get profiles for next game
 				gameController.newGame();
-				gameController.detachAI();
-				gameController.startGame();
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-				break;
-			}
-			case "EnableAI": {
-				gameController.newGame();
-				gameController.attachAI(new SmartAI(Player.P2));
-				gameController.startGame();
-				boardPanel.update(gameController.getBoard());
-				boardPanel.updateUI();
-				break;
-			}
-			case "AIMove": {
-				gameController.getAITurn();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
+				if (!nextPlayers[0].equals(p1Profile.getName())) {
+					p1Profile = gameController.getProfile(nextPlayers[0]);
+					p1Info.setProfile(p1Profile);
+				}
+				if (nextPlayers[1] == "Novice AI") {
+					p2Profile = null;
+					p2Info.changeToAIPanel(nextPlayers[1]);
+					gameController.addAI(new NoviceAI(Player.P2));
+					undoButton.setVisible(true);
+				} else if (nextPlayers[1] == "Experienced AI") {
+					p2Profile = null;
+					p2Info.changeToAIPanel(nextPlayers[1]);
+					gameController.addAI(new ExperiencedAI(Player.P2));
+					undoButton.setVisible(true);
 				} else {
-					boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
-					boardPanel.updateUI();
+					if (gameController.hasAI()) gameController.removeAI();
+					undoButton.setVisible(false);
+					if (p2Profile != null) {
+						if (!nextPlayers[1].equals(p2Profile.getName())) {
+							p2Profile = gameController.getProfile(nextPlayers[1]);
+							p2Info.setProfile(p2Profile);
+						}
+					} else {
+						p2Profile = gameController.getProfile(nextPlayers[1]);
+						p2Info.setProfile(p2Profile);
+					}
 				}
-				break;
-			}
-			case "Undo": {
-				gameController.undo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				}
-				break;
-			}
-			case "Redo": {
-				gameController.redo();
-				if (!gameController.isFinish()) {
-					boardPanel.update(gameController.getBoard());
-					boardPanel.updateUI();
-				}
+
+				gameController.startGame();
+				mouseEnable = true;
+				fallingAnimationMutex = false;
+				boardPanel.update(gameController.getBoard());
+				boardPanel.updateUI();
 				break;
 			}
 			case "Options": {
-				showOptions();
+				showOptions(true);
 				break;
 			}
 			default:break;
 			}
-		}
-		
-	}
-	
-	private void showOptions() {
-		OptionsPanel options = new OptionsPanel(gameController, gameController.getProfileNames());
-		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
-		if (option == JOptionPane.OK_OPTION) {
-		//	System.out.println(options.getPlayer1Name());
-			//System.out.println(options.getPlayer2Name());
-			p1Profile = gameController.getProfile(options.getPlayer1Name());
-			p2Profile = gameController.getProfile(options.getPlayer2Name());
-		}
-	}
-	
-	  private  void  FallingAnimation() {   
-		  	FallingListener fallingListener = new FallingListener();
-	        this.timer = new Timer(1, fallingListener);
-	        timer.start();
-	    }
-	
-	 private class FallingListener implements ActionListener{
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				 if( y < boardPanel.getHeight()){
-					y = y +5;
-					boardPanel.paintNextMove(gameController.getBoard(), col,y);
-					
-				 }else{
-					 y = 0;
-					 timer.stop();
-				 }
-			}
-	    	
-	    }
-	
-	public class MouseAction extends MouseAdapter {
-		private boolean mouseEnable = true;
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if (mouseEnable == true) {
-				int nextMove = -1;
-				if (e.getButton() == MouseEvent.BUTTON1) nextMove = translateMouse(e.getX(), boardPanel.getWidth());
-				if (nextMove >= 0 && nextMove <= 6){
-					if(gameController.move(nextMove)){
-						col = nextMove;
-						FallingAnimation();
-						
-						
+			
+			if (e.getSource() == undoButton) {
+				if (!fallingAnimationMutex) {
+					gameController.undo();
+					if (!gameController.isFinish()) {
+						boardPanel.update(gameController.getBoard());
+						boardPanel.updateUI();
 					}
-				
+					undoButton.setText("Undo: " + gameController.getUndosLeft() + " left");
 				}
 			}
-			mouseMoved(e);
-			if (!gameController.isFinish()) {
-				mouseEnable = true;
-			} else {
-				endGameUI();
-				mouseEnable = false;
+		}
+	}
+	
+	private void showOptions(boolean isInGame) {
+		OptionsPanel options = new OptionsPanel((IGameOptions)gameController, gameController.getProfileNames());
+		int option = JOptionPane.showConfirmDialog(this, options, "Choose players", JOptionPane.OK_CANCEL_OPTION);
+		if (option == JOptionPane.OK_OPTION) {
+			nextPlayers[0] = options.getPlayer1Name();
+			nextPlayers[1] = options.getPlayer2Name();
+			if (!isInGame) {
+				p1Profile = gameController.getProfile(nextPlayers[0]);
+				p1Info = new ProfilePanel(p1Profile);
+				if (nextPlayers[1] == "Novice AI") {
+					p2Info = new ProfilePanel(nextPlayers[1]);
+					gameController.addAI(new NoviceAI(Player.P2));
+				} else if (nextPlayers[1] == "Experienced AI") {
+					p2Info = new ProfilePanel(nextPlayers[1]);
+					gameController.addAI(new ExperiencedAI(Player.P2));
+				} else {
+					p2Profile = gameController.getProfile(nextPlayers[1]);
+					p2Info = new ProfilePanel(p2Profile);
+				}
+			}
+		} else {
+			if (!isInGame) System.exit(0);
+		}
+	}
+	
+	public void letAImove() {
+		int pushMousePointingColumn = mousePointingcolumn;
+		boolean preEndGame = gameController.isFinish();
+		if ((mousePointingcolumn = gameController.getAITurn()) < 0) {
+			mousePointingcolumn = pushMousePointingColumn;
+			return;
+		}
+		if (!preEndGame && !fallingAnimationMutex) {
+			FallingAnimation();
+			mousePointingcolumn = pushMousePointingColumn;
+		} else {
+			return;
+		}
+	}
+	
+	public void endGameUI() {
+		boardPanel.highlightWinningLine(gameController.getBoard(), gameController.getWinningDiscs());
+		this.p1Profile = this.gameController.getProfile(this.p1Profile.getName());
+		if (!this.gameController.hasAI()) {
+			this.p2Profile = this.gameController.getProfile(this.p2Profile.getName());
+		}
+		this.p1Info.update(this.p1Profile);
+		if (!this.gameController.hasAI()) {
+			this.p2Info.update(this.p2Profile);
+		} else {
+			this.p2Info.skipSettingAIProfile();
+		}
+		boardPanel.updateUI();
+	}
+	
+	private synchronized void FallingAnimation() {   
+		Thread FallingThread = new Thread(new Falling());
+		this.fallingAnimationMutex = true;
+		FallingThread.start();
+	}
+	
+	 private class Falling implements Runnable {
+		private int y;
+		
+		@Override
+		public void run() {
+			while (fallingAnimationMutex) {
+				if (y < boardPanel.getHeight()){
+					y += boardPanel.getHeight()/20;
+					boardPanel.paintNextMove(gameController.getBoard(), mousePointingcolumn, y);
+					//1000ms/60fps = 16.7ms 
+					try {
+						Thread.sleep(16);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else {
+					y = 0;
+					if (gameController.isFinish()) {
+						mouseEnable = false;
+						endGameUI();
+					}
+					fallingAnimationMutex = false;
+				}
+			}
+		}
+    }
+	
+	public class MouseAction extends MouseAdapter {
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if (mouseEnable == true && fallingAnimationMutex == false) {
+				int nextMove = -1;
+				if (e.getButton() == MouseEvent.BUTTON1) {
+				    nextMove = translateMouse(e.getX(), boardPanel.getWidth());
+				}
+				if (nextMove >= 0 && nextMove < gameController.getBoard().getColumnSize()) {
+					if (gameController.makeMove(nextMove)) {
+						mousePointingcolumn = nextMove;
+						FallingAnimation();
+						if (gameController.hasAI() && !gameController.isFinish()) {
+					        letAImove();
+			            }
+					}
+				}
 			}
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			if (mouseEnable == true) {
-				int column = translateMouse(e.getX(), boardPanel.getWidth());
-				col = column;
-				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), col);
-				boardPanel.updateUI();
-			}
-		}
-		
-		/**
-		 * This method is only called once when the game is finished
-		 */
-		public void endGameUI() {
-			if (mouseEnable == true) {
-				boardPanel.endGame(gameController.getBoard(), gameController.getWinningDiscs());
+			if (mouseEnable == true && fallingAnimationMutex == false) {
+				previousColumn = mousePointingcolumn;
+				mousePointingcolumn = translateMouse(e.getX(), boardPanel.getWidth());
+				boardPanel.highlightCol(gameController.getBoard(), gameController.getCurrentPlayer(), mousePointingcolumn, previousColumn);
 				boardPanel.updateUI();
 			}
 		}
 		
 		private int translateMouse(int x, int boardWidth) {
-			int buffer = 3;
-			if (x%(boardWidth/7) < buffer || (x+buffer)%(boardWidth/7) < buffer) return - 1;
-			else {
-				int nextMove = (int) Math.floor(x/(boardWidth/7));
-				return nextMove;
+			int result = (int) Math.floor(x/(boardWidth/7));
+			if (result < 0) {
+				return 0;
+			} else if (result > 6) {
+				return 6;
+			} else {
+				return result;
 			}
-			
 		}
 	}
 		

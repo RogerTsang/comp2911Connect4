@@ -9,10 +9,14 @@
  */
 
 public class Board {
+    
 	private int columnSize;
 	public int rowSize;
 	private Player[][] state;
 	
+	/**
+	 * Board constructor that creates a standard 6*7 (row*col) 2D array of type Player. 
+	 */
 	public Board() {
 		//Initial board as all slots are empty
 		//Board distribute: [column][row]
@@ -27,8 +31,8 @@ public class Board {
 	}
 	
 	/**
-	 * alternate constructor with a current board state
-	 * @param board	state of the board in array form
+	 * Alternate constructor with a current board state.
+	 * @param State of the board in a 2D array of type Player.
 	 */
 	public Board(Board board){
 	    this.columnSize = board.getColumnSize();
@@ -42,10 +46,10 @@ public class Board {
 	}
 	
 	/**
-	 * Insert a disc into the board 
-	 * @param p Player
-	 * @param column Which column you want to insert
-	 * @return
+	 * Inserts a disc into the board.
+	 * @param p Player who is inserting the disc.
+	 * @param column The column the disc is to be inserted in to.
+	 * @return A boolean, TRUE if successfully inserted otherwise FALSE.
 	 */
 	public boolean insert(Player p, int column) {
         if (this.state[column][0] == Player.NOONE) {
@@ -64,9 +68,9 @@ public class Board {
 	}
 	
 	/**
-	 * Remove a disc from the board
-	 * @param column Which column
-	 * @return
+	 * Removes a disc from the board.
+	 * @param The column the disc is to be removed from.
+	 * @return A boolean, TRUE if successfully removed otherwise FALSE.
 	 */
 	public boolean remove(int column) {
 	    if (this.state[column][this.getRowSize()-1] != Player.NOONE) {
@@ -85,21 +89,32 @@ public class Board {
 	}
 	
 	/**
-	 * Get direct board info
-	 * @return
+	 * Get the current state of the board as a 2D array of type Player.
+	 * @return A 2D array of type Player
 	 */
 	public Player[][] getState() {
 		return this.state;
 	}
 	
+	/**
+	 * Get the number of columns of the board.
+	 * @return An integer that is the number of columns the board consists of.
+	 */
 	public int getColumnSize() {
 	    return this.columnSize;
 	}
 	
+	/**
+     * Get the number of rows of the board.
+     * @return An integer that is the number of rows the board consists of.
+     */
 	public int getRowSize() {
 	    return this.rowSize;
 	}
 	
+	/**
+	 * Clear all discs from the board.
+	 */
 	public void clear() {
 		for (int col = 0; col < this.columnSize; col++) {
 			for (int row = 0; row < this.rowSize; row++) {
@@ -108,6 +123,9 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Creates a copy of this board.
+	 */
 	public Board clone() {
 	    return new Board(this);
 	}

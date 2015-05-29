@@ -1,10 +1,12 @@
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -12,63 +14,103 @@ import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
 public class ProfilePanel extends JPanel {
-	
-	JLabel name;
-	JLabel gamesPlayed;
-	JLabel wlRatioH;
-	JLabel wlRatioAIHard;
-	JLabel wlRatioAIEasy;
-	JToggleButton stats;
+	private static boolean playerOne = true;
+	private ImageIcon avatar;
+	private JLabel name;
+	private JLabel gamesPlayed;
+	private JLabel wlRatioH;
+	private JLabel wlRatioAIExperienced;
+	private JLabel wlRatioAINovice;
+	private JToggleButton stats;
 	
 	public ProfilePanel(Profile p) {
-		initUI(p);
+		initUI();
+		setProfile(p);
+		addComponents();
 	}
 	
-	private void initUI(Profile p) {
+	public ProfilePanel(String aiType) {
+		initUI();
+		stats.setVisible(false);
+		name.setText(aiType);
+		addComponents();
+	}
+	
+	public void update(Profile p){
+		this.removeAll();
+		this.initUI();
+		this.setProfile(p);
+		this.addComponents();
+		//this.updateUI();
+	}
+	
+	private void addComponents() {
+		gamesPlayed.setVisible(false);
+		wlRatioH.setVisible(false);
+		wlRatioAIExperienced.setVisible(false);
+		wlRatioAINovice.setVisible(false);
+		add(name);
+		add(stats);
+		add(gamesPlayed);
+		add(wlRatioH);
+		add(wlRatioAIExperienced);
+		add(wlRatioAINovice);
+	}
+	
+	private void initUI() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		JToggleButton stats = new JToggleButton("Show/Hide Stats");
+		stats = new JToggleButton("Show/Hide Stats");
 		stats.addActionListener(new StatButtonListener());
 		stats.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		//Name of profile
 		name = new JLabel();
-		name.setText(p.getName());
+		//name.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+		name.setFont(name.getFont().deriveFont(Font.BOLD, 24));
 		name.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//Roger: This line is used for general purpose for setting
+		if (playerOne) {
+			avatar = new ImageIcon(getClass().getResource("/Circle_Red.png"));
+			playerOne = false;
+		} else {
+			avatar = new ImageIcon(getClass().getResource("/Circle_Green.png"));
+			playerOne = true;
+		}
+		name.setIcon(avatar);
 		
 		//All the stats related to 
 		gamesPlayed = new JLabel();
-		gamesPlayed.setText("Number of games played: " + (int) p.getNumGamesPlayed());
 		gamesPlayed.setAlignmentX(Component.CENTER_ALIGNMENT);
 		wlRatioH = new JLabel();
-		wlRatioH.setText("Ratio against Humans: " + p.getWLRatioH());
 		wlRatioH.setAlignmentX(Component.CENTER_ALIGNMENT);
-		wlRatioAIHard =  new JLabel();
-		wlRatioAIHard.setText("Ratio against Hard AI: " + p.getWLRatioAIHard());
-		wlRatioAIHard.setAlignmentX(Component.CENTER_ALIGNMENT);
-		wlRatioAIEasy = new JLabel();
-		wlRatioAIEasy.setText("Ratio against Easy AI: " + p.getWLRatioAIEasy());
-		wlRatioAIEasy.setAlignmentX(Component.CENTER_ALIGNMENT);
+		wlRatioAIExperienced = new JLabel();
+		wlRatioAIExperienced.setAlignmentX(Component.CENTER_ALIGNMENT);
+		wlRatioAINovice = new JLabel();
+		wlRatioAINovice.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		gamesPlayed.setVisible(false);
-		wlRatioH.setVisible(false);
-		wlRatioAIHard.setVisible(false);
-		wlRatioAIEasy.setVisible(false);
-		add(name);
-		add(stats);
-		add(gamesPlayed);
-		add(wlRatioH);
-		add(wlRatioAIHard);
-		add(wlRatioAIEasy);
 	}
 
 	public void setProfile(Profile p) {
 		name.setText(p.getName());
-		gamesPlayed.setText("" + p.getNumGamesPlayed());
-		wlRatioH.setText("" + p.getWLRatioH());
-		wlRatioAIHard.setText("" + p.getWLRatioAIHard());
-		wlRatioAIEasy.setText("" + p.getWLRatioAIEasy());
+		float WLRatioH = p.getWLRatioH() * 100;
+		float WLRatioE = p.getWLRatioAIExperienced() * 100;
+		float WLRatioN = p.getWLRatioAINovice() * 100;
+		gamesPlayed.setText(String.format("Games played: ", p.getNumGamesPlayed()));
+		wlRatioH.setText(String.format("VS Humans: %.2f%%", WLRatioH));
+		wlRatioAIExperienced.setText(String.format("VS Experienced AI: %.2f%%",  WLRatioE));
+		wlRatioAINovice.setText(String.format("VS Novice AI: %.2f%%", WLRatioN));
+		if (!stats.isVisible()) stats.setVisible(true); 
+	}
+	
+	public void changeToAIPanel(String aiName) {
+		stats.setVisible(false);
+		this.name.setText(aiName);
+	}
+	
+	public void skipSettingAIProfile() {
+		playerOne = true;
 	}
 	
 	public class StatButtonListener implements ActionListener {
@@ -77,13 +119,13 @@ public class ProfilePanel extends JPanel {
 			if (gamesPlayed.isVisible() == false) {
 				gamesPlayed.setVisible(true);
 				wlRatioH.setVisible(true);
-				wlRatioAIHard.setVisible(true);
-				wlRatioAIEasy.setVisible(true);
+				wlRatioAIExperienced.setVisible(true);
+				wlRatioAINovice.setVisible(true);
 			} else {
 				gamesPlayed.setVisible(false);
 				wlRatioH.setVisible(false);
-				wlRatioAIHard.setVisible(false);
-				wlRatioAIEasy.setVisible(false);
+				wlRatioAIExperienced.setVisible(false);
+				wlRatioAINovice.setVisible(false);
 			}
 		}
 		

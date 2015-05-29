@@ -18,23 +18,40 @@ public class GameSquare extends JPanel {
 	private Color currentColor;
 	private Color highlighter;
 	private final int ALPHA = 120;
-	private boolean MI;//moving index
-	private int y;//position
+	// Moving index
+	private boolean MI;
+	// Position
+	private int y;
+	
 	/**
-	 * The new square unit with disc highlight
-	 * @param c Disc Color
-	 * @param ol Disc highlight toggle
+	 * The basic panel with colored circle inside
+	 * @param c The color of circle
 	 */
-	public GameSquare(Color c, boolean ol) {
+	public GameSquare(Color c) {
+		currentColor = c;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		highlighter = null;
+		MI = false;
+		y = 0;
+	}
+	
+	/**
+	 * The new square unit with disc winning highlight
+	 * @param c Disc Color
+	 * @param criticalDisc Discs which make the win
+	 */
+	public GameSquare(Color c, boolean criticalDisc) {
 		currentColor = c;
 		highlighter = null;
-		if (ol) {
+		if (criticalDisc) {
 			setBackground(Color.YELLOW);
 		} else {
 			setBackground(Color.BLUE);
 		}
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		MI = false;
+		y = 0;
 	}
 	
 	/**
@@ -48,41 +65,81 @@ public class GameSquare extends JPanel {
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		MI = false;
+		y = 0;
 	}
 	
 	/**
 	 * Create a square unit with no Highlighter.
 	 * @param c Current Disc Color
 	 */
-	public GameSquare(Color c,boolean MI,int y) {
+	public GameSquare(Color c, boolean MI, int y) {
 		currentColor = c;
 		highlighter = null;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.MI = MI;
 		this.y = y;
-		
 	}
+	
 	/**
 	 * Create a square unit for position of dropping dice
-	 * @param i dropping dice identifier
+	 * @param i dropping dice indicator
 	 * @param c color of Dice dropping
 	 */
-	public GameSquare(boolean i,Color c,boolean MI,int y){
+	public GameSquare(boolean i, Color c, boolean MI, int y){
 		currentColor = c;
 		highlighter = null;
 		setBackground(Color.WHITE);
 		this.MI = MI;
 		this.y = y;
 	}
+
+	public void setAnimatingDisc(int position) {
+		highlighter = null;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = true;
+		this.y = position;
+	}
 	
+	public void setSteadySquare(Color c) {
+		currentColor = c;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		highlighter = null;
+		MI = false;
+		y = 0;
+	}
+	
+	public void setIndicator(){
+		this.currentColor = Color.WHITE;
+		setBackground(Color.WHITE);
+	}
+	
+	public void setHighlight(Color h) {
+		this.highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
+	}
+	
+	public void setWinDisc() {
+		setBackground(Color.YELLOW);
+	}
+	
+	public void removeEffect() {
+		this.highlighter = null;
+		setBackground(Color.BLUE);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.MI = false;
+		this.y = 0;
+	}
 	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		float squareCircleRatio = 0.75f;
+		float squareCircleRatio = 0.85f;
 		int width = getWidth();
-		float x = width/2 - width*squareCircleRatio/2;
+		if (getHeight() < width) width = getHeight();
+		float x = getWidth()/2 - width*squareCircleRatio/2;
 		float y = getHeight()/2 - width*squareCircleRatio/2;
+		
 		
 		//Set anti-aliasing and draw circle
 		g2d.setRenderingHint(
@@ -96,7 +153,7 @@ public class GameSquare extends JPanel {
 		if (highlighter != null) {
 			getHighlighter(g2d);
 		}
-		if(MI == true){
+		if (MI == true) {
 			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 1f);
 
 	        BufferedImage buffImg = new BufferedImage(this.getWidth(), this.getHeight(),
@@ -117,10 +174,8 @@ public class GameSquare extends JPanel {
 	        circle = new Ellipse2D.Double(x,y,width*squareCircleRatio,width*squareCircleRatio);
 	        gbi.fill(circle);
 	        
-	        g2d.drawImage(buffImg,0, 0, null);
-			
+	        g2d.drawImage(buffImg, 0, 0, null);
 		}
-		
 	}
 	
 	private void getHighlighter(Graphics2D g2d) {
