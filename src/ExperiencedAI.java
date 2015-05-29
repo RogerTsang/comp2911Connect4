@@ -14,13 +14,23 @@ public class ExperiencedAI implements Iai {
 		if (p == Player.P1) {
 			this.oppID = Player.P2;
 		} else {
-			this.oppID = Player.P2;
+			this.oppID = Player.P1;
 		}
 		return;
 	}	
 	
+	private Player getOtherPlayer(Player p){
+		if (p == Player.P1) {
+			return Player.P2;
+		} else {
+			return Player.P1;
+		}
+	}
+	
 	@Override
 	public int makeMove(IGame g, Board b) {
+		//System.out.println("Our Advantage " + evaluateBoard(g,b,this.ourID));
+		//System.out.println("Their Advantage " + evaluateBoard(g,b,this.oppID));
 	    
 	    // These are moves we want the AI to make
 		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();
@@ -43,12 +53,14 @@ public class ExperiencedAI implements Iai {
             if (g.checkWin(b,col,this.ourID) == this.ourID) {
                 return col;
             }
+            
             b.remove(col);
             // if they can win on this turn we will stop them
             b.insert(this.oppID, col);
             if (g.checkWin(b,col,this.oppID) == this.oppID) {
-                return col;
+            	return col;
             }
+            
             b.remove(col);
         }
 
@@ -79,7 +91,7 @@ public class ExperiencedAI implements Iai {
 		// Will the other player win with two moves?
 		// We need to move to interrupt
 		// i.e.(The classic example of two on the bottom with a space either side)
-		for (int ourMove : allPossibleMoves) {
+		for (int ourMove : possibleMoves) {
 			b.insert(this.oppID,ourMove);
 			for (int oppMove:allPossibleMoves) {
 				if (g.isLegalMove(b,oppMove)) {
@@ -95,7 +107,9 @@ public class ExperiencedAI implements Iai {
 		
 		// If we haven't made an automatic move by this point
 		// we have to decide between the remaining possible moves.
+		// this plays as close to the middle as possible
 		int bestMove = -1;
+		System.out.println(possibleMoves.size());
 		if (possibleMoves.size() != 0) {
 			for (int col = b.getColumnSize()/2; col >= 0; col--) {
 				for (int ourMove : possibleMoves) {
@@ -121,8 +135,110 @@ public class ExperiencedAI implements Iai {
 				}
 			}
 		}
-
 		return bestMove;
+	}
+	
+	//AI overhaul
+	/*
+	 * What counts as having an advantage?
+	 * 	-If we can win next turn(i.e. they are forced to block)	+2 for 1 column +(a lot) for two column (opponent auto loses)
+	 * 	-If we have columns which we control (i.e. if the opponent plays there they lose) +5 per column
+	 * 	-If we have two wins vertically above one another	+5 per double threat
+	 * 	-If we have lots of potential threats (two in a row with air either side) +1 per potential threat
+	 *  -We win the game (branches with lots of wins are more advantageous)
+	 * 
+	 * Likewise, the opponent having this stuff is a disadvantage
+	 * 	-We de-value by the same amount.
+	 * 
+	 * Value of each branch of a tree is the sum of its parts.
+	 * We attempt to go down the path of most value.
+	 * 
+	 * 
+	 * Note that this doesn't ever discount what we consider a 'dumb' move. It evaluates all moves and ascribes a value to them.
+	 */
+	
+	private int evaluateBoard(IGame g, Board b,Player p){
+		int boardValue = 0;
+		
+		// This is all legal moves
+		ArrayList<Integer> allPossibleMoves = new ArrayList<Integer>();
+		
+		// Adding all legal moves. We remove moves later on if they are poor.
+		for (int col = 0; col < b.getColumnSize(); col++) {
+			if (g.isLegalMove(b,col)) {
+				allPossibleMoves.add(col);
+			}
+		}
+		
+		for (int col : allPossibleMoves) {
+            b.insert(p, col);
+            if (g.checkWin(b,col,p) == p) {
+            	//a board where we win
+                boardValue += 20;
+            }
+            
+            b.remove(col);
+            b.insert(getOtherPlayer(p), col);
+            if (g.checkWin(b,col,getOtherPlayer(p)) == getOtherPlayer(p)) {
+            	//we have to block (they have initiative)
+            	boardValue -= 3;
+            }
+            
+            b.remove(col);
+        }
+
+		for (int ourMove : allPossibleMoves) {
+			b.insert(p,ourMove);
+			for (int oppMove : allPossibleMoves) {
+				if (g.isLegalMove(b,oppMove)) {
+					b.insert(getOtherPlayer(p),oppMove);
+					if (g.checkWin(b,oppMove,getOtherPlayer(p)) == getOtherPlayer(p)){
+						//A column where we can't play
+						boardValue -= 5;
+					}
+					b.remove(oppMove);
+				}
+			}
+			b.remove(ourMove);
+		}
+		
+		// Will the other player win with two moves?
+		for (int ourMove : allPossibleMoves) {
+			b.insert(getOtherPlayer(p),ourMove);
+			for (int oppMove:allPossibleMoves) {
+				if (g.isLegalMove(b,oppMove)) {
+					b.insert(getOtherPlayer(p),oppMove);
+					if (g.checkWin(b,oppMove,getOtherPlayer(p)) == getOtherPlayer(p)) {
+						//they have a slight advantage.
+						boardValue -= 2;
+					}
+					b.remove(oppMove);
+				}
+			}
+			b.remove(ourMove);
+		}
+		
+		//Can we win in two moves? this is an advantageous position.
+		for (int ourMove : allPossibleMoves) {
+			b.insert(p,ourMove);
+			for (int oppMove:allPossibleMoves) {
+				if (g.isLegalMove(b,oppMove)) {
+					b.insert(p,oppMove);
+					if (g.checkWin(b,oppMove,p) == p) {
+						//we have a slight advantage
+						boardValue += 2;
+					}
+					b.remove(oppMove);
+				}
+			}
+			b.remove(ourMove);
+		}
+		
+		// If we haven't made an automatic move by this point
+		// we have to decide between the remaining possible moves.
+		// this plays as close to the middle as possible
+		
+		return boardValue;
 	}
 	
 	@Override
