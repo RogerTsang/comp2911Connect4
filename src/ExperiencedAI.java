@@ -26,14 +26,6 @@ public class ExperiencedAI implements Iai {
 		return;
 	}	
 	
-	private Player getOtherPlayer(Player p){
-		if (p == Player.P1) {
-			return Player.P2;
-		} else {
-			return Player.P1;
-		}
-	}
-	
 	/**
 	 * Determines the next move the AI will make.  AI never directly modifies the gamestate, only passes back an int which corresponds to it's move. Can be handed any boardstate to compute a move (not just the boardstate in the current game).
 	 * @param g		current gamestate
@@ -142,13 +134,10 @@ public class ExperiencedAI implements Iai {
 			}
 		}
 		
-		System.out.println(nearMiddleMoves);
-		
 		if(nearMiddleMoves.size()>0){
 			Random randomGenerator = new Random();
 			
 			int randomNumber = randomGenerator.nextInt((nearMiddleMoves.size()));
-			System.out.println(randomNumber);
 			bestMove = nearMiddleMoves.get(randomNumber);
 		} else {
 			if (possibleMoves.size() != 0) {
