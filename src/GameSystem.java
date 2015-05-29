@@ -60,6 +60,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 			this.turnNumber = 1;
 			this.UndoStack.clear();
 			this.RedoStack.clear();
+			this.numUndosLeft = 3;
 			return true;
 		}
 		

@@ -205,6 +205,7 @@ public class GameWindow extends JFrame {
 				revalidate();
 				resizeWindow();
 				setLocationRelativeTo(null);
+				undoButton.setText("Undo: " + gameController.getUndosLeft() + " left");
 				break;
 			}
 			case "Options": {
