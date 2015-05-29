@@ -17,7 +17,7 @@ public class GameSquare extends JPanel {
 	private Ellipse2D.Double circle;
 	private Color currentColor;
 	private Color highlighter;
-	private final int ALPHA = 120;
+	private final int ALPHA;
 	// Moving index
 	private boolean MI;
 	// Position
@@ -29,6 +29,7 @@ public class GameSquare extends JPanel {
 	 */
 	public GameSquare(Color c) {
 		currentColor = c;
+		ALPHA = 120;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		highlighter = null;
@@ -44,6 +45,7 @@ public class GameSquare extends JPanel {
 	public GameSquare(Color c, boolean criticalDisc) {
 		currentColor = c;
 		highlighter = null;
+		ALPHA = 120;
 		if (criticalDisc) {
 			setBackground(Color.YELLOW);
 		} else {
@@ -61,6 +63,7 @@ public class GameSquare extends JPanel {
 	 */
 	public GameSquare(Color c, Color h) {
 		currentColor = c;
+		ALPHA = 120;
 		highlighter = new Color(h.getRed(), h.getGreen(), h.getBlue(), ALPHA);
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -74,6 +77,7 @@ public class GameSquare extends JPanel {
 	 */
 	public GameSquare(Color c, boolean MI, int y) {
 		currentColor = c;
+		ALPHA = 120;
 		highlighter = null;
 		setBackground(Color.BLUE);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -88,6 +92,7 @@ public class GameSquare extends JPanel {
 	 */
 	public GameSquare(boolean i, Color c, boolean MI, int y){
 		currentColor = c;
+		ALPHA = 120;
 		highlighter = null;
 		setBackground(Color.WHITE);
 		this.MI = MI;

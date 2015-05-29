@@ -14,7 +14,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	private Player currentPlayer;
 	private Player winner;
 	private Board board;
-	private int connectToWin;
+	private final int connectToWin;
 	private int turnNumber;
 	private int P1Score;
 	private int P2Score;
