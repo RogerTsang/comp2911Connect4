@@ -93,7 +93,7 @@ public class Profile implements Serializable {
 	 * Get the number of games this player has played
 	 * @return Number of games played
 	 */
-	public float getNumGamesPlayed() {
+	public int getNumGamesPlayed() {
 		return numGamesPlayed;
 	}
 	
