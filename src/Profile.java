@@ -54,14 +54,17 @@ public class Profile implements Serializable {
 	}
 	
 	public float getWLRatioH() {
+		if(this.getlP()+this.getdP()+this.getwP() == 0) return this.getwP();
 		return this.getwP()/(this.getlP()+this.getdP()+this.getwP());
 	}
 	
 	public float getWLRatioAINovice() {
+		if(this.getwAIE()+this.getdAIE()+this.getwAIE() == 0) return this.getwAIE();
 		return this.getwAIE()/(this.getlAIE()+this.getwAIE()+this.getdAIE());
 	}
 	
 	public float getWLRatioAIExperienced() {
+		if(this.getlAIH()+this.getdAIH()+this.getwAIH() == 0) return this.getwAIH();
 		return this.getwAIH()/(this.getlAIH() + this.getwAIH() + this.getdAIH());
 	}
 
