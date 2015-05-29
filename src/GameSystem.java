@@ -388,8 +388,10 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		String[] fileNames = f.list();
 		if (fileNames == null || fileNames.length == 0) return names;
 		for (String s : fileNames) {
-			s = s.replace(".ser", "");
-			names.add(s);
+			if (s.contains(".ser")) {
+				s = s.replace(".ser", "");
+				names.add(s);
+			}
 		}
 		return names;
 	}
