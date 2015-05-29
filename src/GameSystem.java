@@ -510,7 +510,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		}
 		
 		switch(gameType){
-			case "AIH":	
+			case "AIE":	
 				humanProfile1.addGamePlayed();
 				switch(this.getWinner()){
 					case P1:humanProfile1.addwAIH();
@@ -523,7 +523,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 						break;
 					}
 				break;
-			case "AIE":	
+			case "AIN":	
 				humanProfile1.addGamePlayed();
 				switch(this.getWinner()){
 					case P1:humanProfile1.addwAIE();

@@ -169,6 +169,7 @@ public class GameWindow extends JFrame {
 				if (!nextPlayers[0].equals(p1Profile.getName())) {
 					p1Profile = gameController.getProfile(nextPlayers[0]);
 					p1Info.setProfile(p1Profile);
+					gameController.setProfile(1, nextPlayers[0]);
 				}
 				if (nextPlayers[1] == "Novice AI") {
 					p2Profile = null;
@@ -192,6 +193,7 @@ public class GameWindow extends JFrame {
 						p2Profile = gameController.getProfile(nextPlayers[1]);
 						p2Info.setProfile(p2Profile);
 					}
+					gameController.setProfile(2, nextPlayers[1]);
 				}
 
 				gameController.startGame();
@@ -230,6 +232,7 @@ public class GameWindow extends JFrame {
 			if (!isInGame) {
 				p1Profile = gameController.getProfile(nextPlayers[0]);
 				p1Info = new ProfilePanel(p1Profile);
+				gameController.setProfile(1, nextPlayers[0]);
 				if (nextPlayers[1] == "Novice AI") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
@@ -239,6 +242,7 @@ public class GameWindow extends JFrame {
 				} else {
 					p2Profile = gameController.getProfile(nextPlayers[1]);
 					p2Info = new ProfilePanel(p2Profile);
+					gameController.setProfile(2, nextPlayers[1]);
 				}
 			}
 		} else {
