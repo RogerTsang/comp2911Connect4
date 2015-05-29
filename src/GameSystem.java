@@ -7,7 +7,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
 
-
+/**
+ * Represents the back-end of a Connect4 game, keeping track of data, if someone has won etc.
+ */
 public class GameSystem implements IController, IGame, IGameOptions {
     
 	private GameState state;
@@ -26,6 +28,9 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	private Sound soundEffects;
 	int numUndosLeft;
 	
+	/**
+	 * Create a new Game System
+	 */
 	public GameSystem() {
 	    
 		this.state = GameState.WAIT_FOR_START;

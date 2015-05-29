@@ -2,7 +2,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-
+/**
+ * Easy Connect4 AI
+ * @author patrickgilfillan
+ *
+ */
 public class NoviceAI implements Iai {
 
     private Player OurID;
@@ -21,6 +25,10 @@ public class NoviceAI implements Iai {
         }
     }
     
+    /**
+     * Get AI to select a move
+     * @return Column number
+     */
     @Override
     public int makeMove(IGame g, Board b) {
         int move = 0;

@@ -72,12 +72,42 @@ public interface IController {
      * @return A boolean, TRUE if successfully removed otherwise FALSE.
      */
     public boolean removeAI();
+    /**
+     * Get score of the given player
+     * @param p Player to check score of
+     * @return Score of given player
+     */
 	public int getPlayerScore(Player p);
-	
+	/**
+	 * Get names of profiles that were saved previously
+	 * @return List of names of profiles
+	 */
 	public ArrayList<String> getProfileNames();
+	/**
+	 * Get a specific profile with the given name which has been saved previously
+	 * @param name Name of profile
+	 * @return Profile requested
+	 */
 	public Profile getProfile(String name);
+	/**
+	 * Save a profile to the disk
+	 * @param p Profile to save
+	 */
 	public void saveProfile(Profile p);
+	/**
+	 * Delete a profile which was previously saved
+	 * @param name Name of the profile to delete
+	 */
 	public void deleteProfile(String name);
+	/**
+	 * Set the given player as the given profile
+	 * @param playerNumber Player number, either 1 or 2
+	 * @param name Name of profile
+	 */
 	public void setProfile(int playerNumber,String name);
+	/**
+	 * Get the number of undo's left in the current game if playing against AI
+	 * @return Number of undo's left
+	 */
 	public int getUndosLeft();
 }

@@ -6,7 +6,9 @@ import java.util.Stack;
 
 import javax.swing.JPanel;
 
-
+/**
+ * The visual representation of a Connect4 game board
+ */
 @SuppressWarnings("serial")
 public class GameBoardPanel extends JPanel {
 	

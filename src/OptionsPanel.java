@@ -20,7 +20,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-
+/**
+ * Options panel of game
+ */
 @SuppressWarnings("serial")
 public class OptionsPanel extends JPanel {
 	
@@ -36,6 +38,11 @@ public class OptionsPanel extends JPanel {
 	private DefaultComboBoxModel<String> p2model;
 	private DefaultComboBoxModel<String> deleteModel;
 	
+	/**
+	 * Create a new options panel
+	 * @param gameController Options interface for managing profiles
+	 * @param list List of the names of the profiles
+	 */
 	public OptionsPanel(IGameOptions gameController, ArrayList<String> list) {
 		this.gameController = gameController;
 		nameList = list;				
@@ -58,9 +65,6 @@ public class OptionsPanel extends JPanel {
 		deleteModel = new DefaultComboBoxModel<String>(names);
 		profileP1 = new JComboBox<String>(p1model);
 		profileP2 = new JComboBox<String>(p2model);
-		
-		gameController.setProfile(1, profileP1.getSelectedItem().toString());
-		gameController.setProfile(2, profileP2.getSelectedItem().toString());
 		
 		profileP1.addItemListener(new ItemListener(){
 			@Override
@@ -235,11 +239,19 @@ public class OptionsPanel extends JPanel {
 		add(infoText);
 	}
 	
+	/**
+	 * Get the name of the selected player 1
+	 * @return Name of player 1
+	 */
 	public String getPlayer1Name() {
 		if (profileP1.getSelectedItem() == null) return null;
 		return profileP1.getSelectedItem().toString();
 	}
 	
+	/**
+	 * Get the name of the selected player 2
+	 * @return Name of player 2
+	 */
 	public String getPlayer2Name() {
 		if (opponentOptionsList.getSelectedItem().toString() == "Human Opponent") {
 			if (profileP1.getSelectedItem() == null) return null;

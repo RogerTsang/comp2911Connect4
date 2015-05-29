@@ -8,6 +8,9 @@
  * [05] [15] [25] [35] [45] [55] [65]
  */
 
+/**
+ * Data representation of a Connect4 game board
+ */
 public class Board {
     
 	private int columnSize;

@@ -11,6 +11,9 @@ import java.awt.GradientPaint;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+/**
+ * One square in a Connect4 game board
+ */
 @SuppressWarnings("serial")
 public class GameSquare extends JPanel {
 	
