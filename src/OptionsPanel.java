@@ -38,13 +38,12 @@ public class OptionsPanel extends JPanel {
 	
 	public OptionsPanel(IGameOptions gameController, ArrayList<String> list) {
 		this.gameController = gameController;
-		nameList = list;
+		nameList = list;				
 		this.initUI();
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void initUI() {
-	    
 		//Create all the components
 		//Player 1 and 2 configuration components
 		String[] names = nameList.toArray(new String[nameList.size()]);
@@ -233,6 +232,7 @@ public class OptionsPanel extends JPanel {
 		deleteProfilesPanel.add(deleteProfile, c2);
 		c2.gridx = 1; c.gridwidth = 1;
 		deleteProfilesPanel.add(deleteProfButton, c2);
+		
 
         // Add panels to options panel
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
