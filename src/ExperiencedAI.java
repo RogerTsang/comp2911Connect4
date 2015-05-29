@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 import java.util.Random;
-
+/**
+ * Relatively smart AI which doesn't make any 'dumb' moves (such as giving away the game etc).
+ * 
+ * @author Daniel Krajsic z3459540
+ * @version 2.3
+ *
+ */
 public class ExperiencedAI implements Iai {
 
     private Player ourID;
@@ -28,6 +34,11 @@ public class ExperiencedAI implements Iai {
 		}
 	}
 	
+	/**
+	 * Determines the next move the AI will make.  AI never directly modifies the gamestate, only passes back an int which corresponds to it's move. Can be handed any boardstate to compute a move (not just the boardstate in the current game).
+	 * @param g		current gamestate
+	 * @param b		a boardstate
+	 */
 	@Override
 	public int makeMove(IGame g, Board b) {
 		
@@ -104,10 +115,7 @@ public class ExperiencedAI implements Iai {
 			b.remove(ourMove);
 		}
 		
-		// If we haven't made an automatic move by this point
-		// we have to decide between the remaining possible moves.
-		// this plays as close to the middle as possible
-
+		//Play near to the middle with some randomness if no other move has been made at this point
 		int bestMove = -1;
 		
 		ArrayList<Integer> nearMiddleMoves = new ArrayList<Integer>();
@@ -170,6 +178,9 @@ public class ExperiencedAI implements Iai {
 	}
 	
 	@Override
+	/**
+	 * A helper function used to identify the difficulty level of the AI
+	 */
 	public String getDifficulty() {
 	    return "Experienced";
 	}
