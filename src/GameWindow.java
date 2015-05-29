@@ -179,12 +179,12 @@ public class GameWindow extends JFrame {
 					p1Info.setProfile(p1Profile);
 					gameController.setProfile(1, nextPlayers[0]);
 				}
-				if (nextPlayers[1] == "Novice AI") {
+				if (nextPlayers[1] == "Novice") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
 					undoButton.setVisible(true);
-				} else if (nextPlayers[1] == "Experienced AI") {
+				} else if (nextPlayers[1] == "Experienced") {
 					p2Profile = null;
 					p2Info.changeToAIPanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
@@ -250,10 +250,10 @@ public class GameWindow extends JFrame {
 				p1Profile = gameController.getProfile(nextPlayers[0]);
 				p1Info = new ProfilePanel(p1Profile);
 				gameController.setProfile(1, nextPlayers[0]);
-				if (nextPlayers[1] == "Novice AI") {
+				if (nextPlayers[1] == "Novice") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new NoviceAI(Player.P2));
-				} else if (nextPlayers[1] == "Experienced AI") {
+				} else if (nextPlayers[1] == "Experienced") {
 					p2Info = new ProfilePanel(nextPlayers[1]);
 					gameController.addAI(new ExperiencedAI(Player.P2));
 				} else {

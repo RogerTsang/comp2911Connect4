@@ -109,9 +109,6 @@ public class OptionsPanel extends JPanel {
         P2ComboBox = new JComboBox<String>(P2ComboModel);
         P2ComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        //gameOptions.setProfile(1,P1ComboBox.getSelectedItem().toString());
-        //gameOptions.setProfile(2,P2ComboBox.getSelectedItem().toString());
-        
         P1ComboBox.addItemListener(new ItemListener(){
             @Override
             public void itemStateChanged(ItemEvent f){
@@ -148,7 +145,7 @@ public class OptionsPanel extends JPanel {
         P2InstrutionLabelPanel.add(P2InstructionLabel);
         P2OptionsPanel.add(P2InstrutionLabelPanel);
         // Create the combo box for game modes
-        String[] player2Options = {"Human Opponent", "Novice AI", "Experienced AI"};
+        String[] player2Options = {"Human Opponent", "Novice Computer", "Experienced Computer"};
         opponentOptionsList = new JComboBox<String>(player2Options);
         opponentOptionsList.setAlignmentX(Component.CENTER_ALIGNMENT);
         ((JLabel)opponentOptionsList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
@@ -311,10 +308,10 @@ public class OptionsPanel extends JPanel {
 		if (opponentOptionsList.getSelectedItem().toString() == "Human Opponent") {
 			if (P1ComboBox.getSelectedItem() == null) return null;
 			return P2ComboBox.getSelectedItem().toString();
-		} else if (opponentOptionsList.getSelectedItem().toString() == "Novice AI") {
-			return "Novice AI";
+		} else if (opponentOptionsList.getSelectedItem().toString() == "Novice Computer") {
+			return "Novice";
 		} else {
-			return "Experienced AI";
+			return "Experienced";
 		}
 	}
 }
