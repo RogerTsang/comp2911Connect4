@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ExperiencedAI implements Iai {
 
@@ -29,9 +30,7 @@ public class ExperiencedAI implements Iai {
 	
 	@Override
 	public int makeMove(IGame g, Board b) {
-		//System.out.println("Our Advantage " + evaluateBoard(g,b,this.ourID));
-		//System.out.println("Their Advantage " + evaluateBoard(g,b,this.oppID));
-	    
+		
 	    // These are moves we want the AI to make
 		ArrayList<Integer> possibleMoves = new ArrayList<Integer>();
 		// This is all legal moves
@@ -46,7 +45,7 @@ public class ExperiencedAI implements Iai {
 				allPossibleMoves.add(col);
 			}
 		}
-		
+				
 		for (int col : possibleMoves) {
             // If we can win on this turn then we will
             b.insert(this.ourID, col);
@@ -108,137 +107,66 @@ public class ExperiencedAI implements Iai {
 		// If we haven't made an automatic move by this point
 		// we have to decide between the remaining possible moves.
 		// this plays as close to the middle as possible
+
 		int bestMove = -1;
-		System.out.println(possibleMoves.size());
+		
+		ArrayList<Integer> nearMiddleMoves = new ArrayList<Integer>();
+		
 		if (possibleMoves.size() != 0) {
 			for (int col = b.getColumnSize()/2; col >= 0; col--) {
 				for (int ourMove : possibleMoves) {
 					if (ourMove + col == b.getColumnSize() || ourMove + col == 2*col) {
-						bestMove = ourMove;
-						break;
+						nearMiddleMoves.add(ourMove); 
+						if(nearMiddleMoves.size() == 3) break;
 					}
 				}
-				if (bestMove != -1) {
-					break;
-				}
+				if(nearMiddleMoves.size() == 3) break;
 			}
 		} else {
 			for (int col = b.getColumnSize()/2; col >= 0; col--) {
 				for (int ourMove : allPossibleMoves) {
 					if (ourMove + col == b.getColumnSize() || ourMove + col == 2*col) {
-						bestMove = ourMove;
-						break;
+						nearMiddleMoves.add(ourMove); 
+						if(nearMiddleMoves.size() == 3) break;
 					}
 				}
-				if (bestMove != -1) {
-					break;
+				if(nearMiddleMoves.size() == 3) break;
+			}
+		}
+		
+		System.out.println(nearMiddleMoves);
+		
+		if(nearMiddleMoves.size()>0){
+			Random randomGenerator = new Random();
+			
+			int randomNumber = randomGenerator.nextInt((nearMiddleMoves.size()));
+			System.out.println(randomNumber);
+			bestMove = nearMiddleMoves.get(randomNumber);
+		} else {
+			if (possibleMoves.size() != 0) {
+				for (int col = b.getColumnSize()/2; col >= 0; col--) {
+					for (int ourMove : possibleMoves) {
+						if (ourMove + col == b.getColumnSize() || ourMove + col == 2*col) {
+							bestMove = ourMove;
+							break;
+						}
+					}
+					if(bestMove != -1) break;
+				}
+			} else {
+				for (int col = b.getColumnSize()/2; col >= 0; col--) {
+					for (int ourMove : allPossibleMoves) {
+						if (ourMove + col == b.getColumnSize() || ourMove + col == 2*col) {
+							bestMove = ourMove;
+							break;
+						}
+					}
+					if(bestMove != -1) break;
 				}
 			}
 		}
+		
 		return bestMove;
-	}
-	
-	//AI overhaul
-	/*
-	 * What counts as having an advantage?
-	 * 	-If we can win next turn(i.e. they are forced to block)	+2 for 1 column +(a lot) for two column (opponent auto loses)
-	 * 	-If we have columns which we control (i.e. if the opponent plays there they lose) +5 per column
-	 * 	-If we have two wins vertically above one another	+5 per double threat
-	 * 	-If we have lots of potential threats (two in a row with air either side) +1 per potential threat
-	 *  -We win the game (branches with lots of wins are more advantageous)
-	 * 
-	 * Likewise, the opponent having this stuff is a disadvantage
-	 * 	-We de-value by the same amount.
-	 * 
-	 * Value of each branch of a tree is the sum of its parts.
-	 * We attempt to go down the path of most value.
-	 * 
-	 * 
-	 * Note that this doesn't ever discount what we consider a 'dumb' move. It evaluates all moves and ascribes a value to them.
-	 */
-	
-	private int evaluateBoard(IGame g, Board b,Player p){
-		int boardValue = 0;
-		
-		// This is all legal moves
-		ArrayList<Integer> allPossibleMoves = new ArrayList<Integer>();
-		
-		// Adding all legal moves. We remove moves later on if they are poor.
-		for (int col = 0; col < b.getColumnSize(); col++) {
-			if (g.isLegalMove(b,col)) {
-				allPossibleMoves.add(col);
-			}
-		}
-		
-		for (int col : allPossibleMoves) {
-            b.insert(p, col);
-            if (g.checkWin(b,col,p) == p) {
-            	//a board where we win
-                boardValue += 20;
-            }
-            
-            b.remove(col);
-            b.insert(getOtherPlayer(p), col);
-            if (g.checkWin(b,col,getOtherPlayer(p)) == getOtherPlayer(p)) {
-            	//we have to block (they have initiative)
-            	boardValue -= 3;
-            }
-            
-            b.remove(col);
-        }
-
-		for (int ourMove : allPossibleMoves) {
-			b.insert(p,ourMove);
-			for (int oppMove : allPossibleMoves) {
-				if (g.isLegalMove(b,oppMove)) {
-					b.insert(getOtherPlayer(p),oppMove);
-					if (g.checkWin(b,oppMove,getOtherPlayer(p)) == getOtherPlayer(p)){
-						//A column where we can't play
-						boardValue -= 5;
-					}
-					b.remove(oppMove);
-				}
-			}
-			b.remove(ourMove);
-		}
-		
-		// Will the other player win with two moves?
-		for (int ourMove : allPossibleMoves) {
-			b.insert(getOtherPlayer(p),ourMove);
-			for (int oppMove:allPossibleMoves) {
-				if (g.isLegalMove(b,oppMove)) {
-					b.insert(getOtherPlayer(p),oppMove);
-					if (g.checkWin(b,oppMove,getOtherPlayer(p)) == getOtherPlayer(p)) {
-						//they have a slight advantage.
-						boardValue -= 2;
-					}
-					b.remove(oppMove);
-				}
-			}
-			b.remove(ourMove);
-		}
-		
-		//Can we win in two moves? this is an advantageous position.
-		for (int ourMove : allPossibleMoves) {
-			b.insert(p,ourMove);
-			for (int oppMove:allPossibleMoves) {
-				if (g.isLegalMove(b,oppMove)) {
-					b.insert(p,oppMove);
-					if (g.checkWin(b,oppMove,p) == p) {
-						//we have a slight advantage
-						boardValue += 2;
-					}
-					b.remove(oppMove);
-				}
-			}
-			b.remove(ourMove);
-		}
-		
-		// If we haven't made an automatic move by this point
-		// we have to decide between the remaining possible moves.
-		// this plays as close to the middle as possible
-		
-		return boardValue;
 	}
 	
 	@Override
