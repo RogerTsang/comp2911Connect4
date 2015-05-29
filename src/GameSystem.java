@@ -24,7 +24,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	private Stack<Integer> winningDiscs;
 	private Iai ai;
 	private Sound soundEffects;
-	int numUndosLeft;
+	private int numUndosLeft;
 	
 	public GameSystem() {
 	    
