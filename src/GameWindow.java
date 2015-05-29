@@ -66,7 +66,7 @@ public class GameWindow extends JFrame {
         //Set up window
 		setTitle("Connect Four");
 		pack();
-		setSize(boardHeight-22+p1Info.getWidth()+p2Info.getWidth()+statsBuffer, boardHeight);
+		setSize(boardHeight+p1Info.getWidth()+p2Info.getWidth()+statsBuffer+50, boardHeight);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -228,7 +228,7 @@ public class GameWindow extends JFrame {
 	}
 	
 	public void resizeWindow() {
-		setSize(boardHeight-22+p1Info.getWidth()+p2Info.getWidth()+statsBuffer, boardHeight);
+		setSize(boardHeight+p1Info.getWidth()+p2Info.getWidth()+statsBuffer+50, boardHeight);
 	}
 	
 	private void showOptions(boolean isInGame) {
