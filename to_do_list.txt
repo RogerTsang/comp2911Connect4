@@ -2,5 +2,4 @@ NEED TO CHANGE:
 ---------------
 - Fix UI/animation issues, especially when clicking fast
 - Fix Show/Hide stats button messing up UI
-- Guest profile should not have a show/hide options button (since it doesn't have stats)
 - Maybe make profile panels look better? (Lots of white space at this point + undo button isn't positioned very well)

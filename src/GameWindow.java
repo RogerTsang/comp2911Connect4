@@ -19,6 +19,8 @@ public class GameWindow extends JFrame {
 	
 	//Game g;
 	private GameBoardPanel boardPanel;
+	private final int boardHeight = 550;
+	private final int statsBuffer = 20;
 
 	//Pass controller to GUI
 	private IController gameController;
@@ -64,9 +66,8 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(1024, 500));
 		pack();
-		setSize(870,500);
+		setSize(boardHeight-22+p1Info.getWidth()+p2Info.getWidth()+statsBuffer, boardHeight);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -201,6 +202,9 @@ public class GameWindow extends JFrame {
 				fallingAnimationMutex = false;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
+				revalidate();
+				resizeWindow();
+				setLocationRelativeTo(null);
 				break;
 			}
 			case "Options": {
@@ -221,6 +225,10 @@ public class GameWindow extends JFrame {
 				}
 			}
 		}
+	}
+	
+	public void resizeWindow() {
+		setSize(boardHeight-22+p1Info.getWidth()+p2Info.getWidth()+statsBuffer, boardHeight);
 	}
 	
 	private void showOptions(boolean isInGame) {

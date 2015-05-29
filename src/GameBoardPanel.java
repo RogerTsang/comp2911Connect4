@@ -230,6 +230,6 @@ public class GameBoardPanel extends JPanel {
         int w = (int) d.getWidth();
         int h = (int) d.getHeight();
         int s = (w < h ? w : h);
-        return new Dimension(s, s*6/7);
+        return new Dimension(s, s*908/1000);
     }
 }
