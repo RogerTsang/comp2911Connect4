@@ -41,7 +41,6 @@ public class ProfilePanel extends JPanel {
 		this.initUI();
 		this.setProfile(p);
 		this.addComponents();
-		//this.updateUI();
 	}
 	
 	private void addComponents() {
@@ -101,7 +100,8 @@ public class ProfilePanel extends JPanel {
 		wlRatioH.setText(String.format("VS Humans: %.2f%%", WLRatioH));
 		wlRatioAIExperienced.setText(String.format("VS Experienced AI: %.2f%%",  WLRatioE));
 		wlRatioAINovice.setText(String.format("VS Novice AI: %.2f%%", WLRatioN));
-		if (!stats.isVisible()) stats.setVisible(true); 
+		if (p.getName().equals("Guest")) stats.setVisible(false);
+		else stats.setVisible(true);
 	}
 	
 	public void changeToAIPanel(String aiName) {

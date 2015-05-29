@@ -49,15 +49,10 @@ public class OptionsPanel extends JPanel {
 		String[] names = nameList.toArray(new String[nameList.size()]);
 		ArrayList<String> listCopy = (ArrayList<String>) nameList.clone();
 		p1model = new DefaultComboBoxModel<String>(names);		
-		
-		String toRemove = null;
-		if(listCopy.size() > 1){
-			for(String l:listCopy){
-				if(l!="Guest") toRemove = l;
-				break;
-			}
+		if (nameList.size() > 1) p1model.setSelectedItem(nameList.get(1));
+		if(!p1model.getSelectedItem().equals("Guest")) {
+			listCopy.remove(p1model.getSelectedItem());
 		}
-		listCopy.remove(toRemove);
 		p2model = new DefaultComboBoxModel<String>(listCopy.toArray(new String[listCopy.size()]));
 		
 		deleteModel = new DefaultComboBoxModel<String>(names);
@@ -84,14 +79,6 @@ public class OptionsPanel extends JPanel {
 					}
 				}
 				profileP2 = new JComboBox<String>(p2model);
-				gameController.setProfile(1,f.getItem().toString());
-			}
-		});
-		
-		profileP2.addItemListener(new ItemListener(){
-			@Override
-			public void itemStateChanged(ItemEvent g){
-				gameController.setProfile(2,g.getItem().toString());
 			}
 		});
 		
