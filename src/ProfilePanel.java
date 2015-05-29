@@ -122,12 +122,10 @@ public class ProfilePanel extends JPanel {
 	 */
 	public void changeToAIPanel(String aiName) {
 		stats.setVisible(false);
-		if (stats.isSelected()) {
-			gamesPlayed.setVisible(false);
-			wlRatioH.setVisible(false);
-			wlRatioAIExperienced.setVisible(false);
-			wlRatioAINovice.setVisible(false);
-		}
+		gamesPlayed.setVisible(false);
+		wlRatioH.setVisible(false);
+		wlRatioAIExperienced.setVisible(false);
+		wlRatioAINovice.setVisible(false);
 		this.name.setText(aiName);
 	}
 	
