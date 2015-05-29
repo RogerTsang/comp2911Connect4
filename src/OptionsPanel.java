@@ -240,7 +240,6 @@ public class OptionsPanel extends JPanel {
 		final JButton deleteButton = new JButton("    Delete Player    ");
 		if(deleteComboBox.getSelectedItem().equals("Guest")){
 			deleteButton.setEnabled(false);
-			deleteComboBox.setEnabled(false);
 		}
 		deleteComboBox.addItemListener(new ItemListener(){
 			@Override
