@@ -72,7 +72,7 @@ public interface IController {
      * @return A boolean, TRUE if successfully removed otherwise FALSE.
      */
     public boolean removeAI();
-	public int getPlayerScore(Player p);
+	//public int getPlayerScore(Player p);
 	
 	public ArrayList<String> getProfileNames();
 	public Profile getProfile(String name);
