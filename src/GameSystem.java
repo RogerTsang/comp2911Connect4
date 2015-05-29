@@ -467,26 +467,32 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		
 		switch(gameType){
 			case "AIE":	
-				humanProfile1.addGamePlayed();
+				
 				switch(this.getWinner()){
 					case P1:humanProfile1.addwAIH();
+					humanProfile1.addGamePlayed();
 						break;
 					case P2:humanProfile1.addlAIH();
+					humanProfile1.addGamePlayed();
 						break;
 					case DRAW:humanProfile1.adddAIH();
+					humanProfile1.addGamePlayed();
 						break;
 					default:
 						break;
 					}
 				break;
 			case "AIN":	
-				humanProfile1.addGamePlayed();
+
 				switch(this.getWinner()){
 					case P1:humanProfile1.addwAIE();
+					humanProfile1.addGamePlayed();
 						break;
 					case P2:humanProfile1.addlAIE();
+					humanProfile1.addGamePlayed();
 						break;
 					case DRAW:humanProfile1.adddAIE();
+					humanProfile1.addGamePlayed();
 						break;
 					default:
 						break;
