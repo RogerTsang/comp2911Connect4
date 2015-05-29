@@ -19,6 +19,8 @@ public class GameWindow extends JFrame {
 	
 	//Game g;
 	private GameBoardPanel boardPanel;
+	private final int boardHeight = 550;
+	private final int statsBuffer = 20;
 
 	//Pass controller to GUI
 	private IController gameController;
@@ -64,9 +66,8 @@ public class GameWindow extends JFrame {
 		
         //Set up window
 		setTitle("Connect Four");
-		setMinimumSize(new Dimension(1024, 500));
 		pack();
-		setSize(870,500);
+		setSize(boardHeight-22+p1Info.getWidth()+p2Info.getWidth()+statsBuffer, boardHeight);
 		setBackground(Color.GRAY);
 		setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -201,6 +202,9 @@ public class GameWindow extends JFrame {
 				fallingAnimationMutex = false;
 				boardPanel.update(gameController.getBoard());
 				boardPanel.updateUI();
+				revalidate();
+				resizeWindow();
+				setLocationRelativeTo(null);
 				break;
 			}
 			case "Options": {
@@ -221,6 +225,10 @@ public class GameWindow extends JFrame {
 				}
 			}
 		}
+	}
+	
+	public void resizeWindow() {
+		setSize(boardHeight-22+p1Info.getWidth()+p2Info.getWidth()+statsBuffer, boardHeight);
 	}
 	
 	private void showOptions(boolean isInGame) {
@@ -252,17 +260,10 @@ public class GameWindow extends JFrame {
 	}
 	
 	public void letAImove() {
-		int pushMousePointingColumn = mousePointingcolumn;
 		boolean preEndGame = gameController.isFinish();
-		if ((mousePointingcolumn = gameController.getAITurn()) < 0) {
-			mousePointingcolumn = pushMousePointingColumn;
-			return;
-		}
+		mousePointingcolumn = gameController.getAITurn();
 		if (!preEndGame && !fallingAnimationMutex) {
 			FallingAnimation();
-			mousePointingcolumn = pushMousePointingColumn;
-		} else {
-			return;
 		}
 	}
 	
@@ -324,10 +325,19 @@ public class GameWindow extends JFrame {
 				}
 				if (nextMove >= 0 && nextMove < gameController.getBoard().getColumnSize()) {
 					if (gameController.makeMove(nextMove)) {
-						mousePointingcolumn = nextMove;
-						FallingAnimation();
-						if (gameController.hasAI() && !gameController.isFinish()) {
-					        letAImove();
+						if (!gameController.hasAI()) {
+							//HUMAN VS HUMAN
+							mousePointingcolumn = nextMove;
+							FallingAnimation();
+						} else if (gameController.hasAI()) {
+							//HUMAN VS AI
+							updateUI();
+							if (gameController.isFinish()) {
+								mouseEnable = false;
+								endGameUI();
+							} else {
+								letAImove();
+							}
 			            }
 					}
 				}
