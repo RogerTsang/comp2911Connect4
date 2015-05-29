@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class GameBoardPanel extends JPanel {
 	
-	//Layout
-	//CurrentIndex = ROW * 7 + COL
 	private GridLayout boardLayout;
     
     /**

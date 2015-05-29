@@ -71,7 +71,6 @@ public class ProfilePanel extends JPanel {
 		
 		//Name of profile
 		name = new JLabel();
-		//name.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
 		name.setFont(name.getFont().deriveFont(Font.BOLD, 24));
 		name.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//Roger: This line is used for general purpose for setting
@@ -109,8 +108,12 @@ public class ProfilePanel extends JPanel {
 		wlRatioH.setText(String.format("VS Humans: %.2f%%", WLRatioH));
 		wlRatioAIExperienced.setText(String.format("VS Experienced AI: %.2f%%",  WLRatioE));
 		wlRatioAINovice.setText(String.format("VS Novice AI: %.2f%%", WLRatioN));
-		if (p.getName().equals("Guest")) stats.setVisible(false);
-		else stats.setVisible(true);
+		if (p.getName().equals("Guest")) {
+			stats.setVisible(false);
+		} else {
+			stats.setSelected(false);
+			stats.setVisible(true);
+		}	
 	}
 	
 	/**
@@ -119,6 +122,12 @@ public class ProfilePanel extends JPanel {
 	 */
 	public void changeToAIPanel(String aiName) {
 		stats.setVisible(false);
+		if (stats.isSelected()) {
+			gamesPlayed.setVisible(false);
+			wlRatioH.setVisible(false);
+			wlRatioAIExperienced.setVisible(false);
+			wlRatioAINovice.setVisible(false);
+		}
 		this.name.setText(aiName);
 	}
 	

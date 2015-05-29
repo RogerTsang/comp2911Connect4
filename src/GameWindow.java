@@ -85,7 +85,6 @@ public class GameWindow extends JFrame {
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		boardPanel = new GameBoardPanel(this.gameController.getBoard());
-		//c.weightx = 0.5;
 		
 		//Player 1 info panel
 		c.gridx = 0;
@@ -125,7 +124,6 @@ public class GameWindow extends JFrame {
 		//Options button
         JButton optionsButton = new JButton("Options");
         optionsButton.addActionListener(new ButtonAction());
-        //c.gridy = 2;
         c.gridx = 1;
         add(optionsButton, c);
 		

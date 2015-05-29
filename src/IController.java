@@ -72,12 +72,6 @@ public interface IController {
      * @return A boolean, TRUE if successfully removed otherwise FALSE.
      */
     public boolean removeAI();
-    /**
-     * Get score of the given player
-     * @param p Player to check score of
-     * @return Score of given player
-     */
-	public int getPlayerScore(Player p);
 	/**
 	 * Get names of profiles that were saved previously
 	 * @return List of names of profiles

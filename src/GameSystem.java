@@ -18,8 +18,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	private Board board;
 	private final int connectToWin;
 	private int turnNumber;
-	//private int P1Score;
-	//private int P2Score;
 	private Profile player1;
 	private Profile player2;
 	private Stack<Integer> UndoStack;
@@ -39,8 +37,6 @@ public class GameSystem implements IController, IGame, IGameOptions {
 		this.board = new Board();
 		this.connectToWin = 4;
 		this.turnNumber = 1;
-		//this.P1Score = 0;
-		//this.P2Score = 0;
 		this.UndoStack = new Stack<Integer>();
 		this.winningDiscs = new Stack<Integer>();
 		this.ai = null;
@@ -106,12 +102,10 @@ public class GameSystem implements IController, IGame, IGameOptions {
 			this.winner = checkWin(this.board,column,this.getCurrentPlayer());
 			this.updateProfile();
 			switch (this.winner){
-				case P1: //this.P1Score++; 
-						 this.state = GameState.FINISH;
+				case P1: this.state = GameState.FINISH;
 						 soundEffects.play(Sound.WIN);
 						 break;
-				case P2: //this.P2Score++; 
-						 this.state = GameState.FINISH;
+				case P2: this.state = GameState.FINISH;
 						 if (this.ai == null) {
 							 soundEffects.play(Sound.WIN);
 						 } else {
@@ -223,15 +217,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
             return -1;
         }
     }
-	/*
-	public int getPlayerScore(Player p) {
-		switch(p) {
-			case P1: return this.P1Score;
-			case P2: return this.P2Score;
-			default: return -1;
-		}			
-	}
-	*/
+
 	/**
 	 * This method will switch player between human P1 or P2(AI).
 	 */
@@ -411,7 +397,7 @@ public class GameSystem implements IController, IGame, IGameOptions {
 	public Profile getProfile(String name) {
 		Profile p = null;
 		try {
-			//Deserialize profile
+			//De-serialize profile
 			FileInputStream fileIn = new FileInputStream("./profiles/" + name + ".ser");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			p = (Profile) in.readObject();
