@@ -252,17 +252,10 @@ public class GameWindow extends JFrame {
 	}
 	
 	public void letAImove() {
-		int pushMousePointingColumn = mousePointingcolumn;
 		boolean preEndGame = gameController.isFinish();
-		if ((mousePointingcolumn = gameController.getAITurn()) < 0) {
-			mousePointingcolumn = pushMousePointingColumn;
-			return;
-		}
+		mousePointingcolumn = gameController.getAITurn();
 		if (!preEndGame && !fallingAnimationMutex) {
 			FallingAnimation();
-			mousePointingcolumn = pushMousePointingColumn;
-		} else {
-			return;
 		}
 	}
 	
@@ -324,10 +317,19 @@ public class GameWindow extends JFrame {
 				}
 				if (nextMove >= 0 && nextMove < gameController.getBoard().getColumnSize()) {
 					if (gameController.makeMove(nextMove)) {
-						mousePointingcolumn = nextMove;
-						FallingAnimation();
-						if (gameController.hasAI() && !gameController.isFinish()) {
-					        letAImove();
+						if (!gameController.hasAI()) {
+							//HUMAN VS HUMAN
+							mousePointingcolumn = nextMove;
+							FallingAnimation();
+						} else if (gameController.hasAI()) {
+							//HUMAN VS AI
+							updateUI();
+							if (gameController.isFinish()) {
+								mouseEnable = false;
+								endGameUI();
+							} else {
+								letAImove();
+							}
 			            }
 					}
 				}
